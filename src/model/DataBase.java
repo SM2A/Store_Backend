@@ -25,4 +25,12 @@ public class DataBase {
         orders = new HashMap<>();
     }
 
+    public void addUser(){
+
+    }
+
+    public User findUser(){
+
+    }
+
 }
