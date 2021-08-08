@@ -45,4 +45,16 @@ public class DataBase {
 
     }
 
+    public void addComment() {
+
+    }
+
+    public Comment findComment() {
+
+    }
+
+    public void updateComment() {
+
+    }
+
 }
