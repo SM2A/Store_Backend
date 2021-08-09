@@ -32,6 +32,14 @@ public class DataBase {
     public User findUser() {
 
     }
+    
+    public void addCredit() {
+
+    }
+    
+    public void payCart() {
+
+    }
 
     public void addProduct() {
 
