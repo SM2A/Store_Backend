@@ -6,6 +6,7 @@ public class Product {
     private float rating;
     private float price;
     private Category category;
+    private Date purchaseDate;
 
     public Product(int id, String title, String description, int quantityAvailable, int price, Category category) {
         this.productId = id;
@@ -15,6 +16,8 @@ public class Product {
         this.rating = 0;
         this.price = price;
         this.category = category;
+        purchaseDate = new Date();
+        purchaseDate.getTime();
     }
 
     public void takeFromStock(int quantity){
@@ -46,6 +49,10 @@ public class Product {
 
     public String getDescription() {
         return description;
+    }
+
+    public Date getPurchaseDate() {
+        return purchaseDate;
     }
 
     public int getQuantityAvailable() {
