@@ -1,7 +1,6 @@
 package model;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 
 /**
@@ -16,7 +15,7 @@ public class DataBase {
     private final HashMap<Long, Product> products;
     private final HashMap<Long, Comment> comments;
     private final HashMap<Long, Cart> carts;
-    private HashMap<Long, HashMap<Long,Integer>> items;
+    private final HashMap<Long, HashMap<Long, Integer>> items;
 
     public DataBase() {
         users = new HashMap<>();
@@ -34,7 +33,6 @@ public class DataBase {
                             String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
         users.put(ID, new Costumer(ID, firstName, lastName, password, email, phoneNumber, address));
-        //todo creat open cart
         createCart(ID);
     }
 
@@ -42,6 +40,15 @@ public class DataBase {
                          String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
         users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
+    }
+
+    public long validateUser(String email, String password) {
+        for (Map.Entry<Long, User> user : users.entrySet()) {
+            if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
+                return user.getKey();
+            }
+        }
+        return -1;
     }
 
     public User findUser(long ID) {
@@ -53,7 +60,7 @@ public class DataBase {
         user.addCredit(amount);
     }
 
-    public void payCart(long ID, long amount) {
+    public void purchase(long ID, long amount) {
         Costumer user = (Costumer) users.get(ID);
         user.purchase(amount);
     }
@@ -86,24 +93,24 @@ public class DataBase {
 
     private void createCart(long userID) {
         long ID = ++lastCartID;
-        carts.put(ID,new Cart(userID));
-        items.put(ID,new HashMap<>());
+        carts.put(ID, new Cart(userID));
+        items.put(ID, new HashMap<>());
     }
 
     public Cart findCart(long ID) {
         return carts.get(ID);
     }
 
-    public void deleteItem(long productID ,long cartID){
+    public void deleteItem(long productID, long cartID) {
         items.get(cartID).remove(productID);
     }
 
-    public void increaseItem(long productID ,long cartID){
-        items.get(cartID).replace(productID,items.get(cartID).get(productID)+1);
+    public void increaseItem(long productID, long cartID) {
+        items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
     }
 
-    public void decreaseItem(long productID ,long cartID){
-        if (items.get(cartID).get(productID)==1) deleteItem(productID,cartID);
-        else items.get(cartID).replace(productID,items.get(cartID).get(productID)-1);
+    public void decreaseItem(long productID, long cartID) {
+        if (items.get(cartID).get(productID) == 1) deleteItem(productID, cartID);
+        else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
     }
 }

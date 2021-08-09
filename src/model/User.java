@@ -78,10 +78,9 @@ class User {
         this.address = address;
     }
 
-    public boolean verify(String enteredEmail, String enteredPassword) {
-        return email.equals(enteredEmail) && password.equals(enteredPassword);
+    public String getPassword() {
+        return password;
     }
-
 }
 
 class Costumer extends User {
