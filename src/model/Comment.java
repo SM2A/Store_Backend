@@ -2,15 +2,15 @@ package model;
 
 class Comment {
 
-    private long commentID;
-    private String userID;
-    private String productID;
+    private long ID;
+    private long userID;
+    private long productID;
     private String text;
     private int likes;
     private int dislikes;
 
-    public Comment(long commentID, String userID, String productID, String text) {
-        this.commentID = commentID;
+    public Comment(long ID, long userID, long productID, String text) {
+        this.ID = ID;
         this.userID = userID;
         this.productID = productID;
         this.text = text;
@@ -18,15 +18,15 @@ class Comment {
         dislikes = 0;
     }
 
-    public long getCommentID() {
-        return commentID;
+    public long getID() {
+        return ID;
     }
 
-    public String getUserID() {
+    public long getUserID() {
         return userID;
     }
 
-    public String getProductID() {
+    public long getProductID() {
         return productID;
     }
 

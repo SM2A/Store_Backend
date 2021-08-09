@@ -4,25 +4,22 @@ import java.util.Date;
 
 class Product {
 
-    private int productId;
+    private long ID;
     private String title;
     private String description;
     private int quantityAvailable;
     private float rating;
-    private float price;
+    private long price;
     private Category category;
-    private Date purchaseDate;
 
-    public Product(int id, String title, String description, int quantityAvailable, int price, Category category) {
-        this.productId = id;
+    public Product(long id, String title, String description, int quantityAvailable, int price, Category category) {
+        this.ID = id;
         this.title = title;
         this.description = description;
         this.quantityAvailable = quantityAvailable;
         this.rating = 0;
         this.price = price;
         this.category = category;
-        purchaseDate = new Date();
-        purchaseDate.getTime();
     }
 
     public void takeFromStock(int quantity) {
@@ -43,8 +40,8 @@ class Product {
         quantityAvailable += quantity;
     }
 
-    public int getProductId() {
-        return productId;
+    public long getID() {
+        return ID;
     }
 
     public String getTitle() {
@@ -54,11 +51,7 @@ class Product {
     public String getDescription() {
         return description;
     }
-
-    public Date getPurchaseDate() {
-        return purchaseDate;
-    }
-
+    
     public int getQuantityAvailable() {
         return quantityAvailable;
     }
@@ -67,7 +60,7 @@ class Product {
         return rating;
     }
 
-    public float getPrice() {
+    public long getPrice() {
         return price;
     }
 
@@ -87,7 +80,7 @@ class Product {
         this.rating = rating;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 

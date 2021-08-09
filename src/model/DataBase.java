@@ -34,6 +34,7 @@ public class DataBase {
                             String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
         users.put(ID,new Costumer(ID,firstName,lastName,password,email,phoneNumber,address));
+        //todo creat open cart
     }
 
     public void addAdmin(String firstName, String lastName, String password,
@@ -56,28 +57,30 @@ public class DataBase {
         user.purchase(amount);
     }
 
-    public void addProduct() {
-
+    public void addProduct(String title, String description, int quantityAvailable, int price, Category category) {
+        long ID = ++lastProductID;
+        products.put(ID,new Product(ID,title,description,quantityAvailable,price,category));
     }
 
-    public Product findProduct() {
-
+    public Product findProduct(long ID) {
+        return products.get(ID);
     }
 
     public void updateProduct() {
-
+        //todo many methods or if/else ?
     }
 
-    public void addComment() {
-
+    public void addComment(long userID, long productID, String text) {
+        long ID = ++lastCommentID;
+        comments.put(ID,new Comment(ID,userID,productID,text));
     }
 
-    public Comment findComment() {
-
+    public Comment findComment(long ID) {
+        return comments.get(ID);
     }
 
     public void updateComment() {
-
+        //todo many methods or if/else ?
     }
 
     private void createCart() {

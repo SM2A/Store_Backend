@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 class Cart {
 
-    private int cartId;
-    private Map<Integer, Integer> items;// (pruductID, quantity)
+    private int ID;
+    private Map<Long, Integer> items;// (pruductID, quantity)
     //todo get rid of 'items'
     private float totalPrice;
     private int totalCount;
@@ -21,15 +21,13 @@ class Cart {
         this.totalCount = 0;
         this.status = status;
         this.userID = userID;
-        purchaseDate = new Date();
-        purchaseDate.getTime();
     }
 
     public void addItem(Product product, int quantity) {
         status = Status.OPEN;
-        int productID = product.getProductId();
+        long productID = product.getID();
         if (items.containsKey(productID)) {
-            for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
+            for (Map.Entry<Long, Integer> entry : items.entrySet()) {
                 if (entry.getKey() == productID) {
                     entry.setValue(entry.getValue() + quantity);
                 }
@@ -43,7 +41,7 @@ class Cart {
     }
 
     public void deleteItem(Product product, int quantity) {
-        int productID = product.getProductId();
+        long productID = product.getID();
         if (items.containsKey(productID)) {
             if (quantity < items.get(productID)) {
                 System.out.println("ERROR! Quantity Is Out Of Range.");
@@ -67,11 +65,11 @@ class Cart {
         status = Status.CLOSED;
     }
 
-    public int getCartId() {
-        return cartId;
+    public int getID() {
+        return ID;
     }
 
-    public Map<Integer, Integer> getItems() {
+    public Map<Long, Integer> getItems() {
         return items;
     }
 
@@ -101,5 +99,9 @@ class Cart {
 
     public int getUserID() {
         return userID;
+    }
+
+    public void setPurchaseDate(Date purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 
 class User {
 
-    protected long userID;
+    protected long ID;
     protected String firstName;
     protected String lastName;
     protected String password;
@@ -13,9 +13,9 @@ class User {
     protected String address;
     protected Date registerDate;
 
-    public User(long userID, String firstName, String lastName, String password, String email,
+    public User(long ID, String firstName, String lastName, String password, String email,
                 String phoneNumber, String address) {
-        this.userID = userID;
+        this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
@@ -26,8 +26,8 @@ class User {
         registerDate.getTime();
     }
 
-    public long getUserID() {
-        return userID;
+    public long getID() {
+        return ID;
     }
 
     public String getFirstName() {
@@ -88,9 +88,9 @@ class Costumer extends User {
 
     private long credit;
 
-    public Costumer(long userID, String firstName, String lastName, String password,
+    public Costumer(long ID, String firstName, String lastName, String password,
                     String email, String phoneNumber, String address) {
-        super(userID, firstName, lastName, password, email, phoneNumber, address);
+        super(ID, firstName, lastName, password, email, phoneNumber, address);
         credit = 0;
     }
 
@@ -111,9 +111,9 @@ class Costumer extends User {
 }
 
 class Admin extends User {
-    public Admin(long userID, String firstName, String lastName, String password, String email,
+    public Admin(long ID, String firstName, String lastName, String password, String email,
                  String phoneNumber, String address) {
-        super(userID, firstName, lastName, password, email, phoneNumber, address);
+        super(ID, firstName, lastName, password, email, phoneNumber, address);
     }
     //other permissions...
 }
