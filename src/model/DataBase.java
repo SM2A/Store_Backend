@@ -18,10 +18,10 @@ public class DataBase {
     private HashMap<String, ArrayList<AbstractMap.SimpleEntry<String, Integer>>> orders;
 
     public DataBase() {
-        users = new HashMap<String, User>();
-        comments = new HashMap<String, Comment>();
-        products = new HashMap<String, Product>();
-        carts = new HashMap<String, Cart>();
+        users = new HashMap<>();
+        comments = new HashMap<>();
+        products = new HashMap<>();
+        carts = new HashMap<>();
         orders = new HashMap<>();
     }
 
@@ -65,7 +65,7 @@ public class DataBase {
 
     }
 
-    private void updateCart(){
+    private void updateCart() {
 
     }
 }

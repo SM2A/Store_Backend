@@ -1,9 +1,14 @@
-import java.util.HashMap;
+package model;
+
 import java.util.Map;
+import java.util.Date;
+import java.util.HashMap;
 
 public class Cart {
+
     private int cartId;
-    private Map <Integer, Integer> items;// (pruductID, quantity)
+    private Map<Integer, Integer> items;// (pruductID, quantity)
+    //todo get rid of 'items'
     private float totalPrice;
     private int totalCount;
     private Status status;
@@ -20,17 +25,16 @@ public class Cart {
         purchaseDate.getTime();
     }
 
-    public void addItem(Product product, int quantity){
+    public void addItem(Product product, int quantity) {
         status = Status.OPEN;
         int productID = product.getProductId();
-        if(items.containsKey(productID)){
-            for(Map.Entry<Integer, Integer> entry : items.entrySet()){
-                if(entry.getKey() == productID){
+        if (items.containsKey(productID)) {
+            for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
+                if (entry.getKey() == productID) {
                     entry.setValue(entry.getValue() + quantity);
                 }
             }
-        }
-        else {
+        } else {
             items.put(productID, quantity);
         }
         totalPrice += quantity * product.getPrice();
@@ -38,27 +42,26 @@ public class Cart {
         System.out.println("successfully Added.");
     }
 
-    public void deleteItem(Product product, int quantity){
+    public void deleteItem(Product product, int quantity) {
         int productID = product.getProductId();
-        if(items.containsKey(productID)){
-            if(quantity < items.get(productID)){
+        if (items.containsKey(productID)) {
+            if (quantity < items.get(productID)) {
                 System.out.println("ERROR! Quantity Is Out Of Range.");
                 return;
             }
             items.remove(productID);
             totalCount -= 1;
             totalPrice -= quantity * product.getPrice();
-            if(totalCount == 0){
+            if (totalCount == 0) {
                 status = Status.CLOSED;
             }
             System.out.println("successfully Deleted.");
-        }
-        else {
+        } else {
             System.out.println("ERROR! Item Is Not In Your Cart.");
         }
     }
 
-    public void purchase(){
+    public void purchase() {
         totalPrice = 0;
         items.clear();
         status = Status.CLOSED;

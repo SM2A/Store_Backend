@@ -3,6 +3,7 @@ package model;
 import java.util.Date;
 
 public class User {
+
     protected String userID;
     protected String firstName;
     protected String lastName;
@@ -12,7 +13,8 @@ public class User {
     protected String address;
     protected Date registerDate;
 
-    public User(String userID, String firstName, String lastName, String password, String email, String phoneNumber, String address) {
+    public User(String userID, String firstName, String lastName, String password, String email,
+                String phoneNumber, String address) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -76,16 +78,17 @@ public class User {
         this.address = address;
     }
 
-    public boolean verify(String enteredEmail, String enteredPassword){
+    public boolean verify(String enteredEmail, String enteredPassword) {
         return email.equals(enteredEmail) && password.equals(enteredPassword);
     }
 
 }
 
-class Costumer extends User{
+class Costumer extends User {
     private float credit;
 
-    public Costumer(String userID, String firstName, String lastName, String password, String email, String phoneNumber, String address) {
+    public Costumer(String userID, String firstName, String lastName, String password,
+                    String email, String phoneNumber, String address) {
         super(userID, firstName, lastName, password, email, phoneNumber, address);
         credit = 0;
     }
@@ -94,20 +97,21 @@ class Costumer extends User{
         return credit;
     }
 
-    public void addCredit(float amount){
+    public void addCredit(float amount) {
         credit += amount;
     }
 
-    public void purchase(float totalPrice){
-        if(credit < totalPrice)
+    public void purchase(float totalPrice) {
+        if (credit < totalPrice)
             System.out.println("Insufficient Funds!");
         else
             credit -= totalPrice;
     }
 }
 
-class Admin extends User{
-    public Admin(String userID, String firstName, String lastName, String password, String email, String phoneNumber, String address) {
+class Admin extends User {
+    public Admin(String userID, String firstName, String lastName, String password, String email,
+                 String phoneNumber, String address) {
         super(userID, firstName, lastName, password, email, phoneNumber, address);
     }
     //other permissions...

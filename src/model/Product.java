@@ -1,4 +1,9 @@
+package model;
+
+import java.util.Date;
+
 public class Product {
+
     private int productId;
     private String title;
     private String description;
@@ -20,22 +25,21 @@ public class Product {
         purchaseDate.getTime();
     }
 
-    public void takeFromStock(int quantity){
-        if(quantityAvailable - quantity >= 0){
+    public void takeFromStock(int quantity) {
+        if (quantityAvailable - quantity >= 0) {
             quantityAvailable -= quantity;
-        }
-        else {
+        } else {
             System.out.println("ERROR! Out Of Stock.");
         }
     }
 
-    public void addRating(int newRating){
-        if(newRating <= 5){
-            rating = (rating + newRating)/2;
+    public void addRating(int newRating) {
+        if (newRating <= 5) {
+            rating = (rating + newRating) / 2;
         }
     }
 
-    public void addToStock(int quantity){
+    public void addToStock(int quantity) {
         quantityAvailable += quantity;
     }
 

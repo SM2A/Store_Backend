@@ -1,6 +1,7 @@
 package model;
 
 public class Comment {
+
     private String commentID;
     private String userID;
     private String productID;
@@ -45,11 +46,11 @@ public class Comment {
         this.text = text;
     }
 
-    public void like(){
+    public void like() {
         likes++;
     }
 
-    public void dislike(){
+    public void dislike() {
         dislikes++;
     }
 }
