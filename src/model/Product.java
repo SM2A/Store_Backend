@@ -4,7 +4,7 @@ import java.util.Date;
 
 class Product {
 
-    private long ID;
+    private final long ID;
     private String title;
     private String description;
     private int quantityAvailable;

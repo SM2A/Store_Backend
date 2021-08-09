@@ -2,9 +2,9 @@ package model;
 
 class Comment {
 
-    private long ID;
-    private long userID;
-    private long productID;
+    private final long ID;
+    private final long userID;
+    private final long productID;
     private String text;
     private int likes;
     private int dislikes;

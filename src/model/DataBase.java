@@ -55,6 +55,22 @@ public class DataBase {
         return users.get(ID);
     }
 
+    public HashMap<Long,Cart> getUserCarts(long userID){
+        HashMap<Long,Cart> cartHashMap = new HashMap<>();
+        for (Map.Entry<Long,Cart> entry : carts.entrySet()) {
+            if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(),entry.getValue());
+        }
+        return cartHashMap;
+    }
+
+    public HashMap<Long,Comment> getUserComments(long userID){
+        HashMap<Long,Comment> commentHashMap = new HashMap<>();
+        for (Map.Entry<Long,Comment> entry : comments.entrySet()) {
+            if (entry.getValue().getUserID() == userID) commentHashMap.put(entry.getKey(),entry.getValue());
+        }
+        return commentHashMap;
+    }
+
     public void addCredit(long ID, long amount) {
         Costumer user = (Costumer) users.get(ID);
         user.addCredit(amount);
@@ -63,6 +79,14 @@ public class DataBase {
     public void purchase(long ID, long amount) {
         Costumer user = (Costumer) users.get(ID);
         user.purchase(amount);
+        Cart cart = null;
+        for (Map.Entry<Long,Cart> entry : getUserCarts(ID).entrySet()){
+            if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
+        }
+        cart.setStatus(Status.CLOSED);
+        for (Map.Entry<Product,Integer> entry : getCartItems(cart.getID()).entrySet()){
+            decreaseItem(entry.getKey().getID(),entry.getValue());
+        }
     }
 
     public void addProduct(String title, String description, int quantityAvailable, int price, Category category) {
@@ -72,6 +96,10 @@ public class DataBase {
 
     public Product findProduct(long ID) {
         return products.get(ID);
+    }
+
+    private void decreaseQuantity(long productID , int count){
+        products.get(productID).setQuantityAvailable(products.get(productID).getQuantityAvailable()-count);
     }
 
     public void updateProduct() {
@@ -87,8 +115,16 @@ public class DataBase {
         return comments.get(ID);
     }
 
-    public void updateComment() {
-        //todo many methods or if/else ?
+    public void likeComment(long ID){
+        comments.get(ID).like();
+    }
+
+    public void dislikeComment(long ID){
+        comments.get(ID).dislike();
+    }
+
+    public void deleteComment(long ID) {
+        comments.remove(ID);
     }
 
     private void createCart(long userID) {
@@ -112,5 +148,13 @@ public class DataBase {
     public void decreaseItem(long productID, long cartID) {
         if (items.get(cartID).get(productID) == 1) deleteItem(productID, cartID);
         else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
+    }
+
+    public HashMap<Product, Integer> getCartItems(long cartID){
+        HashMap<Product, Integer> itemsHashMap = new HashMap<>();
+        for (Map.Entry<Long,Integer> entry : items.get(cartID).entrySet()){
+            itemsHashMap.put(findProduct(entry.getKey()),entry.getValue());
+        }
+        return itemsHashMap;
     }
 }

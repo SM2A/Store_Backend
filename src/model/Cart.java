@@ -1,8 +1,6 @@
 package model;
 
-import java.util.Map;
 import java.util.Date;
-import java.util.HashMap;
 
 class Cart {
 
