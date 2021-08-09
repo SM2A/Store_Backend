@@ -11,19 +11,19 @@ import java.util.HashMap;
 
 public class DataBase {
 
-    private long lastUserID , lastProductID , lastCommentID , lastCartID ;
-    private HashMap<Long, User> users;
-    private HashMap<Long, Product> products;
-    private HashMap<Long, Comment> comments;
-    private HashMap<Long, Cart> carts;
-    private HashMap<Long, ArrayList<AbstractMap.SimpleEntry<String, Integer>>> orders;
+    private long lastUserID, lastProductID, lastCommentID, lastCartID;
+    private final HashMap<Long, User> users;
+    private final HashMap<Long, Product> products;
+    private final HashMap<Long, Comment> comments;
+    private final HashMap<Long, Cart> carts;
+    private HashMap<Long, HashMap<Long,Integer>> items;
 
     public DataBase() {
         users = new HashMap<>();
         comments = new HashMap<>();
         products = new HashMap<>();
         carts = new HashMap<>();
-        orders = new HashMap<>();
+        items = new HashMap<>();
         lastCartID = 0;
         lastCommentID = 0;
         lastProductID = 0;
@@ -33,33 +33,34 @@ public class DataBase {
     public void addCustomer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
-        users.put(ID,new Costumer(ID,firstName,lastName,password,email,phoneNumber,address));
+        users.put(ID, new Costumer(ID, firstName, lastName, password, email, phoneNumber, address));
         //todo creat open cart
+        createCart(ID);
     }
 
     public void addAdmin(String firstName, String lastName, String password,
                          String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
-        users.put(ID,new Admin(ID,firstName,lastName,password,email,phoneNumber,address));
+        users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
     }
 
     public User findUser(long ID) {
         return users.get(ID);
     }
-    
-    public void addCredit(long ID , long amount) {
+
+    public void addCredit(long ID, long amount) {
         Costumer user = (Costumer) users.get(ID);
         user.addCredit(amount);
     }
-    
-    public void payCart(long ID , long amount) {
+
+    public void payCart(long ID, long amount) {
         Costumer user = (Costumer) users.get(ID);
         user.purchase(amount);
     }
 
     public void addProduct(String title, String description, int quantityAvailable, int price, Category category) {
         long ID = ++lastProductID;
-        products.put(ID,new Product(ID,title,description,quantityAvailable,price,category));
+        products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
     }
 
     public Product findProduct(long ID) {
@@ -72,7 +73,7 @@ public class DataBase {
 
     public void addComment(long userID, long productID, String text) {
         long ID = ++lastCommentID;
-        comments.put(ID,new Comment(ID,userID,productID,text));
+        comments.put(ID, new Comment(ID, userID, productID, text));
     }
 
     public Comment findComment(long ID) {
@@ -83,15 +84,26 @@ public class DataBase {
         //todo many methods or if/else ?
     }
 
-    private void createCart() {
-
+    private void createCart(long userID) {
+        long ID = ++lastCartID;
+        carts.put(ID,new Cart(userID));
+        items.put(ID,new HashMap<>());
     }
 
-    private Cart findCart() {
-
+    public Cart findCart(long ID) {
+        return carts.get(ID);
     }
 
-    private void updateCart() {
+    public void deleteItem(long productID ,long cartID){
+        items.get(cartID).remove(productID);
+    }
 
+    public void increaseItem(long productID ,long cartID){
+        items.get(cartID).replace(productID,items.get(cartID).get(productID)+1);
+    }
+
+    public void decreaseItem(long productID ,long cartID){
+        if (items.get(cartID).get(productID)==1) deleteItem(productID,cartID);
+        else items.get(cartID).replace(productID,items.get(cartID).get(productID)-1);
     }
 }
