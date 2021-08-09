@@ -1,3 +1,5 @@
+package model;
+
 public class Comment {
     private String commentID;
     private String userID;
