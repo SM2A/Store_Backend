@@ -1,5 +1,5 @@
 package model;
 
-public enum Status {
+enum Status {
     OPEN, CLOSED;
 }

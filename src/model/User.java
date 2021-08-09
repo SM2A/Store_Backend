@@ -2,9 +2,9 @@ package model;
 
 import java.util.Date;
 
-public class User {
+class User {
 
-    protected String userID;
+    protected long userID;
     protected String firstName;
     protected String lastName;
     protected String password;
@@ -13,7 +13,7 @@ public class User {
     protected String address;
     protected Date registerDate;
 
-    public User(String userID, String firstName, String lastName, String password, String email,
+    public User(long userID, String firstName, String lastName, String password, String email,
                 String phoneNumber, String address) {
         this.userID = userID;
         this.firstName = firstName;
@@ -26,7 +26,7 @@ public class User {
         registerDate.getTime();
     }
 
-    public String getUserID() {
+    public long getUserID() {
         return userID;
     }
 
@@ -85,23 +85,24 @@ public class User {
 }
 
 class Costumer extends User {
-    private float credit;
 
-    public Costumer(String userID, String firstName, String lastName, String password,
+    private long credit;
+
+    public Costumer(long userID, String firstName, String lastName, String password,
                     String email, String phoneNumber, String address) {
         super(userID, firstName, lastName, password, email, phoneNumber, address);
         credit = 0;
     }
 
-    public float getCredit() {
+    public long getCredit() {
         return credit;
     }
 
-    public void addCredit(float amount) {
+    public void addCredit(long amount) {
         credit += amount;
     }
 
-    public void purchase(float totalPrice) {
+    public void purchase(long totalPrice) {
         if (credit < totalPrice)
             System.out.println("Insufficient Funds!");
         else
@@ -110,7 +111,7 @@ class Costumer extends User {
 }
 
 class Admin extends User {
-    public Admin(String userID, String firstName, String lastName, String password, String email,
+    public Admin(long userID, String firstName, String lastName, String password, String email,
                  String phoneNumber, String address) {
         super(userID, firstName, lastName, password, email, phoneNumber, address);
     }

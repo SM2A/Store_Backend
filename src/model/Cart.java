@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Cart {
+class Cart {
 
     private int cartId;
     private Map<Integer, Integer> items;// (pruductID, quantity)
