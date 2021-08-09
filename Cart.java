@@ -8,6 +8,7 @@ public class Cart {
     private int totalCount;
     private Status status;
     private int userID;
+    private Date purchaseDate;
 
     public Cart(Map<Integer, Integer> items, float totalPrice, int totalCount, Status status, int userID) {
         items = new HashMap<>();
@@ -15,6 +16,8 @@ public class Cart {
         this.totalCount = 0;
         this.status = status;
         this.userID = userID;
+        purchaseDate = new Date();
+        purchaseDate.getTime();
     }
 
     public void addItem(Product product, int quantity){
@@ -67,6 +70,10 @@ public class Cart {
 
     public Map<Integer, Integer> getItems() {
         return items;
+    }
+
+    public Date getPurchaseDate() {
+        return purchaseDate;
     }
 
     public float getTotalPrice() {
