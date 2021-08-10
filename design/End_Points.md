@@ -4,6 +4,6 @@
 
 | Description | Method | URL | Implemented ? |
 |:-----------:|:------:|:---:|:-------------:|
-|       Login Pgae      |    GET    |   /login  |         ❌      |
+|       Login Page      |    GET    |   /login  |         ❌      |
 |     Send Login Info        |   POST     |   /login  |       ❌        |
 |             |        |     |               |
