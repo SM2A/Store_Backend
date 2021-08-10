@@ -76,17 +76,17 @@ public class DataBase {
         user.addCredit(amount);
     }
 
-    public void purchase(long ID, long amount) {
+    public void purchase(long ID) {
         Costumer user = (Costumer) users.get(ID);
-        user.purchase(amount);
         Cart cart = null;
         for (Map.Entry<Long,Cart> entry : getUserCarts(ID).entrySet()){
             if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
         }
-        cart.setStatus(Status.CLOSED);
         for (Map.Entry<Product,Integer> entry : getCartItems(cart.getID()).entrySet()){
             decreaseItem(entry.getKey().getID(),entry.getValue());
         }
+        user.purchase(cartPrice(cart.getID()));
+        cart.setStatus(Status.CLOSED);
     }
 
     public void addProduct(String title, String description, int quantityAvailable, int price, Category category) {
@@ -135,6 +135,18 @@ public class DataBase {
 
     public Cart findCart(long ID) {
         return carts.get(ID);
+    }
+
+    public long cartPrice(long cartID){
+        long price = 0;
+        for (Map.Entry<Product,Integer> entry : getCartItems(cartID).entrySet()){
+            price += entry.getKey().getPrice();
+        }
+        return price;
+    }
+
+    public void addItem(long cartID , long productID){
+        items.get(cartID).put(productID,1);
     }
 
     public void deleteItem(long productID, long cartID) {
