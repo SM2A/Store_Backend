@@ -1,4 +1,4 @@
-package model;
+package org.acm.store.model;
 
 import java.util.Map;
 import java.util.HashMap;

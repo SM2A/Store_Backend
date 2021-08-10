@@ -1,4 +1,4 @@
-package model;
+package org.acm.store.model;
 
 class Comment {
 
