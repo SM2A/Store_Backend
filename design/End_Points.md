@@ -13,13 +13,13 @@
 | User Profile | POST | /profile | ❌
 | Add Comment | POST | /comment | ❌ |
 | Add Product | POST | /addProduct | ❌ |
-| Add Credit | POST | /addCredit | ❌ |
-| Like | POST | /like | ❌ |
-| Dislike | POST | /dislike | ❌ |
-| Show Cart | GET | /cart | ❌ |
-| Purchase | POST | /purchase | ❌ |
-| Add To Cart | POST | /addCart | ❌ |
-|  |  |  | ❌ |
+| Add Credit | POST | /addCredit | ✅ |
+| Like | POST | /like | ✅ |
+| Dislike | POST | /dislike | ✅ |
+| Show Cart | GET | /cart | ✅ |
+| Purchase | POST | /purchase | ✅ |
+| Add To Cart | POST | /addCart | ✅ |
+| rate | POST | /products/rate | ✅ |
 |  |  |  | ❌ |
 |  |  |  | ❌ |
 |  |  |  | ❌ |
