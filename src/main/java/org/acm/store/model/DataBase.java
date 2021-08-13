@@ -1,5 +1,7 @@
 package org.acm.store.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -30,6 +32,10 @@ public class DataBase {
         lastUserID = 0;
     }
 
+    public ArrayList<User> getUsers(){
+        return new ArrayList<User>(users.values());
+    }
+
     public static DataBase getInstance() {
         if (instance == null) {
             instance = new DataBase();
@@ -37,11 +43,10 @@ public class DataBase {
         return instance;
     }
 
-    public void addCustomer(String firstName, String lastName, String password,
-                            String email, String phoneNumber, String address) {
-        long ID = ++lastUserID;
-        users.put(ID, new Costumer(ID, firstName, lastName, password, email, phoneNumber, address));
-        createCart(ID);
+    public void addCostumer(Costumer costumer) {
+        costumer.setID(++lastUserID);
+        users.put(costumer.getID(), costumer);
+        createCart(costumer.getID());
     }
 
     public void addAdmin(String firstName, String lastName, String password,
@@ -50,13 +55,30 @@ public class DataBase {
         users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
     }
 
-    public long validateUser(String email, String password) {
+    public Comment findCommentByID(long id){
+        return comments.get(id);
+    }
+
+    public ArrayList<Comment> getAllComments(){
+        return new ArrayList<>(comments.values());
+    }
+
+    public long validateUserByID(String email, String password) {
         for (Map.Entry<Long, User> user : users.entrySet()) {
             if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
                 return user.getKey();
             }
         }
         return -1;
+    }
+
+    public User validateUser(String email, String password) {
+        for (Map.Entry<Long, User> user : users.entrySet()) {
+            if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
+                return user.getValue();
+            }
+        }
+        return null;
     }
 
     public User findUser(long ID) {
@@ -71,6 +93,18 @@ public class DataBase {
         return cartHashMap;
     }
 
+    public ArrayList<Cart> showUserCarts(long userID) {
+        HashMap<Long, Cart> cartHashMap = new HashMap<>();
+        for (Map.Entry<Long, Cart> entry : carts.entrySet()) {
+            if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return new ArrayList<>(cartHashMap.values());
+    }
+
+    public ArrayList<Product> getProducts(){
+        return new ArrayList<>(products.values());
+    }
+
     public HashMap<Long, Comment> getUserComments(long userID) {
         HashMap<Long, Comment> commentHashMap = new HashMap<>();
         for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
@@ -79,35 +113,45 @@ public class DataBase {
         return commentHashMap;
     }
 
+    public void addRatingToProduct(long productID, int rating){
+        products.get(productID).addRating(rating);
+    }
+
     public void addCredit(long ID, long amount) {
         Costumer user = (Costumer) users.get(ID);
         user.addCredit(amount);
     }
 
-    public void purchase(long ID) {
-        Costumer user = (Costumer) users.get(ID);
+    public void purchase(long userId) {
+        Costumer user = (Costumer) users.get(userId);
         Cart cart = null;
-        for (Map.Entry<Long, Cart> entry : getUserCarts(ID).entrySet()) {
+        for (Map.Entry<Long, Cart> entry : getUserCarts(userId).entrySet()) {
             if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
         }
-        for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
-            decreaseItem(entry.getKey().getID(), entry.getValue());
+        if(cart != null) {
+            if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
+                //exception handling: not enough credit
+                return;
+            }
+            for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
+                entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
+            }
+            user.purchase(cartPrice(cart.getID()));
+            cart.setStatus(Status.CLOSED);
         }
-        user.purchase(cartPrice(cart.getID()));
-        cart.setStatus(Status.CLOSED);
+        else{
+            //exception handling: no cart is open
+            System.out.println("no cart is open");
+        }
     }
 
-    public void addProduct(String title, String description, int quantityAvailable, int price, Category category) {
+    public void addProduct(String title, String description, int quantityAvailable, int price, String category) {
         long ID = ++lastProductID;
         products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
     }
 
     public Product findProduct(long ID) {
         return products.get(ID);
-    }
-
-    private void decreaseQuantity(long productID, int count) {
-        products.get(productID).setQuantityAvailable(products.get(productID).getQuantityAvailable() - count);
     }
 
     public void updateProduct() {
@@ -135,11 +179,31 @@ public class DataBase {
         comments.remove(ID);
     }
 
-    private void createCart(long userID) {
+    public void createCart(long userID) {
         long ID = ++lastCartID;
-        carts.put(ID, new Cart(userID));
+        carts.put(ID, new Cart(ID, userID));
         items.put(ID, new HashMap<>());
     }
+
+    public Cart findOpenCartByUser(long userId){
+        for (Map.Entry<Long, Cart> cart : carts.entrySet()) {
+            if ((cart.getValue().getUserID() == userId) && (cart.getValue().getStatus() == Status.OPEN)) {
+                return cart.getValue();
+            }
+        }
+        return null;
+    }
+
+    public HashMap<Long, Integer> getItemsInOpenCart(long userId){
+       Cart cart = findOpenCartByUser(userId);
+       System.out.println("cart size:   "+ items.get(cart.getID()).size());
+
+       if(items.get(cart.getID()) != null){
+           return items.get(cart.getID());
+       }
+       return null;
+    }
+
 
     public Cart findCart(long ID) {
         return carts.get(ID);
@@ -153,12 +217,26 @@ public class DataBase {
         return price;
     }
 
+
     public void addItem(long cartID, long productID) {
-        items.get(cartID).put(productID, 1);
+        if(getCartItems(cartID) != null){
+            if (getCartItems(cartID).containsKey(findProduct(productID))) {
+                items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
+            }
+            else{
+                items.get(cartID).put(productID,1);
+            }
+        }
+        else {
+            items.put(cartID, new HashMap<Long, Integer>());
+            items.get(cartID).put(productID, 1);
+        }
     }
 
     public void deleteItem(long productID, long cartID) {
-        items.get(cartID).remove(productID);
+        if(items.get(cartID) != null) {
+            items.get(cartID).remove(productID);
+        }
     }
 
     public void increaseItem(long productID, long cartID) {
@@ -170,8 +248,29 @@ public class DataBase {
         else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
     }
 
+    public void setQuantityToAnItem(long productID, long cartID, int quantity){
+        if(quantity <= 0) deleteItem(productID, cartID);
+        else{
+            if(getCartItems(cartID) != null){
+                if (getCartItems(cartID).containsKey(findProduct(productID))) {
+                    items.get(cartID).replace(productID, quantity);
+                }
+                else{
+                    items.get(cartID).put(productID,quantity);
+                }
+            }
+            else {
+                items.put(cartID, new HashMap<Long, Integer>());
+                items.get(cartID).put(productID, quantity);
+            }
+        }
+    }
+
     public HashMap<Product, Integer> getCartItems(long cartID) {
         HashMap<Product, Integer> itemsHashMap = new HashMap<>();
+        if(items.get(cartID) == null){
+            return null;
+        }
         for (Map.Entry<Long, Integer> entry : items.get(cartID).entrySet()) {
             itemsHashMap.put(findProduct(entry.getKey()), entry.getValue());
         }

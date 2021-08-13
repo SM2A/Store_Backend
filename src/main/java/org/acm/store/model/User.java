@@ -2,7 +2,7 @@ package org.acm.store.model;
 
 import java.util.Date;
 
-class User {
+public class User {
 
     protected long ID;
     protected String firstName;
@@ -52,6 +52,10 @@ class User {
 
     public Date getRegisterDate() {
         return registerDate;
+    }
+
+    public void setID(long ID) {
+        this.ID = ID;
     }
 
     public void setFirstName(String firstName) {

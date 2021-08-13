@@ -1,0 +1,60 @@
+1- GET /users: show all users
+2- GET /users/{id}: show user info with id
+3- GET /users/profile: show user profile //2 & 3 are the same
+4- GET /products: show all products
+5- POST /products/add: add products to all products
+    sample: {
+                "password": "sample_password",
+                "email": "email@par",
+                "title": "milk",
+                "description": "Dairy",
+                "quantityAvailable": 10,
+                "price": 1000,
+                "category": "Dairy"
+            }
+6- GET /products/{id}: show product info with id
+7- POST /products/rate: rate a product
+    sample: {
+                "password": "sample_password",
+                "email": "email@par",
+                "productId": 1,
+                "rating": 4
+            }
+8- GET /carts: show all user carts
+9- GET /carts/items: show all items in open cart(current cart)
+10- POST /carts/items/add: add item to cart
+    sample: {
+                "password": "sample_password",
+                "email": "email@par",
+                "productId": 1
+            }
+11- POST /carts/items/subtract: subtract an item from current cart
+    sample: like sample number 10
+12- POST /carts/items/delete: delete an item from current cart
+    sample: like sample number 10
+13- POST/carts/items/setq: set a quantity to cart
+    sample:{
+               "password": "sample_password",
+               "email": "email@par",
+               "productId": 1
+               "quantity": 20
+           }
+14- GET /comments: show all comments
+15- POST /comments/add: add comment
+    sample: {
+                "password": "sample_password",
+                "email": "email@par",
+                "productID": 1,
+                "text": "good"
+            }
+16- GET /comments/{id}: show comment by id
+17- POST comments/{id}/like: like comment
+18- POST comments/{id}/dislike: dislike comment
+19- POST /purchase: purchase and submit the cart
+20- POST /credit/add: add credit to user
+    sample: {
+                "password": "sample_password",
+                "email": "email@par",
+                "amount": 100000
+            }
+

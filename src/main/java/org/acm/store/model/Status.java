@@ -1,5 +1,5 @@
 package org.acm.store.model;
 
-enum Status {
+public enum Status {
     OPEN, CLOSED;
 }
