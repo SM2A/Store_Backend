@@ -2,7 +2,7 @@ package org.acm.store.model;
 
 import java.util.Date;
 
-class Product {
+public class Product {
 
     private final long ID;
     private String title;

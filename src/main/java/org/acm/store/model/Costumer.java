@@ -21,6 +21,10 @@ public class Costumer extends User{
         credit += amount;
     }
 
+    public boolean hasEnoughCredit(long cost){
+        return credit > cost;
+    }
+
     public void purchase(long totalPrice) {
         if (credit < totalPrice)
             System.out.println("Insufficient Funds!");

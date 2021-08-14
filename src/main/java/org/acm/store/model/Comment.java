@@ -1,6 +1,6 @@
 package org.acm.store.model;
 
-class Comment {
+public class Comment {
 
     private final long ID;
     private final long userID;
