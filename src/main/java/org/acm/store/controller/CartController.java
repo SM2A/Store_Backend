@@ -31,10 +31,6 @@ public class CartController {
     public void addItemToCart(@RequestBody ObjectNode json){
         User user = DataBase.getInstance().validateUser(json.get("email").asText(), json.get("password").asText());
         Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
-        if(cart == null){
-            DataBase.getInstance().createCart(user.getID());
-            cart = DataBase.getInstance().findOpenCartByUser(user.getID());
-        }
         DataBase.getInstance().addItem(cart.getID(), json.get("productId").asLong());
     }
 

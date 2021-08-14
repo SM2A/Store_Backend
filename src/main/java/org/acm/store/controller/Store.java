@@ -22,8 +22,10 @@ public class Store {
     }
 
     @PostMapping("signup")
-    public void signup(@RequestBody Costumer costumer) {
-        DataBase.getInstance().addCostumer(costumer);
+    public void signup(@RequestBody ObjectNode json) {
+        DataBase.getInstance().addCostumer(json.get("firstName").asText(),json.get("lastName").asText(),
+                                            json.get("password").asText(), json.get("email").asText(),
+                                            json.get("phoneNumber").asText(), json.get("address").asText());
     }
 
     @GetMapping("login")

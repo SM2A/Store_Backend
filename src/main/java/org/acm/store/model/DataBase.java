@@ -33,7 +33,7 @@ public class DataBase {
     }
 
     public ArrayList<User> getUsers(){
-        return new ArrayList<User>(users.values());
+        return new ArrayList<>(users.values());
     }
 
     public static DataBase getInstance() {
@@ -43,10 +43,11 @@ public class DataBase {
         return instance;
     }
 
-    public void addCostumer(Costumer costumer) {
-        costumer.setID(++lastUserID);
-        users.put(costumer.getID(), costumer);
-        createCart(costumer.getID());
+    public void addCostumer(String firstName, String lastName, String password,
+                            String email, String phoneNumber, String address) {
+        long ID = ++lastUserID;
+        users.put(ID, new Costumer(ID, firstName, lastName, password, email, phoneNumber, address));
+        createCart(ID);
     }
 
     public void addAdmin(String firstName, String lastName, String password,
@@ -128,21 +129,16 @@ public class DataBase {
         for (Map.Entry<Long, Cart> entry : getUserCarts(userId).entrySet()) {
             if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
         }
-        if(cart != null) {
-            if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
-                //exception handling: not enough credit
-                return;
-            }
-            for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
-                entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
-            }
-            user.purchase(cartPrice(cart.getID()));
-            cart.setStatus(Status.CLOSED);
+        if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
+            //exception handling: not enough credit
+            return;
         }
-        else{
-            //exception handling: no cart is open
-            System.out.println("no cart is open");
+        for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
+            entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
         }
+        user.purchase(cartPrice(cart.getID()));
+        cart.setStatus(Status.CLOSED);
+        createCart(user.getID());
     }
 
     public void addProduct(String title, String description, int quantityAvailable, int price, String category) {
@@ -196,8 +192,6 @@ public class DataBase {
 
     public HashMap<Long, Integer> getItemsInOpenCart(long userId){
        Cart cart = findOpenCartByUser(userId);
-       System.out.println("cart size:   "+ items.get(cart.getID()).size());
-
        if(items.get(cart.getID()) != null){
            return items.get(cart.getID());
        }
@@ -219,17 +213,11 @@ public class DataBase {
 
 
     public void addItem(long cartID, long productID) {
-        if(getCartItems(cartID) != null){
-            if (getCartItems(cartID).containsKey(findProduct(productID))) {
-                items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
-            }
-            else{
-                items.get(cartID).put(productID,1);
-            }
+        if (getCartItems(cartID).containsKey(findProduct(productID))) {
+            items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
         }
-        else {
-            items.put(cartID, new HashMap<Long, Integer>());
-            items.get(cartID).put(productID, 1);
+        else{
+            items.get(cartID).put(productID,1);
         }
     }
 
@@ -251,17 +239,11 @@ public class DataBase {
     public void setQuantityToAnItem(long productID, long cartID, int quantity){
         if(quantity <= 0) deleteItem(productID, cartID);
         else{
-            if(getCartItems(cartID) != null){
-                if (getCartItems(cartID).containsKey(findProduct(productID))) {
-                    items.get(cartID).replace(productID, quantity);
-                }
-                else{
-                    items.get(cartID).put(productID,quantity);
-                }
+            if (getCartItems(cartID).containsKey(findProduct(productID))) {
+                items.get(cartID).replace(productID, quantity);
             }
-            else {
-                items.put(cartID, new HashMap<Long, Integer>());
-                items.get(cartID).put(productID, quantity);
+            else{
+                items.get(cartID).put(productID,quantity);
             }
         }
     }
