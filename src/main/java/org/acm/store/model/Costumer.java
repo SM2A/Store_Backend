@@ -4,6 +4,7 @@ package org.acm.store.model;
  * Created by SM2A
  * Seyed Mohammad Amin Atyabi
  */
+
 public class Costumer extends User{
     private long credit;
 

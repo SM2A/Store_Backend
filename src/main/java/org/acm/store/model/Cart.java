@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Cart {
 
-    private long ID;
+    private final long ID;
     private Status status;
     private long userID;
     private Date purchaseDate;
