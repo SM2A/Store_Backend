@@ -1,8 +1,11 @@
 package org.acm.store.controller;
 
+import com.google.gson.reflect.TypeToken;
 import org.acm.store.model.Cart;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
+
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.*;
 import com.google.gson.*;
@@ -25,12 +28,16 @@ public class CartController {
         return gson.toJson(list); // converts to json
     }
 
-    /*hashmap to json?
+    //hashmap to json?
     @GetMapping("/items")
-    public HashMap<Long, Integer> showItemsInCurrentCart(@RequestBody ObjectNode json){
-        User user = DataBase.getInstance().validateUser(json.get("email").asText(), json.get("password").asText());
-        return DataBase.getInstance().getItemsInOpenCart(user.getID());
-    }*/
+    public String showItemsInCurrentCart(HttpServletRequest request){
+        if (!Authentication.isLogin(request)) return "Please login first";
+        if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
+        User user = Authentication.loggedInUser(request);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Type gsonType = new TypeToken<HashMap>(){}.getType();
+        return gson.toJson(DataBase.getInstance().getItemsInOpenCart(user.getID()),gsonType);
+    }
 
 
     @PostMapping("/items/add")
@@ -73,7 +80,6 @@ public class CartController {
         User user = Authentication.loggedInUser(request);
         Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
         DataBase.getInstance().setQuantityToAnItem(productId, cart.getID(),quantity);
-        DataBase.getInstance().findProduct(productId).getTitle();
         if(quantity < 1)
             return "Quantity must be greater than zero!";
         else if(quantity == 1)
