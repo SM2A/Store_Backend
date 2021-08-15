@@ -22,7 +22,7 @@ public class Costumer extends User{
     }
 
     public boolean hasEnoughCredit(long cost){
-        return credit > cost;
+        return credit >= cost;
     }
 
     public void purchase(long totalPrice) {

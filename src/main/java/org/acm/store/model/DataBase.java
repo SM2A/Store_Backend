@@ -43,6 +43,15 @@ public class DataBase {
         return instance;
     }
 
+    public boolean isTaken(String email, String phoneNumber) {
+        for (Map.Entry<Long, User> user : users.entrySet()) {
+            if ((user.getValue().getEmail().equals(email)) || (user.getValue().getPhoneNumber().equals(phoneNumber))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
@@ -112,6 +121,14 @@ public class DataBase {
             if (entry.getValue().getUserID() == userID) commentHashMap.put(entry.getKey(), entry.getValue());
         }
         return commentHashMap;
+    }
+
+    public ArrayList<Comment> getProductComments(long productId){
+        ArrayList<Comment> userComments = new ArrayList<>();
+        for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
+            if (entry.getValue().getProductID() == productId) userComments.add(entry.getValue());
+        }
+        return userComments;
     }
 
     public void addRatingToProduct(long productID, int rating){

@@ -1,29 +1,35 @@
 package org.acm.store.controller;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.Product;
-import org.acm.store.model.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
+
     @GetMapping
-    public ArrayList<Product> getProducts(){
-        return DataBase.getInstance().getProducts();
+    public String getProducts(){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        List list = Stream.of(DataBase.getInstance().getProducts()).collect(Collectors.toList());
+        return gson.toJson(list);
     }
 
     @PostMapping("/add")
-    public void addProduct(@RequestBody ObjectNode json){
-        User user = DataBase.getInstance().validateUser(json.get("email").asText(), json.get("password").asText());
-        //if(user instanceof Admin)--->exception handling
-        DataBase.getInstance().addProduct(json.get("title").asText(),json.get("description").asText(),
-                json.get("quantityAvailable").asInt(), json.get("price").asInt(),
-                json.get("category").asText());
+    public String addProduct(@RequestParam String title, @RequestParam String description, @RequestParam int quantityAvailable,
+                             @RequestParam int price, @RequestParam String category, HttpServletRequest request){
+        if (!Authentication.isLogin(request)) return "please login first";
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
+        DataBase.getInstance().addProduct(title, description, quantityAvailable, price, category);
+        return "The product has been successfully added.";
     }
 
     @GetMapping("/{id}")
@@ -32,7 +38,9 @@ public class ProductController {
     }
 
     @PostMapping("/rate")
-    public void rateProduct(@RequestBody ObjectNode json){
-        DataBase.getInstance().addRatingToProduct(json.get("productId").asLong(), json.get("rating").asInt());
+    public String rateProduct(@RequestParam long productId, @RequestParam int rating, HttpServletRequest request){
+        if (!Authentication.isLogin(request)) return "please login first";
+        DataBase.getInstance().addRatingToProduct(productId, rating);
+        return "The product has been successfully rated.";
     }
 }

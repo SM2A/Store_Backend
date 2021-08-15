@@ -10,7 +10,7 @@ public class Product {
     private long price;
     private Category category;
 
-    public Product(long id, String title, String description, int quantityAvailable, int price, String category) {
+    public Product(long id, String title, String description, int quantityAvailable, long price, String category) {
         this.ID = id;
         this.title = title;
         this.description = description;
