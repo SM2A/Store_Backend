@@ -3,16 +3,17 @@ package org.acm.store.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.Product;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 
-
+@Validated
 @RestController
 @RequestMapping("/products")
 public class ProductController {
+
     @GetMapping
-    public ArrayList<Product> getProducts(){
+    public ArrayList<Product> getProducts() {
         return DataBase.getInstance().getProducts();
     }
 
@@ -26,12 +27,12 @@ public class ProductController {
 //    }
 
     @GetMapping("/{id}")
-    public Product findProductById(@PathVariable("id") long id){
+    public Product findProductById(@PathVariable("id") long id) {
         return DataBase.getInstance().findProduct(id);
     }
 
     @PostMapping("/rate")
-    public void rateProduct(@RequestBody ObjectNode json){
+    public void rateProduct(@RequestBody ObjectNode json) {
         DataBase.getInstance().addRatingToProduct(json.get("productId").asLong(), json.get("rating").asInt());
     }
 }

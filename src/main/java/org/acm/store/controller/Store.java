@@ -6,6 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 
 /**
@@ -14,13 +16,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 
-@RestController
 @Validated
+@RestController
 public class Store {
 
     @GetMapping("/")
     public String homePage() {
-        DataBase.getInstance().addAdmin("admin","admin","admin","admin","007","admin");
+        DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin", "007", "admin");
         return "home page";
     }
 
@@ -31,9 +33,13 @@ public class Store {
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String password,
-                         @RequestParam String email, @RequestParam String phoneNumber, @RequestParam String address,
-                         HttpServletResponse response, HttpServletRequest request) {
+    public String signup(@RequestParam(required = false) @NotBlank @Valid String firstName,
+                         @RequestParam(required = false) @NotBlank @Valid String lastName,
+                         @RequestParam(required = false) @NotBlank @Valid String password,
+                         @RequestParam(required = false) @NotBlank @Valid String email,
+                         @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
+                         @RequestParam(required = false) @NotBlank @Valid String address,
+                         HttpServletResponse response, HttpServletRequest request) throws Exception{
         if (Authentication.isLogin(request)) return "please logout first";
         DataBase dataBase = DataBase.getInstance();
         if (Validation.isTaken(email, phoneNumber)) return "This email or phone-number is taken";
@@ -49,8 +55,9 @@ public class Store {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String password, @RequestParam String email, HttpServletResponse response,
-                        HttpServletRequest request) {
+    public String login(@RequestParam(required = false) @NotBlank @Valid String password,
+                        @RequestParam(required = false) @NotBlank @Valid String email, HttpServletResponse response,
+                        HttpServletRequest request) throws Exception{
         if (Authentication.isLogin(request)) return "please logout first";
         long ID = DataBase.getInstance().validateUserByID(email, password);
         if (ID != -1) {
@@ -75,9 +82,13 @@ public class Store {
     }
 
     @PostMapping("/add/admin")
-    public String addAdmin(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String password,
-                           @RequestParam String email, @RequestParam String phoneNumber, @RequestParam String address,
-                           HttpServletRequest request) {
+    public String addAdmin(@RequestParam(required = false) @NotBlank @Valid String firstName,
+                           @RequestParam(required = false) @NotBlank @Valid String lastName,
+                           @RequestParam(required = false) @NotBlank @Valid String password,
+                           @RequestParam(required = false) @NotBlank @Valid String email,
+                           @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
+                           @RequestParam(required = false) @NotBlank @Valid String address,
+                           HttpServletRequest request) throws Exception{
         if (!Authentication.isLogin(request)) return "please login first";
         if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
         if (Validation.isTaken(email, phoneNumber)) return "This email or phone-number is taken";
@@ -87,7 +98,7 @@ public class Store {
     }
 
     @PostMapping("purchase")
-    public String purchase(HttpServletRequest request){
+    public String purchase(HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -96,7 +107,8 @@ public class Store {
     }
 
     @PostMapping("/credit/add")
-    public String addCredit(@RequestParam long amount, HttpServletRequest request){
+    public String addCredit(@RequestParam(required = false) @NotBlank @Valid long amount,
+                            HttpServletRequest request) throws Exception{
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);

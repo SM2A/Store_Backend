@@ -8,17 +8,19 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.*;
 import com.google.gson.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
-
+@Validated
 @RestController
 @RequestMapping("/carts")
-
 public class CartController {
 
     @GetMapping
-    public String showUserCarts(HttpServletRequest request){
+    public String showUserCarts(HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -29,18 +31,20 @@ public class CartController {
 
     //hashmap to json?
     @GetMapping("/items")
-    public String showItemsInCurrentCart(HttpServletRequest request){
+    public String showItemsInCurrentCart(HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type gsonType = new TypeToken<HashMap>(){}.getType();
-        return gson.toJson(DataBase.getInstance().getItemsInOpenCart(user.getID()),gsonType);
+        Type gsonType = new TypeToken<HashMap>() {
+        }.getType();
+        return gson.toJson(DataBase.getInstance().getItemsInOpenCart(user.getID()), gsonType);
     }
 
 
     @PostMapping("/items/add")
-    public String addItemToCart(@RequestParam long productId, HttpServletRequest request){
+    public String addItemToCart(@RequestParam(required = false) @NotBlank @Valid long productId,
+                                HttpServletRequest request) throws Exception {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -51,7 +55,8 @@ public class CartController {
 
 
     @PostMapping("/items/subtract")
-    public String omitItemFromCart(@RequestParam long productId, HttpServletRequest request){
+    public String omitItemFromCart(@RequestParam(required = false) @NotBlank @Valid long productId,
+                                   HttpServletRequest request) throws Exception {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -62,7 +67,8 @@ public class CartController {
 
 
     @PostMapping("/items/delete")
-    public String deleteItemFromCart(@RequestParam long productId, HttpServletRequest request){
+    public String deleteItemFromCart(@RequestParam(required = false) @NotBlank @Valid long productId,
+                                     HttpServletRequest request) throws Exception {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -73,17 +79,21 @@ public class CartController {
 
 
     @PostMapping("/items/setq")
-    public String setItemQuantityInCart(@RequestParam long productId, @RequestParam int quantity, HttpServletRequest request){
+    public String setItemQuantityInCart(@RequestParam(required = false) @NotBlank @Valid long productId,
+                                        @RequestParam(required = false) @NotBlank @Valid int quantity,
+                                        HttpServletRequest request) throws Exception {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
         Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
-        DataBase.getInstance().setQuantityToAnItem(productId, cart.getID(),quantity);
-        if(quantity < 1)
+        DataBase.getInstance().setQuantityToAnItem(productId, cart.getID(), quantity);
+        if (quantity < 1)
             return "Quantity must be greater than zero!";
-        else if(quantity == 1)
-            return "One " + DataBase.getInstance().findProduct(productId).getTitle() + "has been successfully added to cart.";
+        else if (quantity == 1)
+            return "One " + DataBase.getInstance().findProduct(productId).getTitle() +
+                    "has been successfully added to cart.";
         else
-            return quantity + " " + DataBase.getInstance().findProduct(productId).getTitle() + "s have been successfully added to cart.";
+            return quantity + " " + DataBase.getInstance().findProduct(productId).getTitle() +
+                    "s have been successfully added to cart.";
     }
 }

@@ -64,6 +64,6 @@ public class Authentication {
             password = cookie[0].getValue();
         }
         DataBase dataBase = DataBase.getInstance();
-        return dataBase.findUser(dataBase.validateUserByID(email,password));
+        return dataBase.findUser(dataBase.validateUserByID(email, password));
     }
 }
