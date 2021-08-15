@@ -25,6 +25,7 @@ public class CommentController {
         DataBase.getInstance().addComment(user.getID(),json.get("productID").asLong(),json.get("text").asText());
     }
 
+
     @GetMapping("/{id}")
     public Comment showComment(@PathVariable("id") long id){
         return DataBase.getInstance().findCommentByID(id);
