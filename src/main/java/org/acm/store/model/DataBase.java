@@ -43,6 +43,15 @@ public class DataBase {
         return instance;
     }
 
+    public boolean isTaken(String email, String phoneNumber) {
+        for (Map.Entry<Long, User> user : users.entrySet()) {
+            if ((user.getValue().getEmail().equals(email)) || (user.getValue().getPhoneNumber().equals(phoneNumber))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
@@ -82,15 +91,6 @@ public class DataBase {
         return null;
     }
 
-    public boolean isTaken(String email, String phoneNumber) {
-        for (Map.Entry<Long, User> user : users.entrySet()) {
-            if ((user.getValue().getEmail().equals(email)) || (user.getValue().getPhoneNumber().equals(phoneNumber))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public User findUser(long ID) {
         return users.get(ID);
     }
@@ -123,6 +123,14 @@ public class DataBase {
         return commentHashMap;
     }
 
+    public ArrayList<Comment> getProductComments(long productId){
+        ArrayList<Comment> userComments = new ArrayList<>();
+        for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
+            if (entry.getValue().getProductID() == productId) userComments.add(entry.getValue());
+        }
+        return userComments;
+    }
+
     public void addRatingToProduct(long productID, int rating){
         products.get(productID).addRating(rating);
     }
@@ -150,7 +158,7 @@ public class DataBase {
         createCart(user.getID());
     }
 
-    public void addProduct(String title, String description, int quantityAvailable, int price, Category category) {
+    public void addProduct(String title, String description, int quantityAvailable, int price, String category) {
         long ID = ++lastProductID;
         products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
     }
@@ -200,11 +208,11 @@ public class DataBase {
     }
 
     public HashMap<Long, Integer> getItemsInOpenCart(long userId){
-        Cart cart = findOpenCartByUser(userId);
-        if(items.get(cart.getID()) != null){
-            return items.get(cart.getID());
-        }
-        return null;
+       Cart cart = findOpenCartByUser(userId);
+       if(items.get(cart.getID()) != null){
+           return items.get(cart.getID());
+       }
+       return null;
     }
 
 
