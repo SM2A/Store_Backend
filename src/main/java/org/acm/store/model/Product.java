@@ -1,7 +1,5 @@
 package org.acm.store.model;
 
-import java.util.Date;
-
 public class Product {
 
     private final long ID;
@@ -12,14 +10,20 @@ public class Product {
     private long price;
     private Category category;
 
-    public Product(long id, String title, String description, int quantityAvailable, int price, Category category) {
+    public Product(long id, String title, String description, int quantityAvailable, long price, String category) {
         this.ID = id;
         this.title = title;
         this.description = description;
         this.quantityAvailable = quantityAvailable;
         this.rating = 0;
         this.price = price;
-        this.category = category;
+        this.category = getCategoryByString(category);
+    }
+
+    private Category getCategoryByString(String category){
+        //if(category == "X")
+        return Category.X;
+        //for all categories...
     }
 
     public void takeFromStock(int quantity) {
@@ -30,7 +34,7 @@ public class Product {
         }
     }
 
-    public void addRating(int newRating) {
+    public void addRating(int newRating) {//rate function???
         if (newRating <= 5) {
             rating = (rating + newRating) / 2;
         }
