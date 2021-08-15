@@ -22,7 +22,7 @@ public class Product {
 
     private Category getCategoryByString(String category){
         //if(category == "X")
-        return Category.X;
+        return Category.valueOf(category);
         //for all categories...
     }
 
