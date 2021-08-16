@@ -1,6 +1,7 @@
 package org.acm.store.controller;
 
 import org.acm.store.controller.validation.Authentication;
+import org.acm.store.controller.validation.CustomException;
 import org.acm.store.controller.validation.Validation;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
@@ -44,7 +45,7 @@ public class Store {
                          HttpServletResponse response, HttpServletRequest request){
         if (Authentication.isLogin(request)) return "please logout first";
         DataBase dataBase = DataBase.getInstance();
-        if (Validation.isTaken(email, phoneNumber)) return "This email or phone-number is taken";
+        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
         Authentication.login(response, email, password);
         return String.valueOf(dataBase.validateUserByID(email, password));
@@ -93,7 +94,7 @@ public class Store {
                            HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "please login first";
         if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
-        if (Validation.isTaken(email, phoneNumber)) return "This email or phone-number is taken";
+        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         DataBase dataBase = DataBase.getInstance();
         dataBase.addAdmin(firstName, lastName, password, email, phoneNumber, address);
         return String.valueOf(dataBase.validateUserByID(email, password));
