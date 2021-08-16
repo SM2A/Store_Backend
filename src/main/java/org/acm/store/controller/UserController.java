@@ -2,6 +2,7 @@ package org.acm.store.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.acm.store.controller.validation.Authentication;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.springframework.validation.annotation.Validated;

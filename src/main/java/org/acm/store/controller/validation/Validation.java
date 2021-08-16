@@ -1,4 +1,4 @@
-package org.acm.store.controller;
+package org.acm.store.controller.validation;
 
 import org.acm.store.model.DataBase;
 

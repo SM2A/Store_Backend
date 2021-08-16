@@ -1,5 +1,7 @@
 package org.acm.store.controller;
 
+import org.acm.store.controller.validation.Authentication;
+import org.acm.store.controller.validation.Validation;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +41,7 @@ public class Store {
                          @RequestParam(required = false) @NotBlank @Valid String email,
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                          @RequestParam(required = false) @NotBlank @Valid String address,
-                         HttpServletResponse response, HttpServletRequest request) throws Exception{
+                         HttpServletResponse response, HttpServletRequest request){
         if (Authentication.isLogin(request)) return "please logout first";
         DataBase dataBase = DataBase.getInstance();
         if (Validation.isTaken(email, phoneNumber)) return "This email or phone-number is taken";
@@ -57,7 +59,7 @@ public class Store {
     @PostMapping("/login")
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
                         @RequestParam(required = false) @NotBlank @Valid String email, HttpServletResponse response,
-                        HttpServletRequest request) throws Exception{
+                        HttpServletRequest request) {
         if (Authentication.isLogin(request)) return "please logout first";
         long ID = DataBase.getInstance().validateUserByID(email, password);
         if (ID != -1) {
@@ -88,7 +90,7 @@ public class Store {
                            @RequestParam(required = false) @NotBlank @Valid String email,
                            @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                            @RequestParam(required = false) @NotBlank @Valid String address,
-                           HttpServletRequest request) throws Exception{
+                           HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "please login first";
         if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
         if (Validation.isTaken(email, phoneNumber)) return "This email or phone-number is taken";
@@ -108,7 +110,7 @@ public class Store {
 
     @PostMapping("/credit/add")
     public String addCredit(@RequestParam(required = false) @NotBlank @Valid long amount,
-                            HttpServletRequest request) throws Exception{
+                            HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);

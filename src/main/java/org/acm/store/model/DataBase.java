@@ -1,5 +1,7 @@
 package org.acm.store.model;
 
+import org.acm.store.controller.validation.CustomException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

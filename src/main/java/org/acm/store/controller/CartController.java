@@ -1,6 +1,7 @@
 package org.acm.store.controller;
 
 import com.google.gson.reflect.TypeToken;
+import org.acm.store.controller.validation.Authentication;
 import org.acm.store.model.Cart;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
@@ -44,7 +45,7 @@ public class CartController {
 
     @PostMapping("/items/add")
     public String addItemToCart(@RequestParam(required = false) @NotBlank @Valid long productId,
-                                HttpServletRequest request) throws Exception {
+                                HttpServletRequest request){
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -56,7 +57,7 @@ public class CartController {
 
     @PostMapping("/items/subtract")
     public String omitItemFromCart(@RequestParam(required = false) @NotBlank @Valid long productId,
-                                   HttpServletRequest request) throws Exception {
+                                   HttpServletRequest request){
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -68,7 +69,7 @@ public class CartController {
 
     @PostMapping("/items/delete")
     public String deleteItemFromCart(@RequestParam(required = false) @NotBlank @Valid long productId,
-                                     HttpServletRequest request) throws Exception {
+                                     HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -81,7 +82,7 @@ public class CartController {
     @PostMapping("/items/setq")
     public String setItemQuantityInCart(@RequestParam(required = false) @NotBlank @Valid long productId,
                                         @RequestParam(required = false) @NotBlank @Valid int quantity,
-                                        HttpServletRequest request) throws Exception {
+                                        HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);

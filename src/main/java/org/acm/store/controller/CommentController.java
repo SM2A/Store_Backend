@@ -2,12 +2,14 @@ package org.acm.store.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.acm.store.controller.validation.Authentication;
 import org.acm.store.model.Comment;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,13 +19,16 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
+
     @GetMapping
     public ArrayList<Comment> getComments(){
         return DataBase.getInstance().getAllComments();
     }
 
     @PostMapping("/add")
-    public String addComment(@RequestParam long productID, @RequestParam String text, HttpServletRequest request){
+    public String addComment(@RequestParam(required = false) @NotBlank @Valid long productID,
+                             @RequestParam(required = false) @NotBlank @Valid String text,
+                             HttpServletRequest request){
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
@@ -55,5 +60,4 @@ public class CommentController {
         DataBase.getInstance().dislikeComment(id);
         return "successfully disliked";
     }
-
 }

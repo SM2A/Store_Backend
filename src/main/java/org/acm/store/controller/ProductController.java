@@ -2,11 +2,13 @@ package org.acm.store.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.acm.store.controller.validation.Authentication;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.Product;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,8 +26,12 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@RequestParam String title, @RequestParam String description, @RequestParam int quantityAvailable,
-                             @RequestParam int price, @RequestParam String category, HttpServletRequest request){
+    public String addProduct(@RequestParam(required = false) @NotBlank @Valid String title,
+                             @RequestParam(required = false) @NotBlank @Valid String description,
+                             @RequestParam(required = false) @NotBlank @Valid int quantityAvailable,
+                             @RequestParam(required = false) @NotBlank @Valid int price,
+                             @RequestParam(required = false) @NotBlank @Valid String category,
+                             HttpServletRequest request){
         if (!Authentication.isLogin(request)) return "please login first";
         if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
         DataBase.getInstance().addProduct(title, description, quantityAvailable, price, category);
@@ -38,7 +44,9 @@ public class ProductController {
     }
 
     @PostMapping("/rate")
-    public String rateProduct(@RequestParam long productId, @RequestParam int rating, HttpServletRequest request){
+    public String rateProduct(@RequestParam(required = false) @NotBlank @Valid long productId,
+                              @RequestParam(required = false) @NotBlank @Valid int rating,
+                              HttpServletRequest request){
         if (!Authentication.isLogin(request)) return "please login first";
         DataBase.getInstance().addRatingToProduct(productId, rating);
         return "The product has been successfully rated.";
