@@ -6,6 +6,7 @@ import org.acm.store.controller.validation.Authentication;
 import org.acm.store.model.Comment;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+@Validated
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
@@ -26,13 +27,13 @@ public class CommentController {
     }
 
     @PostMapping("/add")
-    public String addComment(@RequestParam(required = false) @NotBlank @Valid long productID,
+    public String addComment(@RequestParam(required = false) @NotBlank @Valid String productID,
                              @RequestParam(required = false) @NotBlank @Valid String text,
                              HttpServletRequest request){
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
-        DataBase.getInstance().addComment(user.getID(), productID, text);
+        DataBase.getInstance().addComment(user.getID(), Long.parseLong(productID), text);
         return "Your comment has been successfully added.";
     }
 

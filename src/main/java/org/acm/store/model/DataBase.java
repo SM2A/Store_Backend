@@ -1,11 +1,10 @@
 package org.acm.store.model;
 
-import org.acm.store.controller.validation.CustomException;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
+
+import org.acm.store.controller.validation.CustomException;
 
 /**
  * Created by SM2A
@@ -32,10 +31,6 @@ public class DataBase {
         lastCommentID = 0;
         lastProductID = 0;
         lastUserID = 0;
-    }
-
-    public ArrayList<User> getUsers(){
-        return new ArrayList<>(users.values());
     }
 
     public static DataBase getInstance() {
@@ -67,11 +62,11 @@ public class DataBase {
         users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
     }
 
-    public Comment findCommentByID(long id){
+    public Comment findCommentByID(long id) {
         return comments.get(id);
     }
 
-    public ArrayList<Comment> getAllComments(){
+    public ArrayList<Comment> getAllComments() {
         return new ArrayList<>(comments.values());
     }
 
@@ -105,6 +100,10 @@ public class DataBase {
         return cartHashMap;
     }
 
+    public ArrayList<User> getUsers() {
+        return new ArrayList<>(users.values());
+    }
+
     public ArrayList<Cart> showUserCarts(long userID) {
         HashMap<Long, Cart> cartHashMap = new HashMap<>();
         for (Map.Entry<Long, Cart> entry : carts.entrySet()) {
@@ -113,7 +112,7 @@ public class DataBase {
         return new ArrayList<>(cartHashMap.values());
     }
 
-    public ArrayList<Product> getProducts(){
+    public ArrayList<Product> getProducts() {
         return new ArrayList<>(products.values());
     }
 
@@ -125,7 +124,7 @@ public class DataBase {
         return commentHashMap;
     }
 
-    public ArrayList<Comment> getProductComments(long productId){
+    public ArrayList<Comment> getProductComments(long productId) {
         ArrayList<Comment> userComments = new ArrayList<>();
         for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
             if (entry.getValue().getProductID() == productId) userComments.add(entry.getValue());
@@ -133,11 +132,13 @@ public class DataBase {
         return userComments;
     }
 
-    public void addRatingToProduct(long productID, int rating){
+    public void addRatingToProduct(long productID, int rating) {
+        if ((rating > 5) || (rating < 0)) throw new CustomException("Enter correct number");
         products.get(productID).addRating(rating);
     }
 
     public void addCredit(long ID, long amount) {
+        if (amount <= 0) throw new CustomException("Enter correct amount");
         Costumer user = (Costumer) users.get(ID);
         user.addCredit(amount);
     }
@@ -149,10 +150,10 @@ public class DataBase {
             if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
         }
         if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
-            //exception handling: not enough credit
-            return;
+            throw new CustomException("Not enough credit");
         }
         for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
+            //todo maybe quantities changed
             entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
         }
         user.purchase(cartPrice(cart.getID()));
@@ -200,7 +201,7 @@ public class DataBase {
         items.put(ID, new HashMap<>());
     }
 
-    public Cart findOpenCartByUser(long userId){
+    public Cart findOpenCartByUser(long userId) {
         for (Map.Entry<Long, Cart> cart : carts.entrySet()) {
             if ((cart.getValue().getUserID() == userId) && (cart.getValue().getStatus() == Status.OPEN)) {
                 return cart.getValue();
@@ -209,12 +210,12 @@ public class DataBase {
         return null;
     }
 
-    public HashMap<Long, Integer> getItemsInOpenCart(long userId){
-       Cart cart = findOpenCartByUser(userId);
-       if(items.get(cart.getID()) != null){
-           return items.get(cart.getID());
-       }
-       return null;
+    public HashMap<Long, Integer> getItemsInOpenCart(long userId) {
+        Cart cart = findOpenCartByUser(userId);
+        if (items.get(cart.getID()) != null) {
+            return items.get(cart.getID());
+        }
+        return null;
     }
 
 
@@ -232,21 +233,24 @@ public class DataBase {
 
 
     public void addItem(long cartID, long productID) {
+        if (findProduct(productID).getQuantityAvailable() <= 0)
+            throw new CustomException("Not enough quantity");
         if (getCartItems(cartID).containsKey(findProduct(productID))) {
-            items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
-        }
-        else{
-            items.get(cartID).put(productID,1);
+            increaseItem(productID, cartID);
+        } else {
+            items.get(cartID).put(productID, 1);
         }
     }
 
     public void deleteItem(long productID, long cartID) {
-        if(items.get(cartID) != null) {
+        if (items.get(cartID) != null) {
             items.get(cartID).remove(productID);
         }
     }
 
     public void increaseItem(long productID, long cartID) {
+        if (findProduct(productID).getQuantityAvailable() == items.get(cartID).get(productID))
+            throw new CustomException("Not enough quantity");
         items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
     }
 
@@ -255,21 +259,20 @@ public class DataBase {
         else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
     }
 
-    public void setQuantityToAnItem(long productID, long cartID, int quantity){
-        if(quantity <= 0) deleteItem(productID, cartID);
-        else{
+    public void setQuantityToAnItem(long productID, long cartID, int quantity) {
+        if (quantity <= 0) deleteItem(productID, cartID);
+        else {
             if (getCartItems(cartID).containsKey(findProduct(productID))) {
                 items.get(cartID).replace(productID, quantity);
-            }
-            else{
-                items.get(cartID).put(productID,quantity);
+            } else {
+                items.get(cartID).put(productID, quantity);
             }
         }
     }
 
     public HashMap<Product, Integer> getCartItems(long cartID) {
         HashMap<Product, Integer> itemsHashMap = new HashMap<>();
-        if(items.get(cartID) == null){
+        if (items.get(cartID) == null) {
             return null;
         }
         for (Map.Entry<Long, Integer> entry : items.get(cartID).entrySet()) {

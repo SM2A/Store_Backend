@@ -109,12 +109,12 @@ public class Store {
     }
 
     @PostMapping("/credit/add")
-    public String addCredit(@RequestParam(required = false) @NotBlank @Valid long amount,
+    public String addCredit(@RequestParam(required = false) @NotBlank @Valid String amount,
                             HttpServletRequest request) {
         if (!Authentication.isLogin(request)) return "Please login first";
         if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
         User user = Authentication.loggedInUser(request);
-        DataBase.getInstance().addCredit(user.getID(), amount);
+        DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
         return "Successful payment.";
     }
 }

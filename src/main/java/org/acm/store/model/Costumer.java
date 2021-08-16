@@ -1,5 +1,7 @@
 package org.acm.store.model;
 
+import org.acm.store.controller.validation.CustomException;
+
 /**
  * Created by SM2A
  * Seyed Mohammad Amin Atyabi
@@ -27,8 +29,10 @@ public class Costumer extends User{
     }
 
     public void purchase(long totalPrice) {
-        if (credit < totalPrice)
+        if (credit < totalPrice) {
             System.out.println("Insufficient Funds!");
+            throw new CustomException("Insufficient Funds!");
+        }
         else
             credit -= totalPrice;
     }
