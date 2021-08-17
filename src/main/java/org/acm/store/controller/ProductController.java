@@ -1,7 +1,5 @@
 package org.acm.store.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
 import org.acm.store.model.DataBase;
@@ -11,9 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
 
 @Validated
 @RestController
@@ -21,10 +17,8 @@ import java.util.stream.Stream;
 public class ProductController {
 
     @GetMapping
-    public String getProducts(){
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        List list = Stream.of(DataBase.getInstance().getProducts()).collect(Collectors.toList());
-        return gson.toJson(list);
+    public ArrayList<Product> getProducts(){
+        return DataBase.getInstance().getProducts();
     }
 
     @PostMapping("/add")
@@ -35,8 +29,7 @@ public class ProductController {
                              @RequestParam(required = false) @NotBlank @Valid String category,
                              HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("You dont have permission");
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) throw new CustomException("You dont have permission");
         DataBase.getInstance().addProduct(title, description, Integer.parseInt(quantityAvailable),
                 Integer.parseInt(price), category);
         return "The product has been successfully added.";
@@ -44,6 +37,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public Product findProductById(@PathVariable("id") long id){
+        if(DataBase.getInstance().findProduct(id) == null) throw new CustomException("Product Id Doesn't Exist.");
         return DataBase.getInstance().findProduct(id);
     }
 
@@ -52,6 +46,7 @@ public class ProductController {
                               @RequestParam(required = false) @NotBlank @Valid String rating,
                               HttpServletRequest request){
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+        if(DataBase.getInstance().findProduct(Long.parseLong(productId)) == null) throw new CustomException("Product Id Doesn't Exist.");
         DataBase.getInstance().addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
         return "The product has been successfully rated.";
     }

@@ -1,7 +1,5 @@
 package org.acm.store.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
 import org.acm.store.model.Comment;
@@ -13,9 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Validated
 @RestController
@@ -31,37 +26,34 @@ public class CommentController {
     public String addComment(@RequestParam(required = false) @NotBlank @Valid String productID,
                              @RequestParam(required = false) @NotBlank @Valid String text,
                              HttpServletRequest request){
-        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+        if (Authentication.isAdmin(Authentication.loggedInUser(request))) throw new CustomException("Make sure you are a costumer");
+        if(DataBase.getInstance().findProduct(Long.parseLong(productID)) == null) throw new CustomException("Product Id Doesn't Exist.");
         User user = Authentication.loggedInUser(request);
         DataBase.getInstance().addComment(user.getID(), Long.parseLong(productID), text);
         return "Your comment has been successfully added.";
     }
 
     @GetMapping("/{productId}")
-    public String showProductComments(@PathVariable("productId") long productId){
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        List list = Stream.of(DataBase.getInstance().getProductComments(productId)).collect(Collectors.toList());
-        return gson.toJson(list);
+    public ArrayList<Comment> showProductComments(@PathVariable("productId") long productId){
+        if(DataBase.getInstance().findProduct(productId) == null) throw new CustomException("Product Id Doesn't Exist.");
+        return DataBase.getInstance().getProductComments(productId);
     }
 
     @PostMapping("/{id}/like")
     public String likeComment(@PathVariable("id") long id, HttpServletRequest request){
-        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
-        //exception handling comment id doesn't exist
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+        if (Authentication.isAdmin(Authentication.loggedInUser(request))) throw new CustomException("Make sure you are a costumer");
+        if (DataBase.getInstance().findComment(id) == null) throw new CustomException("Comment Id Doesn't Exist.");
         DataBase.getInstance().likeComment(id);
         return "successfully liked";
     }
 
     @PostMapping("/{id}/dislike")
     public String dislikeComment(@PathVariable("id") long id, HttpServletRequest request){
-        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
-        //exception handling comment id doesn't exist
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+        if (Authentication.isAdmin(Authentication.loggedInUser(request))) throw new CustomException("Make sure you are a costumer");
+        if (DataBase.getInstance().findComment(id) == null) throw new CustomException("Comment Id Doesn't Exist.");
         DataBase.getInstance().dislikeComment(id);
         return "successfully disliked";
     }
