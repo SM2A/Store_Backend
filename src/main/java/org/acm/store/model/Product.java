@@ -1,8 +1,8 @@
 package org.acm.store.model;
 
-import java.util.Date;
+import org.acm.store.controller.validation.CustomException;
 
-class Product {
+public class Product {
 
     private final long ID;
     private String title;
@@ -12,14 +12,20 @@ class Product {
     private long price;
     private Category category;
 
-    public Product(long id, String title, String description, int quantityAvailable, int price, Category category) {
+    public Product(long id, String title, String description, int quantityAvailable, long price, String category) {
         this.ID = id;
         this.title = title;
         this.description = description;
         this.quantityAvailable = quantityAvailable;
         this.rating = 0;
         this.price = price;
-        this.category = category;
+        this.category = getCategoryByString(category);
+    }
+
+    private Category getCategoryByString(String category) {
+        //if(category == "X")
+        return Category.valueOf(category);
+        //for all categories...
     }
 
     public void takeFromStock(int quantity) {
@@ -27,16 +33,18 @@ class Product {
             quantityAvailable -= quantity;
         } else {
             System.out.println("ERROR! Out Of Stock.");
+            throw new CustomException("ERROR! Out Of Stock.");
         }
     }
 
-    public void addRating(int newRating) {
+    public void addRating(int newRating) {//rate function???
         if (newRating <= 5) {
             rating = (rating + newRating) / 2;
         }
     }
 
     public void addToStock(int quantity) {
+        if (quantity <= 0) throw new CustomException("Enter correct amount");
         quantityAvailable += quantity;
     }
 
@@ -51,7 +59,7 @@ class Product {
     public String getDescription() {
         return description;
     }
-    
+
     public int getQuantityAvailable() {
         return quantityAvailable;
     }

@@ -2,6 +2,9 @@ package org.acm.store.model;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
+
+import org.acm.store.controller.validation.CustomException;
 
 /**
  * Created by SM2A
@@ -37,7 +40,16 @@ public class DataBase {
         return instance;
     }
 
-    public void addCustomer(String firstName, String lastName, String password,
+    public boolean isTaken(String email, String phoneNumber) {
+        for (Map.Entry<Long, User> user : users.entrySet()) {
+            if ((user.getValue().getEmail().equals(email)) || (user.getValue().getPhoneNumber().equals(phoneNumber))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
         users.put(ID, new Costumer(ID, firstName, lastName, password, email, phoneNumber, address));
@@ -50,7 +62,15 @@ public class DataBase {
         users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
     }
 
-    public long validateUser(String email, String password) {
+    public Comment findCommentByID(long id) {
+        return comments.get(id);
+    }
+
+    public ArrayList<Comment> getAllComments() {
+        return new ArrayList<>(comments.values());
+    }
+
+    public long validateUserByID(String email, String password) {
         for (Map.Entry<Long, User> user : users.entrySet()) {
             if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
                 return user.getKey();
@@ -59,7 +79,18 @@ public class DataBase {
         return -1;
     }
 
+    public User validateUser(String email, String password) {
+        for (Map.Entry<Long, User> user : users.entrySet()) {
+            if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
+                return user.getValue();
+            }
+        }
+        return null;
+    }
+
     public User findUser(long ID) {
+        if(!users.containsKey(ID))
+            throw new CustomException("User not found.");
         return users.get(ID);
     }
 
@@ -71,6 +102,22 @@ public class DataBase {
         return cartHashMap;
     }
 
+    public ArrayList<User> getUsers() {
+        return new ArrayList<>(users.values());
+    }
+
+    public ArrayList<Cart> showUserCarts(long userID) {
+        HashMap<Long, Cart> cartHashMap = new HashMap<>();
+        for (Map.Entry<Long, Cart> entry : carts.entrySet()) {
+            if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(), entry.getValue());
+        }
+        return new ArrayList<>(cartHashMap.values());
+    }
+
+    public ArrayList<Product> getProducts() {
+        return new ArrayList<>(products.values());
+    }
+
     public HashMap<Long, Comment> getUserComments(long userID) {
         HashMap<Long, Comment> commentHashMap = new HashMap<>();
         for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
@@ -79,35 +126,56 @@ public class DataBase {
         return commentHashMap;
     }
 
+    public ArrayList<Comment> getProductComments(long productId) {
+        ArrayList<Comment> userComments = new ArrayList<>();
+        for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
+            if (entry.getValue().getProductID() == productId) userComments.add(entry.getValue());
+        }
+        return userComments;
+    }
+
+    public void addRatingToProduct(long productID, int rating) {
+        if ((rating > 5) || (rating < 0)) throw new CustomException("Enter correct number");
+        products.get(productID).addRating(rating);
+    }
+
     public void addCredit(long ID, long amount) {
+        if (amount <= 0) throw new CustomException("Enter correct amount");
         Costumer user = (Costumer) users.get(ID);
         user.addCredit(amount);
     }
 
-    public void purchase(long ID) {
-        Costumer user = (Costumer) users.get(ID);
+    public void purchase(long userId) {
+        Costumer user = (Costumer) users.get(userId);
         Cart cart = null;
-        for (Map.Entry<Long, Cart> entry : getUserCarts(ID).entrySet()) {
+        for (Map.Entry<Long, Cart> entry : getUserCarts(userId).entrySet()) {
             if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
         }
+        if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
+            throw new CustomException("Not enough credit");
+        }
         for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
-            decreaseItem(entry.getKey().getID(), entry.getValue());
+            //todo maybe quantities changed
+            entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
         }
         user.purchase(cartPrice(cart.getID()));
         cart.setStatus(Status.CLOSED);
+        createCart(user.getID());
     }
 
-    public void addProduct(String title, String description, int quantityAvailable, int price, Category category) {
-        long ID = ++lastProductID;
-        products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
+    public void addProduct(String title, String description, int quantityAvailable, int price, String category) {
+        if(getExistedProduct(title, category) != null){
+            Product product = getExistedProduct(title, category);
+            product.addToStock(quantityAvailable);
+        }
+        else {
+            long ID = ++lastProductID;
+            products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
+        }
     }
 
     public Product findProduct(long ID) {
         return products.get(ID);
-    }
-
-    private void decreaseQuantity(long productID, int count) {
-        products.get(productID).setQuantityAvailable(products.get(productID).getQuantityAvailable() - count);
     }
 
     public void updateProduct() {
@@ -135,11 +203,29 @@ public class DataBase {
         comments.remove(ID);
     }
 
-    private void createCart(long userID) {
+    public void createCart(long userID) {
         long ID = ++lastCartID;
-        carts.put(ID, new Cart(userID));
+        carts.put(ID, new Cart(ID, userID));
         items.put(ID, new HashMap<>());
     }
+
+    public Cart findOpenCartByUser(long userId) {
+        for (Map.Entry<Long, Cart> cart : carts.entrySet()) {
+            if ((cart.getValue().getUserID() == userId) && (cart.getValue().getStatus() == Status.OPEN)) {
+                return cart.getValue();
+            }
+        }
+        return null;
+    }
+
+    public HashMap<Long, Integer> getItemsInOpenCart(long userId) {
+        Cart cart = findOpenCartByUser(userId);
+        if (items.get(cart.getID()) != null) {
+            return items.get(cart.getID());
+        }
+        return null;
+    }
+
 
     public Cart findCart(long ID) {
         return carts.get(ID);
@@ -153,21 +239,43 @@ public class DataBase {
         return price;
     }
 
+
     public void addItem(long cartID, long productID) {
-        items.get(cartID).put(productID, 1);
+        if (findProduct(productID).getQuantityAvailable() <= 0)
+            throw new CustomException("Not enough quantity");
+        if (getCartItems(cartID).containsKey(findProduct(productID))) {
+            increaseItem(productID, cartID);
+        } else {
+            items.get(cartID).put(productID, 1);
+        }
     }
 
     public void deleteItem(long productID, long cartID) {
+        if(!items.get(cartID).containsKey(productID))
+            throw  new CustomException("Your cart doesn't contain item with id: " + productID);
         items.get(cartID).remove(productID);
     }
 
     public void increaseItem(long productID, long cartID) {
+        if (findProduct(productID).getQuantityAvailable() <= items.get(cartID).get(productID))
+            throw new CustomException("Not enough quantity");
         items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
     }
 
     public void decreaseItem(long productID, long cartID) {
+        if(!items.get(cartID).containsKey(productID))
+            throw  new CustomException("Your cart doesn't contain item with id: " + productID);
         if (items.get(cartID).get(productID) == 1) deleteItem(productID, cartID);
         else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
+    }
+
+    public void setQuantityToAnItem(long productID, long cartID, int quantity) {
+        if(findProduct(productID).getQuantityAvailable() < quantity)
+            throw new CustomException("Not enough quantity");
+        if (getCartItems(cartID).containsKey(findProduct(productID)))
+            items.get(cartID).replace(productID, quantity);
+        else
+            items.get(cartID).put(productID, quantity);
     }
 
     public HashMap<Product, Integer> getCartItems(long cartID) {
@@ -176,5 +284,15 @@ public class DataBase {
             itemsHashMap.put(findProduct(entry.getKey()), entry.getValue());
         }
         return itemsHashMap;
+    }
+
+    public Product getExistedProduct(String title, String category){
+        for (Map.Entry<Long, Product> entry : products.entrySet()){
+            if (entry.getValue().getTitle().equals(title) &&
+                    entry.getValue().getCategory() == Category.valueOf(category)){
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 }

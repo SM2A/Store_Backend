@@ -1,0 +1,164 @@
+###
+GET http://localhost:8080/logout
+
+###
+GET http://localhost:8080/
+
+###
+POST http://localhost:8080/signup
+Content-Type: application/x-www-form-urlencoded
+
+firstName=a&lastName=a&password=a&email=a_&phoneNumber=1&address=tehran
+
+###
+GET http://localhost:8080/logout
+
+###
+POST http://localhost:8080/signup
+Content-Type: application/x-www-form-urlencoded
+
+firstName=b&lastName=b&password=b&email=b_&phoneNumber=2&address=tehran
+
+###
+GET http://localhost:8080/logout
+
+###
+POST http://localhost:8080/signup
+Content-Type: application/x-www-form-urlencoded
+
+firstName=c&lastName=c&password=c&email=c_&phoneNumber=3&address=tehran
+
+###
+GET http://localhost:8080/logout
+
+###
+POST http://localhost:8080/signup
+Content-Type: application/x-www-form-urlencoded
+
+firstName=d&lastName=d&password=d&email=d_&phoneNumber=4&address=tehran
+
+###
+GET http://localhost:8080/logout
+
+###
+POST http://localhost:8080/signup
+Content-Type: application/x-www-form-urlencoded
+
+firstName=e&lastName=e&password=e&email=e_&phoneNumber=5&address=tehran
+
+###
+GET http://localhost:8080/logout
+
+###
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+password=admin&email=admin
+
+###
+GET http://localhost:8080/users
+
+###
+GET http://localhost:8080/users/1
+
+###
+GET http://localhost:8080/users/2
+
+###
+POST http://localhost:8080/products/add
+Content-Type: application/x-www-form-urlencoded
+
+title=milk&description=milk&quantityAvailable=10&price=13000&category=Dairy
+
+###
+POST http://localhost:8080/products/add
+Content-Type: application/x-www-form-urlencoded
+
+title=butter&description=butter&quantityAvailable=3&price=5000&category=Dairy
+
+###
+POST http://localhost:8080/products/add
+Content-Type: application/x-www-form-urlencoded
+
+title=cheese&description=cheese&quantityAvailable=5&price=25000&category=Dairy
+
+###
+GET http://localhost:8080/products
+
+###
+GET http://localhost:8080/products/3
+
+###
+GET http://localhost:8080/logout
+
+###
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+password=a&email=a_
+
+###
+POST http://localhost:8080/carts/items/add
+Content-Type: application/x-www-form-urlencoded
+
+productId=1
+
+###
+POST http://localhost:8080/credit/add
+Content-Type: application/x-www-form-urlencoded
+
+amount=100000
+
+###
+POST http://localhost:8080/carts/items/add
+Content-Type: application/x-www-form-urlencoded
+
+productId=1
+
+###
+POST http://localhost:8080/purchase
+
+###
+POST http://localhost:8080/carts/items/add
+Content-Type: application/x-www-form-urlencoded
+
+productId=3
+
+###
+GET http://localhost:8080/carts
+
+###
+GET http://localhost:8080/carts/items
+
+###
+GET http://localhost:8080/logout
+
+###
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+password=b&email=b_
+
+###
+GET http://localhost:8080/users/profile
+
+###
+GET http://localhost:8080/products
+
+###
+POST http://localhost:8080/comments/add
+Content-Type: application/x-www-form-urlencoded
+
+productID=3&text=Very_good
+
+###
+POST http://localhost:8080/comments/add
+Content-Type: application/x-www-form-urlencoded
+
+productID=1&text=Very_bad
+
+###
+GET http://localhost:8080/comments
+
+###
+GET http://localhost:8080/comments/3

@@ -2,16 +2,17 @@ package org.acm.store.model;
 
 import java.util.Date;
 
-class Cart {
+public class Cart {
 
-    private long ID;
+    private final long ID;
     private Status status;
     private long userID;
     private Date purchaseDate;
 
-    public Cart(long userID) {
+    public Cart(long ID,long userID) {
         this.status = Status.OPEN;
         this.userID = userID;
+        this.ID = ID;
     }
 
     public long getID() {
@@ -40,5 +41,10 @@ class Cart {
 
     public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
+    }
+
+    public void purchase(){
+        purchaseDate = new Date();
+        purchaseDate.getTime();
     }
 }
