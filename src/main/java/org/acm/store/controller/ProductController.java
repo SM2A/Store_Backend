@@ -3,6 +3,7 @@ package org.acm.store.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.acm.store.controller.validation.Authentication;
+import org.acm.store.controller.validation.CustomException;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.Product;
 import org.springframework.validation.annotation.Validated;
@@ -33,8 +34,9 @@ public class ProductController {
                              @RequestParam(required = false) @NotBlank @Valid String price,
                              @RequestParam(required = false) @NotBlank @Valid String category,
                              HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "please login first";
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("You dont have permission");
         DataBase.getInstance().addProduct(title, description, Integer.parseInt(quantityAvailable),
                 Integer.parseInt(price), category);
         return "The product has been successfully added.";
@@ -49,7 +51,7 @@ public class ProductController {
     public String rateProduct(@RequestParam(required = false) @NotBlank @Valid String productId,
                               @RequestParam(required = false) @NotBlank @Valid String rating,
                               HttpServletRequest request){
-        if (!Authentication.isLogin(request)) return "please login first";
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         DataBase.getInstance().addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
         return "The product has been successfully rated.";
     }
