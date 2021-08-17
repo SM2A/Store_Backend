@@ -29,7 +29,8 @@ public class ProductController {
                              @RequestParam(required = false) @NotBlank @Valid String category,
                              HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) throw new CustomException("You dont have permission");
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("You dont have permission");
         DataBase.getInstance().addProduct(title, description, Integer.parseInt(quantityAvailable),
                 Integer.parseInt(price), category);
         return "The product has been successfully added.";
@@ -46,7 +47,8 @@ public class ProductController {
                               @RequestParam(required = false) @NotBlank @Valid String rating,
                               HttpServletRequest request){
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if(DataBase.getInstance().findProduct(Long.parseLong(productId)) == null) throw new CustomException("Product Id Doesn't Exist.");
+        if(DataBase.getInstance().findProduct(Long.parseLong(productId)) == null)
+            throw new CustomException("Product Id Doesn't Exist.");
         DataBase.getInstance().addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
         return "The product has been successfully rated.";
     }
