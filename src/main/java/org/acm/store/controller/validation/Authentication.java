@@ -6,6 +6,8 @@ import org.acm.store.model.Admin;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by SM2A
@@ -19,8 +21,8 @@ public class Authentication {
     }
 
     public static void login(HttpServletResponse response, String email, String password) {
-        Cookie emailCookie = new Cookie("email", email);
-        Cookie passwordCookie = new Cookie("password", password);
+        Cookie emailCookie = new Cookie("email", URLEncoder.encode(email, StandardCharsets.UTF_8));
+        Cookie passwordCookie = new Cookie("password", URLEncoder.encode(password, StandardCharsets.UTF_8));
         response.addCookie(emailCookie);
         response.addCookie(passwordCookie);
     }

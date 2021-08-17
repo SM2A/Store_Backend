@@ -31,7 +31,7 @@ public class Store {
 
     @GetMapping("/signup")
     public String signupPage(HttpServletRequest request) {
-        if (Authentication.isLogin(request)) return "please logout first";
+        if (Authentication.isLogin(request)) throw new CustomException("please logout first");
         return "signup page";
     }
 
@@ -43,7 +43,7 @@ public class Store {
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                          @RequestParam(required = false) @NotBlank @Valid String address,
                          HttpServletResponse response, HttpServletRequest request){
-        if (Authentication.isLogin(request)) return "please logout first";
+        if (Authentication.isLogin(request)) throw new CustomException("please logout first");
         DataBase dataBase = DataBase.getInstance();
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
@@ -53,7 +53,7 @@ public class Store {
 
     @GetMapping("/login")
     public String loginPage(HttpServletRequest request) {
-        if (Authentication.isLogin(request)) return "please logout first";
+        if (Authentication.isLogin(request)) throw new CustomException("please logout first");
         return "login page";
     }
 
@@ -61,7 +61,7 @@ public class Store {
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
                         @RequestParam(required = false) @NotBlank @Valid String email, HttpServletResponse response,
                         HttpServletRequest request) {
-        if (Authentication.isLogin(request)) return "please logout first";
+        if (Authentication.isLogin(request)) throw new CustomException("please logout first");
         long ID = DataBase.getInstance().validateUserByID(email, password);
         if (ID != -1) {
             Authentication.login(response, email, password);
@@ -71,7 +71,7 @@ public class Store {
 
     @GetMapping("/logout")
     public String logout(HttpServletResponse response, HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "please login first";
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         User user = Authentication.loggedInUser(request);
         Authentication.logout(response);
         return "goodbye " + user.getFirstName();
@@ -79,8 +79,9 @@ public class Store {
 
     @GetMapping("/add/admin")
     public String addAdminPage(HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "please login first";
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("You dont have permission");
         return "add admin page";
     }
 
@@ -92,8 +93,9 @@ public class Store {
                            @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                            @RequestParam(required = false) @NotBlank @Valid String address,
                            HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "please login first";
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
+        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("You dont have permission");
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         DataBase dataBase = DataBase.getInstance();
         dataBase.addAdmin(firstName, lastName, password, email, phoneNumber, address);
@@ -102,8 +104,9 @@ public class Store {
 
     @PostMapping("purchase")
     public String purchase(HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "Please login first";
-        if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
+        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
+        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(request);
         DataBase.getInstance().purchase(user.getID());
         return "Thank you for your order";
@@ -112,8 +115,9 @@ public class Store {
     @PostMapping("/credit/add")
     public String addCredit(@RequestParam(required = false) @NotBlank @Valid String amount,
                             HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "Please login first";
-        if (Authentication.isAdmin(Authentication.loggedInUser(request))) return "Make sure you are a costumer";
+        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
+        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(request);
         DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
         return "Successful payment.";

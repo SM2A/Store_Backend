@@ -42,4 +42,9 @@ public class Cart {
     public void setPurchaseDate(Date purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
+
+    public void purchase(){
+        purchaseDate = new Date();
+        purchaseDate.getTime();
+    }
 }
