@@ -1,6 +1,5 @@
 package org.acm.store.model;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -165,8 +164,14 @@ public class DataBase {
     }
 
     public void addProduct(String title, String description, int quantityAvailable, int price, String category) {
-        long ID = ++lastProductID;
-        products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
+        if(getExistedProduct(title, category) != null){
+            Product product = getExistedProduct(title, category);
+            product.addToStock(quantityAvailable);
+        }
+        else {
+            long ID = ++lastProductID;
+            products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
+        }
     }
 
     public Product findProduct(long ID) {
@@ -279,5 +284,15 @@ public class DataBase {
             itemsHashMap.put(findProduct(entry.getKey()), entry.getValue());
         }
         return itemsHashMap;
+    }
+
+    public Product getExistedProduct(String title, String category){
+        for (Map.Entry<Long, Product> entry : products.entrySet()){
+            if (entry.getValue().getTitle().equals(title) &&
+                    entry.getValue().getCategory() == Category.valueOf(category)){
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 }
