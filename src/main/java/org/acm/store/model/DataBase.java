@@ -89,6 +89,8 @@ public class DataBase {
     }
 
     public User findUser(long ID) {
+        if(!users.containsKey(ID))
+            throw new CustomException("User not found.");
         return users.get(ID);
     }
 
@@ -243,38 +245,35 @@ public class DataBase {
     }
 
     public void deleteItem(long productID, long cartID) {
-        if (items.get(cartID) != null) {
-            items.get(cartID).remove(productID);
-        }
+        if(!items.get(cartID).containsKey(productID))
+            throw  new CustomException("Your cart doesn't contain item with id: " + productID);
+        items.get(cartID).remove(productID);
     }
 
     public void increaseItem(long productID, long cartID) {
-        if (findProduct(productID).getQuantityAvailable() == items.get(cartID).get(productID))
+        if (findProduct(productID).getQuantityAvailable() <= items.get(cartID).get(productID))
             throw new CustomException("Not enough quantity");
         items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
     }
 
     public void decreaseItem(long productID, long cartID) {
+        if(!items.get(cartID).containsKey(productID))
+            throw  new CustomException("Your cart doesn't contain item with id: " + productID);
         if (items.get(cartID).get(productID) == 1) deleteItem(productID, cartID);
         else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
     }
 
     public void setQuantityToAnItem(long productID, long cartID, int quantity) {
-        if (quantity <= 0) deleteItem(productID, cartID);
-        else {
-            if (getCartItems(cartID).containsKey(findProduct(productID))) {
-                items.get(cartID).replace(productID, quantity);
-            } else {
-                items.get(cartID).put(productID, quantity);
-            }
-        }
+        if(findProduct(productID).getQuantityAvailable() < quantity)
+            throw new CustomException("Not enough quantity");
+        if (getCartItems(cartID).containsKey(findProduct(productID)))
+            items.get(cartID).replace(productID, quantity);
+        else
+            items.get(cartID).put(productID, quantity);
     }
 
     public HashMap<Product, Integer> getCartItems(long cartID) {
         HashMap<Product, Integer> itemsHashMap = new HashMap<>();
-        if (items.get(cartID) == null) {
-            return null;
-        }
         for (Map.Entry<Long, Integer> entry : items.get(cartID).entrySet()) {
             itemsHashMap.put(findProduct(entry.getKey()), entry.getValue());
         }

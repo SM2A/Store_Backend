@@ -1,16 +1,15 @@
 package org.acm.store.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import org.acm.store.controller.validation.Authentication;
+import org.acm.store.controller.validation.CustomException;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+
 
 @Validated
 @RestController
@@ -18,34 +17,29 @@ import java.util.stream.Stream;
 public class UserController {
 
     @GetMapping
-    public String getUsers(HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "please login first";
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        List list = Stream.of(DataBase.getInstance().getUsers()).collect(Collectors.toList());
-        return gson.toJson(list);
+    public ArrayList<User> getUsers(HttpServletRequest request) {
+        if (!Authentication.isLogin(request))
+            throw new CustomException("please login first");
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("You dont have permission");
+        return DataBase.getInstance().getUsers();
     }
 
-    //handle exception: if id doesn't exist
+
     @GetMapping("/{id}")
-    public String findUserById(@PathVariable("id") long id, HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "please login first";
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request))) return "You dont have permission";
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        User user = DataBase.getInstance().findUser(id);
-        List list = Stream.of(new User(user.getID(), user.getFirstName(), user.getLastName(), user.getPassword(),
-                user.getEmail(), user.getPhoneNumber(), user.getAddress())).collect(Collectors.toList());
-        return gson.toJson(list);
+    public User findUserById(@PathVariable("id") long id, HttpServletRequest request) {
+        if (!Authentication.isLogin(request))
+            throw new CustomException("please login first");
+        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+            throw new CustomException("You dont have permission");
+        return DataBase.getInstance().findUser(id);
     }
 
     @GetMapping("/profile")
-    public String seeProfile(HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) return "please login first";
-        //we must not show password
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        User user = Authentication.loggedInUser(request);
-        List list = Stream.of(new User(user.getID(), user.getFirstName(), user.getLastName(), user.getPassword(),
-                user.getEmail(), user.getPhoneNumber(), user.getAddress())).collect(Collectors.toList());
-        return gson.toJson(list);
+    public User seeProfile(HttpServletRequest request) {
+        if (!Authentication.isLogin(request))
+            throw new CustomException("please login first");
+        //we must not show password --> html
+        return Authentication.loggedInUser(request);
     }
 }
