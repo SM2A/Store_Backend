@@ -12,10 +12,10 @@
 | Logout | GET | /logout | ✅ |
 | Add Admin Page | GET | /addAdmin | ✅ |
 | Add Admin | POST | /addAdmin | ✅ |
-| Products Page | GET | /product/{id} | ❌ |
-| User Profile | POST | /profile | ❌
-| Add Comment | POST | /comment | ❌ |
-| Add Product | POST | /addProduct | ❌ |
+| Products Page | GET | /product/{id} | ✅ |
+| User Profile | POST | /profile | ✅ |
+| Add Comment | POST | /comment | ✅ |
+| Add Product | POST | /addProduct | ✅ |
 | Add Credit | POST | /addCredit | ✅ |
 | Like | POST | /like | ✅ |
 | Dislike | POST | /dislike | ✅ |
