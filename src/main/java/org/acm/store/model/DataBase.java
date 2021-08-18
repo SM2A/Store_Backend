@@ -159,6 +159,7 @@ public class DataBase {
             entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
         }
         user.purchase(cartPrice(cart.getID()));
+        cart.purchase();
         cart.setStatus(Status.CLOSED);
         createCart(user.getID());
     }
