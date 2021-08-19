@@ -45,7 +45,7 @@ public class CartController {
     public String addItemToCart(@RequestParam(required = false) @NotBlank @Valid String productId,
                                 HttpServletRequest request){
         if (!Authentication.isLogin(request))
-            throw new CustomException("Please login first");;
+            throw new CustomException("Please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(request);
