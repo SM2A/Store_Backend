@@ -3,11 +3,12 @@ package org.acm.store.controller.validation;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.acm.store.model.Admin;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Created by SM2A
@@ -21,8 +22,8 @@ public class Authentication {
     }
 
     public static void login(HttpServletResponse response, String email, String password) {
-        Cookie emailCookie = new Cookie("email", URLEncoder.encode(email, StandardCharsets.UTF_8));
-        Cookie passwordCookie = new Cookie("password", URLEncoder.encode(password, StandardCharsets.UTF_8));
+        Cookie emailCookie = new Cookie("email", email);
+        Cookie passwordCookie = new Cookie("password", password);
         response.addCookie(emailCookie);
         response.addCookie(passwordCookie);
     }
@@ -47,10 +48,16 @@ public class Authentication {
     public static boolean isLogin(HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();
         if (cookie != null) {
-            if ((cookie[0].getName().equals("email") && cookie[1].getName().equals("password"))
-                    || (cookie[1].getName().equals("email") && cookie[0].getName().equals("password"))) {
-                return (cookie[0] != null) && (cookie[1] != null);
-            }
+            Cookie email = null, password = null;
+            Optional<Cookie> optionalEmail = Arrays.stream(cookie)
+                                            .filter(x -> "email".equals(x.getName()))
+                                            .findFirst();
+            Optional<Cookie> optionalPassword = Arrays.stream(cookie)
+                                            .filter(x -> "password".equals(x.getName()))
+                                            .findFirst();
+            if (optionalEmail.isPresent()) email = optionalEmail.get();
+            if (optionalPassword.isPresent()) password = optionalPassword.get();
+            return (email != null) && (password != null);
         }
         return false;
     }
