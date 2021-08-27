@@ -21,6 +21,7 @@ import javax.validation.constraints.NotBlank;
 
 @Validated
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class Store {
 
     @GetMapping("/")
