@@ -30,16 +30,16 @@ public class CommentController {
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("Make sure you are a costumer");
         if(DataBase.getInstance().findProduct(Long.parseLong(productID)) == null)
-            throw new CustomException("Product Id Doesn't Exist.");
+            throw new CustomException("Product Id Doesn't Exist");
         User user = Authentication.loggedInUser(request);
         DataBase.getInstance().addComment(user.getID(), Long.parseLong(productID), text);
-        return "Your comment has been successfully added.";
+        return "Your comment has been successfully added";
     }
 
     @GetMapping("/{productId}")
     public ArrayList<Comment> showProductComments(@PathVariable("productId") long productId){
         if(DataBase.getInstance().findProduct(productId) == null)
-            throw new CustomException("Product Id Doesn't Exist.");
+            throw new CustomException("Product Id Doesn't Exist");
         return DataBase.getInstance().getProductComments(productId);
     }
 
@@ -48,7 +48,7 @@ public class CommentController {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("Make sure you are a costumer");
-        if (DataBase.getInstance().findComment(id) == null) throw new CustomException("Comment Id Doesn't Exist.");
+        if (DataBase.getInstance().findComment(id) == null) throw new CustomException("Comment Id Doesn't Exist");
         DataBase.getInstance().likeComment(id);
         return "successfully liked";
     }

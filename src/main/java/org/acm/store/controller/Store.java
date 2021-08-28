@@ -1,10 +1,13 @@
 package org.acm.store.controller;
 
+import com.google.gson.JsonObject;
 import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
 import org.acm.store.controller.validation.Validation;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -43,13 +46,18 @@ public class Store {
                          @RequestParam(required = false) @NotBlank @Valid String email,
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                          @RequestParam(required = false) @NotBlank @Valid String address,
-                         HttpServletResponse response, HttpServletRequest request){
+                         HttpServletResponse response, HttpServletRequest request) throws JSONException {
         if (Authentication.isLogin(request)) throw new CustomException("please logout first");
         DataBase dataBase = DataBase.getInstance();
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
         Authentication.login(response, email, password);
-        return String.valueOf(dataBase.validateUserByID(email, password));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code",1);
+        jsonObject.put("ID",dataBase.validateUserByID(email, password));
+        jsonObject.put("email",email);
+        jsonObject.put("password",password);
+        return jsonObject.toString();
     }
 
     @GetMapping("/login")
@@ -76,6 +84,14 @@ public class Store {
         User user = Authentication.loggedInUser(request);
         Authentication.logout(response);
         return "goodbye " + user.getFirstName();
+    }
+
+    @PostMapping("/valid_login")
+    public String validLogin(@RequestParam(required = false) @NotBlank @Valid String password,
+                          @RequestParam(required = false) @NotBlank @Valid String email,
+                          HttpServletResponse response, HttpServletRequest request){
+        if (Authentication.loggedInUser(email, password)!=null) return "1";
+        else return "0";
     }
 
     @GetMapping("/add/admin")
@@ -121,6 +137,6 @@ public class Store {
             throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(request);
         DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
-        return "Successful payment.";
+        return "Successful payment";
     }
 }

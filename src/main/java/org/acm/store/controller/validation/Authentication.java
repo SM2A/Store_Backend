@@ -50,11 +50,11 @@ public class Authentication {
         if (cookie != null) {
             Cookie email = null, password = null;
             Optional<Cookie> optionalEmail = Arrays.stream(cookie)
-                                            .filter(x -> "email".equals(x.getName()))
-                                            .findFirst();
+                    .filter(x -> "email".equals(x.getName()))
+                    .findFirst();
             Optional<Cookie> optionalPassword = Arrays.stream(cookie)
-                                            .filter(x -> "password".equals(x.getName()))
-                                            .findFirst();
+                    .filter(x -> "password".equals(x.getName()))
+                    .findFirst();
             if (optionalEmail.isPresent()) email = optionalEmail.get();
             if (optionalPassword.isPresent()) password = optionalPassword.get();
             return (email != null) && (password != null);
@@ -74,5 +74,16 @@ public class Authentication {
         }
         DataBase dataBase = DataBase.getInstance();
         return dataBase.findUser(dataBase.validateUserByID(email, password));
+    }
+
+    public static User loggedInUser(String email, String password) {
+        User user;
+        DataBase dataBase = DataBase.getInstance();
+        try {
+            user = dataBase.findUser(dataBase.validateUserByID(email, password));
+        }catch (CustomException exception){
+            user = null;
+        }
+        return user;
     }
 }
