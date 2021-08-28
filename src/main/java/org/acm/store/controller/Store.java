@@ -1,6 +1,5 @@
 package org.acm.store.controller;
 
-import com.google.gson.JsonObject;
 import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
 import org.acm.store.controller.validation.Validation;
@@ -29,7 +28,7 @@ public class Store {
 
     @GetMapping("/")
     public String homePage() {
-        DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin", "007", "admin");
+        DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
         return "home page";
     }
 
@@ -69,13 +68,19 @@ public class Store {
     @PostMapping("/login")
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
                         @RequestParam(required = false) @NotBlank @Valid String email, HttpServletResponse response,
-                        HttpServletRequest request) {
+                        HttpServletRequest request) throws JSONException {
         if (Authentication.isLogin(request)) throw new CustomException("please logout first");
-        long ID = DataBase.getInstance().validateUserByID(email, password);
+        DataBase dataBase = DataBase.getInstance();
+        long ID = dataBase.validateUserByID(email, password);
         if (ID != -1) {
             Authentication.login(response, email, password);
-            return "Welcome " + DataBase.getInstance().findUser(ID).getFirstName();
-        } else return "email or password is incorrect";
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("code",1);
+            jsonObject.put("ID",dataBase.validateUserByID(email, password));
+            jsonObject.put("email",email);
+            jsonObject.put("password",password);
+            return jsonObject.toString();
+        } else throw new CustomException("email or password in correct");
     }
 
     @GetMapping("/logout")
@@ -88,9 +93,16 @@ public class Store {
 
     @PostMapping("/valid_login")
     public String validLogin(@RequestParam(required = false) @NotBlank @Valid String password,
-                          @RequestParam(required = false) @NotBlank @Valid String email,
-                          HttpServletResponse response, HttpServletRequest request){
+                          @RequestParam(required = false) @NotBlank @Valid String email){
         if (Authentication.loggedInUser(email, password)!=null) return "1";
+        else return "0";
+    }
+
+    @PostMapping("/valid_admin")
+    public String validAdmin(@RequestParam(required = false) @NotBlank @Valid String password,
+                             @RequestParam(required = false) @NotBlank @Valid String email){
+        User user = Authentication.loggedInUser(email, password);
+        if (Authentication.isAdmin(user)) return "1";
         else return "0";
     }
 
@@ -119,7 +131,7 @@ public class Store {
         return String.valueOf(dataBase.validateUserByID(email, password));
     }
 
-    @PostMapping("purchase")
+    @PostMapping("/purchase")
     public String purchase(HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
