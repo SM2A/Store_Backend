@@ -21,14 +21,14 @@ public class Authentication {
         return user instanceof Admin;
     }
 
-    public static void login(HttpServletResponse response, String email, String password) {
+    /*public static void login(HttpServletResponse response, String email, String password) {
         Cookie emailCookie = new Cookie("email", email);
         Cookie passwordCookie = new Cookie("password", password);
         response.addCookie(emailCookie);
         response.addCookie(passwordCookie);
-    }
+    }*/
 
-    public static void logout(HttpServletResponse response) {
+    /*public static void logout(HttpServletResponse response) {
         Cookie emailCookie = new Cookie("email", null);
         emailCookie.setMaxAge(0);
         emailCookie.setSecure(true);
@@ -43,7 +43,7 @@ public class Authentication {
 
         response.addCookie(emailCookie);
         response.addCookie(passwordCookie);
-    }
+    }*/
 
     public static boolean isLogin(HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();

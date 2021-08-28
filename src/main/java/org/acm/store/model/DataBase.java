@@ -20,6 +20,7 @@ public class DataBase {
     private final HashMap<Long, Comment> comments;
     private final HashMap<Long, Cart> carts;
     private final HashMap<Long, HashMap<Long, Integer>> items;
+    private final ArrayList<String> categories;
 
     private DataBase() {
         users = new HashMap<>();
@@ -27,6 +28,7 @@ public class DataBase {
         products = new HashMap<>();
         carts = new HashMap<>();
         items = new HashMap<>();
+        categories = new ArrayList<>();
         lastCartID = 0;
         lastCommentID = 0;
         lastProductID = 0;
@@ -290,10 +292,20 @@ public class DataBase {
     public Product getExistedProduct(String title, String category){
         for (Map.Entry<Long, Product> entry : products.entrySet()){
             if (entry.getValue().getTitle().equals(title) &&
-                    entry.getValue().getCategory() == Category.valueOf(category)){
+                    entry.getValue().getCategory().equals(category)){
                 return entry.getValue();
             }
         }
         return null;
+    }
+
+    public void addCategory(String name){
+        if (categories.contains(name.toUpperCase())) throw new CustomException("This category was added");
+        else categories.add(name.toUpperCase());
+//        System.out.println(categories);
+    }
+
+    public ArrayList<String> getCategories(){
+        return categories;
     }
 }

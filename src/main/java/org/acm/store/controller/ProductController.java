@@ -14,6 +14,7 @@ import java.util.ArrayList;
 @Validated
 @RestController
 @RequestMapping("/products")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
 
     @GetMapping
@@ -51,5 +52,20 @@ public class ProductController {
             throw new CustomException("Product Id Doesn't Exist.");
         DataBase.getInstance().addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
         return "The product has been successfully rated.";
+    }
+
+    @PostMapping("/category/add")
+    public String addCategory(@RequestParam(required = false) @NotBlank @Valid String name){
+//        System.out.println(name);
+//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+//        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("You dont have permission");
+        DataBase.getInstance().addCategory(name);
+        return "Category add successfully";
+    }
+
+    @GetMapping("/category")
+    public ArrayList<String> getCategories(){
+        return DataBase.getInstance().getCategories();
     }
 }

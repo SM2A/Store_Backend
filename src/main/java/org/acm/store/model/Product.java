@@ -10,7 +10,7 @@ public class Product {
     private int quantityAvailable;
     private float rating;
     private long price;
-    private Category category;
+    private String category;
 
     public Product(long id, String title, String description, int quantityAvailable, long price, String category) {
         this.ID = id;
@@ -19,12 +19,12 @@ public class Product {
         this.quantityAvailable = quantityAvailable;
         this.rating = 0;
         this.price = price;
-        this.category = getCategoryByString(category);
+        this.category = category;
     }
 
-    private Category getCategoryByString(String category) {
+    private String getCategoryByString(String category) {
         //if(category == "X")
-        return Category.valueOf(category);
+        return this.category;
         //for all categories...
     }
 
@@ -92,11 +92,11 @@ public class Product {
         this.price = price;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 }

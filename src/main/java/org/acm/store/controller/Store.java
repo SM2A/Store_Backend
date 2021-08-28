@@ -50,7 +50,7 @@ public class Store {
         DataBase dataBase = DataBase.getInstance();
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
-        Authentication.login(response, email, password);
+//        Authentication.login(response, email, password);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code",1);
         jsonObject.put("ID",dataBase.validateUserByID(email, password));
@@ -73,7 +73,7 @@ public class Store {
         DataBase dataBase = DataBase.getInstance();
         long ID = dataBase.validateUserByID(email, password);
         if (ID != -1) {
-            Authentication.login(response, email, password);
+//            Authentication.login(response, email, password);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("code",1);
             jsonObject.put("ID",dataBase.validateUserByID(email, password));
@@ -87,7 +87,7 @@ public class Store {
     public String logout(HttpServletResponse response, HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         User user = Authentication.loggedInUser(request);
-        Authentication.logout(response);
+//        Authentication.logout(response);
         return "goodbye " + user.getFirstName();
     }
 
