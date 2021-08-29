@@ -173,6 +173,7 @@ public class DataBase {
         }
         else {
             long ID = ++lastProductID;
+            if (!categories.contains(category)) throw new CustomException("Category not available");
             products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
         }
     }

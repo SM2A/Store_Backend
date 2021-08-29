@@ -32,11 +32,11 @@ public class Store {
         return "home page";
     }
 
-    @GetMapping("/signup")
+    /*@GetMapping("/signup")
     public String signupPage(HttpServletRequest request) {
         if (Authentication.isLogin(request)) throw new CustomException("please logout first");
         return "signup page";
-    }
+    }*/
 
     @PostMapping("/signup")
     public String signup(@RequestParam(required = false) @NotBlank @Valid String firstName,
@@ -44,13 +44,10 @@ public class Store {
                          @RequestParam(required = false) @NotBlank @Valid String password,
                          @RequestParam(required = false) @NotBlank @Valid String email,
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
-                         @RequestParam(required = false) @NotBlank @Valid String address,
-                         HttpServletResponse response, HttpServletRequest request) throws JSONException {
-        if (Authentication.isLogin(request)) throw new CustomException("please logout first");
+                         @RequestParam(required = false) @NotBlank @Valid String address) throws JSONException {
         DataBase dataBase = DataBase.getInstance();
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
-//        Authentication.login(response, email, password);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code",1);
         jsonObject.put("ID",dataBase.validateUserByID(email, password));
@@ -59,21 +56,18 @@ public class Store {
         return jsonObject.toString();
     }
 
-    @GetMapping("/login")
+    /*@GetMapping("/login")
     public String loginPage(HttpServletRequest request) {
         if (Authentication.isLogin(request)) throw new CustomException("please logout first");
         return "login page";
-    }
+    }*/
 
     @PostMapping("/login")
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
-                        @RequestParam(required = false) @NotBlank @Valid String email, HttpServletResponse response,
-                        HttpServletRequest request) throws JSONException {
-        if (Authentication.isLogin(request)) throw new CustomException("please logout first");
+                        @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
         DataBase dataBase = DataBase.getInstance();
         long ID = dataBase.validateUserByID(email, password);
         if (ID != -1) {
-//            Authentication.login(response, email, password);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("code",1);
             jsonObject.put("ID",dataBase.validateUserByID(email, password));
@@ -83,13 +77,13 @@ public class Store {
         } else throw new CustomException("email or password in correct");
     }
 
-    @GetMapping("/logout")
+    /*@GetMapping("/logout")
     public String logout(HttpServletResponse response, HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         User user = Authentication.loggedInUser(request);
-//        Authentication.logout(response);
+        Authentication.logout(response);
         return "goodbye " + user.getFirstName();
-    }
+    }*/
 
     @PostMapping("/valid_login")
     public String validLogin(@RequestParam(required = false) @NotBlank @Valid String password,
@@ -106,13 +100,13 @@ public class Store {
         else return "0";
     }
 
-    @GetMapping("/add/admin")
+    /*@GetMapping("/add/admin")
     public String addAdminPage(HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("You dont have permission");
         return "add admin page";
-    }
+    }*/
 
     @PostMapping("/add/admin")
     public String addAdmin(@RequestParam(required = false) @NotBlank @Valid String firstName,
@@ -120,11 +114,10 @@ public class Store {
                            @RequestParam(required = false) @NotBlank @Valid String password,
                            @RequestParam(required = false) @NotBlank @Valid String email,
                            @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
-                           @RequestParam(required = false) @NotBlank @Valid String address,
-                           HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("You dont have permission");
+                           @RequestParam(required = false) @NotBlank @Valid String address) {
+//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+//        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("You dont have permission");
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         DataBase dataBase = DataBase.getInstance();
         dataBase.addAdmin(firstName, lastName, password, email, phoneNumber, address);

@@ -29,9 +29,9 @@ public class ProductController {
                              @RequestParam(required = false) @NotBlank @Valid String price,
                              @RequestParam(required = false) @NotBlank @Valid String category,
                              HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("You dont have permission");
+//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+//        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("You dont have permission");
         DataBase.getInstance().addProduct(title, description, Integer.parseInt(quantityAvailable),
                 Integer.parseInt(price), category);
         return "The product has been successfully added.";
