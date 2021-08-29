@@ -28,7 +28,8 @@ public class Store {
 
     @GetMapping("/")
     public String homePage() {
-        DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
+        if (!Validation.isTaken("admin@admin.com", "007"))
+            DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
         return "home page";
     }
 
@@ -49,10 +50,10 @@ public class Store {
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code",1);
-        jsonObject.put("ID",dataBase.validateUserByID(email, password));
-        jsonObject.put("email",email);
-        jsonObject.put("password",password);
+        jsonObject.put("code", 1);
+        jsonObject.put("ID", dataBase.validateUserByID(email, password));
+        jsonObject.put("email", email);
+        jsonObject.put("password", password);
         return jsonObject.toString();
     }
 
@@ -69,10 +70,10 @@ public class Store {
         long ID = dataBase.validateUserByID(email, password);
         if (ID != -1) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code",1);
-            jsonObject.put("ID",dataBase.validateUserByID(email, password));
-            jsonObject.put("email",email);
-            jsonObject.put("password",password);
+            jsonObject.put("code", 1);
+            jsonObject.put("ID", dataBase.validateUserByID(email, password));
+            jsonObject.put("email", email);
+            jsonObject.put("password", password);
             return jsonObject.toString();
         } else throw new CustomException("email or password in correct");
     }
@@ -87,14 +88,14 @@ public class Store {
 
     @PostMapping("/valid_login")
     public String validLogin(@RequestParam(required = false) @NotBlank @Valid String password,
-                          @RequestParam(required = false) @NotBlank @Valid String email){
-        if (Authentication.loggedInUser(email, password)!=null) return "1";
+                             @RequestParam(required = false) @NotBlank @Valid String email) {
+        if (Authentication.loggedInUser(email, password) != null) return "1";
         else return "0";
     }
 
     @PostMapping("/valid_admin")
     public String validAdmin(@RequestParam(required = false) @NotBlank @Valid String password,
-                             @RequestParam(required = false) @NotBlank @Valid String email){
+                             @RequestParam(required = false) @NotBlank @Valid String email) {
         User user = Authentication.loggedInUser(email, password);
         if (Authentication.isAdmin(user)) return "1";
         else return "0";
@@ -108,7 +109,7 @@ public class Store {
         return "add admin page";
     }*/
 
-    @PostMapping("/add/admin")
+    @PostMapping("/admin/add")
     public String addAdmin(@RequestParam(required = false) @NotBlank @Valid String firstName,
                            @RequestParam(required = false) @NotBlank @Valid String lastName,
                            @RequestParam(required = false) @NotBlank @Valid String password,

@@ -14,14 +14,15 @@ import java.util.ArrayList;
 @Validated
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @GetMapping
-    public ArrayList<User> getUsers(HttpServletRequest request) {
-        if (!Authentication.isLogin(request))
-            throw new CustomException("please login first");
-        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("You dont have permission");
+    public ArrayList<User> getUsers() {
+//        if (!Authentication.isLogin(request))
+//            throw new CustomException("please login first");
+//        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("You dont have permission");
         return DataBase.getInstance().getUsers();
     }
 
