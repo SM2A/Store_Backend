@@ -3,6 +3,7 @@ package org.acm.store.controller;
 import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
 import org.acm.store.controller.validation.Validation;
+import org.acm.store.model.Cart;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.json.JSONException;
@@ -54,6 +55,23 @@ public class Store {
         jsonObject.put("ID", dataBase.validateUserByID(email, password));
         jsonObject.put("email", email);
         jsonObject.put("password", password);
+
+        /*DataBase.getInstance().addCategory("game");
+        DataBase.getInstance().addCategory("mouse");
+        DataBase.getInstance().addCategory("keyboard");
+
+        DataBase.getInstance().addProduct("MFSX", "Microsoft", 5, 60, "GAME");
+        DataBase.getInstance().addProduct("Death Adder", "Razer", 5, 30, "MOUSE");
+        DataBase.getInstance().addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD");
+
+        Cart cart = DataBase.getInstance().findOpenCartByUser(2);
+        DataBase.getInstance().addItem(cart.getID(), 1);
+        DataBase.getInstance().addItem(cart.getID(), 1);
+        DataBase.getInstance().addItem(cart.getID(), 1);
+        DataBase.getInstance().addItem(cart.getID(), 2);
+        DataBase.getInstance().addItem(cart.getID(), 2);
+        DataBase.getInstance().addItem(cart.getID(), 3);*/
+
         return jsonObject.toString();
     }
 

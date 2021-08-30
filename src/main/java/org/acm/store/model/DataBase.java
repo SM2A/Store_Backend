@@ -213,6 +213,10 @@ public class DataBase {
         items.put(ID, new HashMap<>());
     }
 
+    public ArrayList<Cart> getCarts(){
+        return new ArrayList<>(carts.values());
+    }
+
     public Cart findOpenCartByUser(long userId) {
         for (Map.Entry<Long, Cart> cart : carts.entrySet()) {
             if ((cart.getValue().getUserID() == userId) && (cart.getValue().getStatus() == Status.OPEN)) {

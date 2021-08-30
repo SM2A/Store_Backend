@@ -8,6 +8,8 @@ import org.acm.store.model.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 
 
@@ -36,11 +38,12 @@ public class UserController {
         return DataBase.getInstance().findUser(id);
     }
 
-    @GetMapping("/profile")
-    public User seeProfile(HttpServletRequest request) {
-        if (!Authentication.isLogin(request))
-            throw new CustomException("please login first");
+    @PostMapping("/profile")
+    public User seeProfile(@RequestParam(required = false) @NotBlank @Valid String password,
+                           @RequestParam(required = false) @NotBlank @Valid String email) {
+//        if (!Authentication.isLogin(request))
+//            throw new CustomException("please login first");
         //we must not show password --> html
-        return Authentication.loggedInUser(request);
+        return DataBase.getInstance().validateUser(email,password);
     }
 }

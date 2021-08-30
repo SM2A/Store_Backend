@@ -5,8 +5,13 @@ import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
 import org.acm.store.model.Cart;
 import org.acm.store.model.DataBase;
+import org.acm.store.model.Product;
 import org.acm.store.model.User;
 import java.util.*;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +22,7 @@ import javax.validation.constraints.NotBlank;
 @Validated
 @RestController
 @RequestMapping("/carts")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
 
     @GetMapping
@@ -29,6 +35,36 @@ public class CartController {
         return DataBase.getInstance().showUserCarts(user.getID());
     }
 
+    @GetMapping("/all")
+    public String getCarts() throws JSONException {
+        JSONArray jsonArray = new JSONArray();
+        for (Cart cart : DataBase.getInstance().getCarts()){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",cart.getID());
+            jsonObject.put("userID",cart.getUserID());
+            jsonObject.put("status",cart.getStatus());
+            jsonObject.put("purchaseDate",cart.getPurchaseDate());
+            jsonObject.put("total",DataBase.getInstance().cartPrice(cart.getID()));
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray.toString();
+    }
+
+    @GetMapping("/{id}")
+    public String getCartItems(@PathVariable("id") long id) throws JSONException {
+        JSONArray jsonArray = new JSONArray();
+        for (Map.Entry<Product,Integer> entry : DataBase.getInstance().getCartItems(id).entrySet()){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",entry.getKey().getID());
+            jsonObject.put("title",entry.getKey().getTitle());
+            jsonObject.put("category",entry.getKey().getCategory());
+            jsonObject.put("price",entry.getKey().getPrice());
+            jsonObject.put("quantity",entry.getValue());
+            jsonObject.put("total",entry.getKey().getPrice()* entry.getValue());
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray.toString();
+    }
 
     @GetMapping("/items")
     public HashMap<Long, Integer> showItemsInCurrentCart(HttpServletRequest request) {
