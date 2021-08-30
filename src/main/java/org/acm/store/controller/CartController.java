@@ -8,7 +8,6 @@ import org.acm.store.model.DataBase;
 import org.acm.store.model.Product;
 import org.acm.store.model.User;
 import java.util.*;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,13 +37,14 @@ public class CartController {
     @GetMapping("/all")
     public String getCarts() throws JSONException {
         JSONArray jsonArray = new JSONArray();
-        for (Cart cart : DataBase.getInstance().getCarts()){
+        for (Cart cart : DataBase.getInstance().getCarts()) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id",cart.getID());
-            jsonObject.put("userID",cart.getUserID());
-            jsonObject.put("status",cart.getStatus());
-            jsonObject.put("purchaseDate",cart.getPurchaseDate());
-            jsonObject.put("total",DataBase.getInstance().cartPrice(cart.getID()));
+            jsonObject.put("id", cart.getID());
+            jsonObject.put("userID", cart.getUserID());
+            jsonObject.put("status", cart.getStatus());
+            if (cart.getPurchaseDate() == null) jsonObject.put("purchaseDate", "OPEN");
+            else jsonObject.put("purchaseDate", cart.getPurchaseDate());
+            jsonObject.put("total", DataBase.getInstance().cartPrice(cart.getID()));
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
@@ -53,14 +53,14 @@ public class CartController {
     @GetMapping("/{id}")
     public String getCartItems(@PathVariable("id") long id) throws JSONException {
         JSONArray jsonArray = new JSONArray();
-        for (Map.Entry<Product,Integer> entry : DataBase.getInstance().getCartItems(id).entrySet()){
+        for (Map.Entry<Product, Integer> entry : DataBase.getInstance().getCartItems(id).entrySet()) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id",entry.getKey().getID());
-            jsonObject.put("title",entry.getKey().getTitle());
-            jsonObject.put("category",entry.getKey().getCategory());
-            jsonObject.put("price",entry.getKey().getPrice());
-            jsonObject.put("quantity",entry.getValue());
-            jsonObject.put("total",entry.getKey().getPrice()* entry.getValue());
+            jsonObject.put("id", entry.getKey().getID());
+            jsonObject.put("title", entry.getKey().getTitle());
+            jsonObject.put("category", entry.getKey().getCategory());
+            jsonObject.put("price", entry.getKey().getPrice());
+            jsonObject.put("quantity", entry.getValue());
+            jsonObject.put("total", entry.getKey().getPrice() * entry.getValue());
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
@@ -79,7 +79,7 @@ public class CartController {
 
     @PostMapping("/items/add")
     public String addItemToCart(@RequestParam(required = false) @NotBlank @Valid String productId,
-                                HttpServletRequest request){
+                                HttpServletRequest request) {
         if (!Authentication.isLogin(request))
             throw new CustomException("Please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
@@ -93,7 +93,7 @@ public class CartController {
 
     @PostMapping("/items/subtract")
     public String omitItemFromCart(@RequestParam(required = false) @NotBlank @Valid String productId,
-                                   HttpServletRequest request){
+                                   HttpServletRequest request) {
         if (!Authentication.isLogin(request))
             throw new CustomException("Please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))

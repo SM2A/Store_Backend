@@ -70,7 +70,13 @@ public class Store {
         DataBase.getInstance().addItem(cart.getID(), 1);
         DataBase.getInstance().addItem(cart.getID(), 2);
         DataBase.getInstance().addItem(cart.getID(), 2);
-        DataBase.getInstance().addItem(cart.getID(), 3);*/
+        DataBase.getInstance().addItem(cart.getID(), 3);
+
+        DataBase.getInstance().addCredit(2, 10000);
+        DataBase.getInstance().purchase(2);
+        cart = DataBase.getInstance().findOpenCartByUser(2);
+        DataBase.getInstance().addItem(cart.getID(), 1);
+        DataBase.getInstance().addItem(cart.getID(), 2);*/
 
         return jsonObject.toString();
     }

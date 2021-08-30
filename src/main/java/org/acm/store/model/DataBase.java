@@ -91,7 +91,7 @@ public class DataBase {
     }
 
     public User findUser(long ID) {
-        if(!users.containsKey(ID))
+        if (!users.containsKey(ID))
             throw new CustomException("User not found.");
         return users.get(ID);
     }
@@ -167,11 +167,10 @@ public class DataBase {
     }
 
     public void addProduct(String title, String description, int quantityAvailable, int price, String category) {
-        if(getExistedProduct(title, category) != null){
+        if (getExistedProduct(title, category) != null) {
             Product product = getExistedProduct(title, category);
             product.addToStock(quantityAvailable);
-        }
-        else {
+        } else {
             long ID = ++lastProductID;
             if (!categories.contains(category)) throw new CustomException("Category not available");
             products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
@@ -213,7 +212,7 @@ public class DataBase {
         items.put(ID, new HashMap<>());
     }
 
-    public ArrayList<Cart> getCarts(){
+    public ArrayList<Cart> getCarts() {
         return new ArrayList<>(carts.values());
     }
 
@@ -249,6 +248,7 @@ public class DataBase {
 
 
     public void addItem(long cartID, long productID) {
+
         if (findProduct(productID).getQuantityAvailable() <= 0)
             throw new CustomException("Not enough quantity");
         if (getCartItems(cartID).containsKey(findProduct(productID))) {
@@ -259,26 +259,26 @@ public class DataBase {
     }
 
     public void deleteItem(long productID, long cartID) {
-        if(!items.get(cartID).containsKey(productID))
-            throw  new CustomException("Your cart doesn't contain item with id: " + productID);
+        if (!items.get(cartID).containsKey(productID))
+            throw new CustomException("Your cart doesn't contain item with id: " + productID);
         items.get(cartID).remove(productID);
     }
 
     public void increaseItem(long productID, long cartID) {
-        if (findProduct(productID).getQuantityAvailable() <= items.get(cartID).get(productID))
+        if (findProduct(productID).getQuantityAvailable() == items.get(cartID).get(productID))
             throw new CustomException("Not enough quantity");
         items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
     }
 
     public void decreaseItem(long productID, long cartID) {
-        if(!items.get(cartID).containsKey(productID))
-            throw  new CustomException("Your cart doesn't contain item with id: " + productID);
+        if (!items.get(cartID).containsKey(productID))
+            throw new CustomException("Your cart doesn't contain item with id: " + productID);
         if (items.get(cartID).get(productID) == 1) deleteItem(productID, cartID);
         else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
     }
 
     public void setQuantityToAnItem(long productID, long cartID, int quantity) {
-        if(findProduct(productID).getQuantityAvailable() < quantity)
+        if (findProduct(productID).getQuantityAvailable() < quantity)
             throw new CustomException("Not enough quantity");
         if (getCartItems(cartID).containsKey(findProduct(productID)))
             items.get(cartID).replace(productID, quantity);
@@ -294,23 +294,22 @@ public class DataBase {
         return itemsHashMap;
     }
 
-    public Product getExistedProduct(String title, String category){
-        for (Map.Entry<Long, Product> entry : products.entrySet()){
+    public Product getExistedProduct(String title, String category) {
+        for (Map.Entry<Long, Product> entry : products.entrySet()) {
             if (entry.getValue().getTitle().equals(title) &&
-                    entry.getValue().getCategory().equals(category)){
+                    entry.getValue().getCategory().equals(category)) {
                 return entry.getValue();
             }
         }
         return null;
     }
 
-    public void addCategory(String name){
+    public void addCategory(String name) {
         if (categories.contains(name.toUpperCase())) throw new CustomException("This category was added");
         else categories.add(name.toUpperCase());
-//        System.out.println(categories);
     }
 
-    public ArrayList<String> getCategories(){
+    public ArrayList<String> getCategories() {
         return categories;
     }
 }
