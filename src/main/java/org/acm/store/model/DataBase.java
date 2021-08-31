@@ -241,7 +241,7 @@ public class DataBase {
     public long cartPrice(long cartID) {
         long price = 0;
         for (Map.Entry<Product, Integer> entry : getCartItems(cartID).entrySet()) {
-            price += entry.getKey().getPrice();
+            price += entry.getKey().getPrice()*entry.getValue();
         }
         return price;
     }

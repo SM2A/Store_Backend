@@ -1,6 +1,7 @@
 package org.acm.store.controller;
 
 
+import jdk.jfr.ContentType;
 import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
 import org.acm.store.model.Cart;
@@ -24,14 +25,27 @@ import javax.validation.constraints.NotBlank;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
 
-    @GetMapping
-    public ArrayList<Cart> showUserCarts(HttpServletRequest request) {
-        if (!Authentication.isLogin(request))
-            throw new CustomException("Please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(request);
-        return DataBase.getInstance().showUserCarts(user.getID());
+    @PostMapping
+    public String showUserCarts(@RequestParam(required = false) @NotBlank @Valid String password,
+                                @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
+//        if (!Authentication.isLogin(request))
+//            throw new CustomException("Please login first");
+//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("Make sure you are a costumer");
+        User user = Authentication.loggedInUser(email,password);
+        JSONArray jsonArray = new JSONArray();
+        for (Cart cart : DataBase.getInstance().showUserCarts(user.getID())) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", cart.getID());
+            jsonObject.put("userID", cart.getUserID());
+            jsonObject.put("status", cart.getStatus());
+            if (cart.getPurchaseDate() == null) jsonObject.put("purchaseDate", "OPEN");
+            else jsonObject.put("purchaseDate", cart.getPurchaseDate());
+            jsonObject.put("total", DataBase.getInstance().cartPrice(cart.getID()));
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray.toString();
+//        return DataBase.getInstance().showUserCarts(user.getID());
     }
 
     @GetMapping("/all")

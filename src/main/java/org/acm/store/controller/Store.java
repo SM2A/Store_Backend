@@ -150,11 +150,12 @@ public class Store {
     }
 
     @PostMapping("/purchase")
-    public String purchase(HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(request);
+    public String purchase(@RequestParam(required = false) @NotBlank @Valid String password,
+                           @RequestParam(required = false) @NotBlank @Valid String email) {
+//        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
+//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("Make sure you are a costumer");
+        User user = Authentication.loggedInUser(email,password);
         DataBase.getInstance().purchase(user.getID());
         return "Thank you for your order";
     }
