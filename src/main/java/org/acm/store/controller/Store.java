@@ -160,12 +160,13 @@ public class Store {
     }
 
     @PostMapping("/credit/add")
-    public String addCredit(@RequestParam(required = false) @NotBlank @Valid String amount,
-                            HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(request);
+    public String addCredit(@RequestParam(required = false) @NotBlank @Valid String password,
+                            @RequestParam(required = false) @NotBlank @Valid String email,
+                            @RequestParam(required = false) @NotBlank @Valid String amount) {
+//        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
+//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("Make sure you are a costumer");
+        User user = Authentication.loggedInUser(email, password);
         DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
         return "Successful payment";
     }
