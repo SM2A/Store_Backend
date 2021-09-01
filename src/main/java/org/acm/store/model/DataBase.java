@@ -166,14 +166,14 @@ public class DataBase {
         createCart(user.getID());
     }
 
-    public void addProduct(String title, String description, int quantityAvailable, int price, String category) {
+    public void addProduct(String title, String description, int quantityAvailable, int price, String category, String imgAddress) {
         if (getExistedProduct(title, category) != null) {
             Product product = getExistedProduct(title, category);
             product.addToStock(quantityAvailable);
         } else {
             long ID = ++lastProductID;
             if (!categories.contains(category)) throw new CustomException("Category not available");
-            products.put(ID, new Product(ID, title, description, quantityAvailable, price, category));
+            products.put(ID, new Product(ID, title, description, quantityAvailable, price, category, imgAddress));
         }
     }
 

@@ -27,12 +27,13 @@ public class ProductController {
                              @RequestParam(required = false) @NotBlank @Valid String description,
                              @RequestParam(required = false) @NotBlank @Valid String quantityAvailable,
                              @RequestParam(required = false) @NotBlank @Valid String price,
-                             @RequestParam(required = false) @NotBlank @Valid String category) {
+                             @RequestParam(required = false) @NotBlank @Valid String category,
+                             @RequestParam(required = false) @NotBlank @Valid String imgAddress) {
 //        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
 //        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("You dont have permission");
         DataBase.getInstance().addProduct(title, description, Integer.parseInt(quantityAvailable),
-                Integer.parseInt(price), category);
+                Integer.parseInt(price), category, imgAddress);
         return "The product has been successfully added.";
     }
 

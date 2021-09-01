@@ -11,8 +11,9 @@ public class Product {
     private float rating;
     private long price;
     private String category;
+    private String imgAddress;
 
-    public Product(long id, String title, String description, int quantityAvailable, long price, String category) {
+    public Product(long id, String title, String description, int quantityAvailable, long price, String category, String imgAddress) {
         this.ID = id;
         this.title = title;
         this.description = description;
@@ -20,6 +21,8 @@ public class Product {
         this.rating = 0;
         this.price = price;
         this.category = category;
+        this.imgAddress = imgAddress;
+        //imgAddress = "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80";
     }
 
     private String getCategoryByString(String category) {
@@ -98,5 +101,13 @@ public class Product {
 
     public String getCategory() {
         return category;
+    }
+
+    public void setImgAddress(String imgAddress) {
+        this.imgAddress = imgAddress;
+    }
+
+    public String getImgAddress() {
+        return imgAddress;
     }
 }

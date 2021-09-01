@@ -15,6 +15,7 @@ import java.util.ArrayList;
 @Validated
 @RestController
 @RequestMapping("/comments")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CommentController {
 
     @GetMapping
