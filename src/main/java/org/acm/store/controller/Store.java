@@ -67,8 +67,8 @@ public class Store {
         DataBase.getInstance().addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD",
                 "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80");
 
-        DataBase.getInstance().addComment(1,1,"wowwww");
-        DataBase.getInstance().addComment(1,1,"greattttt!!!!");
+        DataBase.getInstance().addComment(2,1,"wowwww");
+        DataBase.getInstance().addComment(2,1,"greattttt!!!!");
         Cart cart = DataBase.getInstance().findOpenCartByUser(2);
         DataBase.getInstance().addItem(cart.getID(), 1);
         DataBase.getInstance().addItem(cart.getID(), 1);
