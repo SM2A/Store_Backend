@@ -61,15 +61,14 @@ public class Store {
         DataBase.getInstance().addCategory("keyboard");
 
         DataBase.getInstance().addProduct("MFSX", "Microsoft", 5, 60, "GAME",
-                "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80");
+                "https://i1.sndcdn.com/artworks-000538033689-8y3q0k-t500x500.jpg");
         DataBase.getInstance().addProduct("Death Adder", "Razer", 5, 30, "MOUSE",
-                "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80");
+                "https://hardwaremarket.net/wp-content/uploads/2021/03/razer-deathadder-essential-optical-gaming-mouse-white-1571981760387.jpg");
         DataBase.getInstance().addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD",
-                "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80");
+                "https://www.logitech.com/content/dam/logitech/en/products/keyboards/mx-keys/gallery/us-mx-keys-gallery-graphite-front.png");
 
-        DataBase.getInstance().addComment(2,1,"wowwww");
-        DataBase.getInstance().addComment(2,1,"greattttt!!!!");
         Cart cart = DataBase.getInstance().findOpenCartByUser(2);
+
         DataBase.getInstance().addItem(cart.getID(), 1);
         DataBase.getInstance().addItem(cart.getID(), 1);
         DataBase.getInstance().addItem(cart.getID(), 1);
@@ -77,9 +76,17 @@ public class Store {
         DataBase.getInstance().addItem(cart.getID(), 2);
         DataBase.getInstance().addItem(cart.getID(), 3);
 
+        DataBase.getInstance().addComment(2,1,"wowwww");
+        DataBase.getInstance().addComment(2,1,"greattttt!!!!");
+
+        DataBase.getInstance().addComment(2,2,"wowwww");
+        DataBase.getInstance().addComment(2,3,"greattttt!!!!");
+
         DataBase.getInstance().addCredit(2, 10000);
         DataBase.getInstance().purchase(2);
+
         cart = DataBase.getInstance().findOpenCartByUser(2);
+
         DataBase.getInstance().addItem(cart.getID(), 1);
         DataBase.getInstance().addItem(cart.getID(), 2);*/
 

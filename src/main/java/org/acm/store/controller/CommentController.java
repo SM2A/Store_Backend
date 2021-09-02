@@ -5,6 +5,9 @@ import org.acm.store.controller.validation.CustomException;
 import org.acm.store.model.Comment;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -18,19 +21,31 @@ import java.util.ArrayList;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CommentController {
 
-    @GetMapping
-    public ArrayList<Comment> getComments(){
-        return DataBase.getInstance().getAllComments();
+    @GetMapping(produces = "application/json")
+    public String getComments() throws JSONException {
+        JSONArray jsonArray = new JSONArray();
+        for (Comment comment : DataBase.getInstance().getAllComments()) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", comment.getID());
+            String userName = DataBase.getInstance().findUser(comment.getUserID()).getFirstName() + " " +
+                              DataBase.getInstance().findUser(comment.getUserID()).getLastName();
+            jsonObject.put("user", userName);
+            jsonObject.put("text", comment.getText());
+            jsonObject.put("likes", comment.getLikes());
+            jsonObject.put("dislikes", comment.getDislikes());
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray.toString();
     }
 
     @PostMapping("/add")
     public String addComment(@RequestParam(required = false) @NotBlank @Valid String productID,
                              @RequestParam(required = false) @NotBlank @Valid String text,
-                             HttpServletRequest request){
+                             HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("Make sure you are a costumer");
-        if(DataBase.getInstance().findProduct(Long.parseLong(productID)) == null)
+        if (DataBase.getInstance().findProduct(Long.parseLong(productID)) == null)
             throw new CustomException("Product Id Doesn't Exist");
         User user = Authentication.loggedInUser(request);
         DataBase.getInstance().addComment(user.getID(), Long.parseLong(productID), text);
@@ -38,14 +53,14 @@ public class CommentController {
     }
 
     @GetMapping("/{productId}")
-    public ArrayList<Comment> showProductComments(@PathVariable("productId") long productId){
-        if(DataBase.getInstance().findProduct(productId) == null)
+    public ArrayList<Comment> showProductComments(@PathVariable("productId") long productId) {
+        if (DataBase.getInstance().findProduct(productId) == null)
             throw new CustomException("Product Id Doesn't Exist");
         return DataBase.getInstance().getProductComments(productId);
     }
 
     @PostMapping("/{id}/like")
-    public String likeComment(@PathVariable("id") long id, HttpServletRequest request){
+    public String likeComment(@PathVariable("id") long id, HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("Make sure you are a costumer");
@@ -55,7 +70,7 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/dislike")
-    public String dislikeComment(@PathVariable("id") long id, HttpServletRequest request){
+    public String dislikeComment(@PathVariable("id") long id, HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("Make sure you are a costumer");
