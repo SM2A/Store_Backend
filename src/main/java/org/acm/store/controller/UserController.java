@@ -7,6 +7,7 @@ import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -44,6 +45,36 @@ public class UserController {
 //        if (!Authentication.isLogin(request))
 //            throw new CustomException("please login first");
         //we must not show password --> html
-        return DataBase.getInstance().validateUser(email,password);
+        return DataBase.getInstance().validateUser(email, password);
+    }
+
+    @PostMapping("/profile/edit")
+    public String editProfile(@RequestParam(required = false) @NotBlank @Valid String firstName,
+                              @RequestParam(required = false) @NotBlank @Valid String lastName,
+                              @RequestParam(required = false) @NotBlank @Valid String password,
+                              @RequestParam(required = false) @NotBlank @Valid String email,
+                              @RequestParam(required = false) @NotBlank @Valid String newEmail,
+                              @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
+                              @RequestParam(required = false) @NotBlank @Valid String address) {
+//        if (!Authentication.isLogin(request))
+//            throw new CustomException("please login first");
+        //we must not show password --> html
+        DataBase dataBase = DataBase.getInstance();
+        User user = Authentication.loggedInUser(email, password);
+        dataBase.editUser(user.getID(), firstName, lastName, newEmail, phoneNumber, address);
+        return "Edited successfully";
+    }
+
+    @PostMapping("/profile/password")
+    public String changePassord(@RequestParam(required = false) @NotBlank @Valid String newPassword,
+                                @RequestParam(required = false) @NotBlank @Valid String email,
+                                @RequestParam(required = false) @NotBlank @Valid String password) {
+//        if (!Authentication.isLogin(request))
+//            throw new CustomException("please login first");
+        //we must not show password --> html
+        DataBase dataBase = DataBase.getInstance();
+        User user = Authentication.loggedInUser(email, password);
+        dataBase.changePassword(user.getID(),newPassword);
+        return "Changed successfully";
     }
 }

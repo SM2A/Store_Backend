@@ -64,6 +64,20 @@ public class DataBase {
         users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
     }
 
+    public void editUser(long id,String firstName, String lastName, String email,
+                         String phoneNumber, String address){
+        User user = users.get(id);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
+        user.setAddress(address);
+    }
+
+    public void changePassword(long id,String password){
+        users.get(id).setPassword(password);
+    }
+
     public Comment findCommentByID(long id) {
         return comments.get(id);
     }
