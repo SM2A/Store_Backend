@@ -39,15 +39,16 @@ public class CommentController {
     }
 
     @PostMapping("/add")
-    public String addComment(@RequestParam(required = false) @NotBlank @Valid String productID,
-                             @RequestParam(required = false) @NotBlank @Valid String text,
-                             HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
-        if (DataBase.getInstance().findProduct(Long.parseLong(productID)) == null)
-            throw new CustomException("Product Id Doesn't Exist");
-        User user = Authentication.loggedInUser(request);
+    public String addComment(@RequestParam(required = false) @NotBlank @Valid String password,
+                             @RequestParam(required = false) @NotBlank @Valid String email,
+                             @RequestParam(required = false) @NotBlank @Valid String productID,
+                             @RequestParam(required = false) @NotBlank @Valid String text) {
+//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("Make sure you are a costumer");
+//        if (DataBase.getInstance().findProduct(Long.parseLong(productID)) == null)
+//            throw new CustomException("Product Id Doesn't Exist");
+        User user = Authentication.loggedInUser(email, password);
         DataBase.getInstance().addComment(user.getID(), Long.parseLong(productID), text);
         return "Your comment has been successfully added";
     }
