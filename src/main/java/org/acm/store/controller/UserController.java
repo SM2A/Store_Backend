@@ -3,11 +3,11 @@ package org.acm.store.controller;
 
 import org.acm.store.controller.validation.Authentication;
 import org.acm.store.controller.validation.CustomException;
+import org.acm.store.controller.validation.Validation;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -61,6 +61,8 @@ public class UserController {
         //we must not show password --> html
         DataBase dataBase = DataBase.getInstance();
         User user = Authentication.loggedInUser(email, password);
+        if (Validation.isTaken(newEmail, phoneNumber))
+            throw new CustomException("This email or phone-number is taken");
         dataBase.editUser(user.getID(), firstName, lastName, newEmail, phoneNumber, address);
         return "Edited successfully";
     }
