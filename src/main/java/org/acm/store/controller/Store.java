@@ -40,23 +40,14 @@ public class Store {
         return "signup page";
     }*/
 
-    @PostMapping("/signup")
-    public String signup(@RequestParam(required = false) @NotBlank @Valid String firstName,
-                         @RequestParam(required = false) @NotBlank @Valid String lastName,
-                         @RequestParam(required = false) @NotBlank @Valid String password,
-                         @RequestParam(required = false) @NotBlank @Valid String email,
-                         @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
-                         @RequestParam(required = false) @NotBlank @Valid String address) throws JSONException {
-        DataBase dataBase = DataBase.getInstance();
-        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", 1);
-        jsonObject.put("ID", dataBase.validateUserByID(email, password));
-        jsonObject.put("email", email);
-        jsonObject.put("password", password);
+    @GetMapping("/test1")
+    public String test1(){
 
-        /*DataBase.getInstance().addCategory("game");
+        DataBase.getInstance().addCostumer("Amin","Atyabi","123","amin@amin.net","123654789","Tehran");
+        DataBase.getInstance().addCostumer("Paria","Khoshtab","123","test@test.net","987456321","Tehran");
+        DataBase.getInstance().addCostumer("Parnian","Fazel","123","salam@test.net","147852369","Tehran");
+
+        DataBase.getInstance().addCategory("game");
         DataBase.getInstance().addCategory("mouse");
         DataBase.getInstance().addCategory("keyboard");
 
@@ -76,11 +67,15 @@ public class Store {
         DataBase.getInstance().addItem(cart.getID(), 2);
         DataBase.getInstance().addItem(cart.getID(), 3);
 
-        DataBase.getInstance().addComment(2,1,"wowwww");
-        DataBase.getInstance().addComment(2,1,"greattttt!!!!");
+        DataBase.getInstance().addComment(3,1,"wowwww");
+        DataBase.getInstance().addComment(4,1,"greattttt!!!!");
 
-        DataBase.getInstance().addComment(2,2,"wowwww");
+        DataBase.getInstance().addComment(5,2,"wowwww");
         DataBase.getInstance().addComment(2,3,"greattttt!!!!");
+
+        DataBase.getInstance().addCredit(3, 10000);
+        DataBase.getInstance().addCredit(4, 10000);
+        DataBase.getInstance().addCredit(5, 10000);
 
         DataBase.getInstance().addCredit(2, 10000);
         DataBase.getInstance().purchase(2);
@@ -88,7 +83,26 @@ public class Store {
         cart = DataBase.getInstance().findOpenCartByUser(2);
 
         DataBase.getInstance().addItem(cart.getID(), 1);
-        DataBase.getInstance().addItem(cart.getID(), 2);*/
+        DataBase.getInstance().addItem(cart.getID(), 2);
+
+        return "Test 1";
+    }
+
+    @PostMapping("/signup")
+    public String signup(@RequestParam(required = false) @NotBlank @Valid String firstName,
+                         @RequestParam(required = false) @NotBlank @Valid String lastName,
+                         @RequestParam(required = false) @NotBlank @Valid String password,
+                         @RequestParam(required = false) @NotBlank @Valid String email,
+                         @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
+                         @RequestParam(required = false) @NotBlank @Valid String address) throws JSONException {
+        DataBase dataBase = DataBase.getInstance();
+        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+        dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", 1);
+        jsonObject.put("ID", dataBase.validateUserByID(email, password));
+        jsonObject.put("email", email);
+        jsonObject.put("password", password);
 
         return jsonObject.toString();
     }

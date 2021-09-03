@@ -120,13 +120,14 @@ public class CartController {
 
 
     @PostMapping("/items/delete")
-    public String deleteItemFromCart(@RequestParam(required = false) @NotBlank @Valid String productId,
-                                     HttpServletRequest request) {
-        if (!Authentication.isLogin(request))
-            throw new CustomException("Please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(request);
+    public String deleteItemFromCart(@RequestParam(required = false) @NotBlank @Valid String password,
+                                     @RequestParam(required = false) @NotBlank @Valid String email,
+                                     @RequestParam(required = false) @NotBlank @Valid String productId) {
+//        if (!Authentication.isLogin(request))
+//            throw new CustomException("Please login first");
+//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("Make sure you are a costumer");
+        User user = Authentication.loggedInUser(email, password);
         Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
         DataBase.getInstance().deleteItem(Long.parseLong(productId), cart.getID());
         return "Your item has been successfully deleted from cart.";
