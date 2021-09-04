@@ -1,6 +1,7 @@
 package org.acm.store.model;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.acm.store.controller.validation.CustomException;
 
@@ -62,8 +63,8 @@ public class DataBase {
         users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
     }
 
-    public void editUser(long id,String firstName, String lastName, String email,
-                         String phoneNumber, String address){
+    public void editUser(long id, String firstName, String lastName, String email,
+                         String phoneNumber, String address) {
         User user = users.get(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -72,7 +73,7 @@ public class DataBase {
         user.setAddress(address);
     }
 
-    public void changePassword(long id,String password){
+    public void changePassword(long id, String password) {
         users.get(id).setPassword(password);
     }
 
@@ -178,7 +179,8 @@ public class DataBase {
         createCart(user.getID());
     }
 
-    public void addProduct(String title, String description, int quantityAvailable, int price, String category, String imgAddress) {
+    public void addProduct(String title, String description, int quantityAvailable,
+                           int price, String category, String imgAddress) {
         if (getExistedProduct(title, category) != null) {
             Product product = getExistedProduct(title, category);
             product.addToStock(quantityAvailable);
@@ -253,7 +255,7 @@ public class DataBase {
     public long cartPrice(long cartID) {
         long price = 0;
         for (Map.Entry<Product, Integer> entry : getCartItems(cartID).entrySet()) {
-            price += entry.getKey().getPrice()*entry.getValue();
+            price += entry.getKey().getPrice() * entry.getValue();
         }
         return price;
     }
@@ -325,24 +327,36 @@ public class DataBase {
         return categories;
     }
 
-    public ArrayList<Product> getProductsByCategory(String category){
+    public ArrayList<Product> getProductsByCategory(String category) {
         ArrayList<Product> selectedProducts = new ArrayList<>();
-        for(Product product: products.values()) {
-            if(product.getCategory().equals(category)){
+        for (Product product : products.values()) {
+            if (product.getCategory().equals(category)) {
                 selectedProducts.add(product);
             }
         }
         return selectedProducts;
     }
 
-    public List<ArrayList<Product>> getMainProducts(){//Randomly get 4 products for 3 categories to show in  home page
+    public ArrayList<Product> searchProducts(String name) {
+        ArrayList<Product> searchedProducts = new ArrayList<>();
+        for (Product product : products.values()) {
+            if (product.getTitle().equalsIgnoreCase(name)) searchedProducts.add(product);
+            else if (product.getTitle().contains(name)) searchedProducts.add(product);
+            else if (Pattern.compile(Pattern.quote(name), Pattern.CASE_INSENSITIVE).matcher(product.getTitle())
+                    .find()) searchedProducts.add(product);
+            else if (product.getTitle().matches("(?i).*" + name + ".*")) searchedProducts.add(product);
+        }
+        return searchedProducts;
+    }
+
+    public List<ArrayList<Product>> getMainProducts() {//Randomly get 4 products for 3 categories to show in  home page
         List<ArrayList<Product>> allMainProducts = new ArrayList<>();
-        if(categories.size() < 3) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
-        for(int j = 0; j < 3; j++) {
+        if (categories.size() < 3) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
+        for (int j = 0; j < 3; j++) {
             ArrayList<Product> mainProductsInACategory = new ArrayList<>();
             ArrayList<Product> list = getProductsByCategory(categories.get(j));
             Collections.shuffle(list);
-            if(list.size() < 4) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
+            if (list.size() < 4) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
             for (int i = 0; i < 4; i++) {
                 mainProductsInACategory.add(list.get(i));
             }

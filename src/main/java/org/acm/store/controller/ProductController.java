@@ -22,6 +22,11 @@ public class ProductController {
         return DataBase.getInstance().getProducts();
     }
 
+    @PostMapping("/search")
+    public ArrayList<Product> searchProduct(@RequestParam(required = false) @NotBlank @Valid String name){
+        return DataBase.getInstance().searchProducts(name);
+    }
+
     @PostMapping("/add")
     public String addProduct(@RequestParam(required = false) @NotBlank @Valid String title,
                              @RequestParam(required = false) @NotBlank @Valid String description,
