@@ -1,8 +1,6 @@
 package org.acm.store.model;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.acm.store.controller.validation.CustomException;
 
@@ -326,4 +324,31 @@ public class DataBase {
     public ArrayList<String> getCategories() {
         return categories;
     }
+
+    public ArrayList<Product> getProductsByCategory(String category){
+        ArrayList<Product> selectedProducts = new ArrayList<>();
+        for(Product product: products.values()) {
+            if(product.getCategory().equals(category)){
+                selectedProducts.add(product);
+            }
+        }
+        return selectedProducts;
+    }
+
+    public List<ArrayList<Product>> getMainProducts(){//Randomly get 4 products for 3 categories to show in  home page
+        List<ArrayList<Product>> allMainProducts = new ArrayList<>();
+        if(categories.size() < 3) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
+        for(int j = 0; j < 3; j++) {
+            ArrayList<Product> mainProductsInACategory = new ArrayList<>();
+            ArrayList<Product> list = getProductsByCategory(categories.get(j));
+            Collections.shuffle(list);
+            if(list.size() < 4) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
+            for (int i = 0; i < 4; i++) {
+                mainProductsInACategory.add(list.get(i));
+            }
+            allMainProducts.add(mainProductsInACategory);
+        }
+        return allMainProducts;
+    }
+
 }

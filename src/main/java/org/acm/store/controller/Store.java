@@ -5,6 +5,7 @@ import org.acm.store.controller.validation.CustomException;
 import org.acm.store.controller.validation.Validation;
 import org.acm.store.model.Cart;
 import org.acm.store.model.DataBase;
+import org.acm.store.model.Product;
 import org.acm.store.model.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,10 +31,49 @@ import javax.validation.constraints.NotBlank;
 public class Store {
 
     @GetMapping("/")
-    public String homePage() {
+    public /*String*/List<ArrayList<Product>> homePage() {
         if (!Validation.isTaken("admin@admin.com", "007"))
             DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
-        return "home page";
+        return DataBase.getInstance().getMainProducts();
+        //return "Home page";
+    }
+
+    @GetMapping("/test")
+    public List<ArrayList<Product>> test() {
+
+        DataBase.getInstance().addCategory("KEYBOARDTWO");
+        DataBase.getInstance().addCategory("KEYBOARDTHREE");
+        DataBase.getInstance().addCategory("KEYBOARDFOUR");
+
+        DataBase.getInstance().addProduct("MX KKKeys 001", "Logitech", 5, 100, "KEYBOARDTWO",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MX KKKeys 67", "Logitech", 5, 100, "KEYBOARDTWO",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MX KKKeys 42", "Logitech", 5, 100, "KEYBOARDTWO",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MX KKKeys 56", "Logitech", 5, 100, "KEYBOARDTWO",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+
+
+        DataBase.getInstance().addProduct("MX Keyss88", "Logitech", 5, 100, "KEYBOARDTHREE",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MX Keysss 0987", "Logitech", 5, 100, "KEYBOARDTHREE",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MX Keyss 45", "Logitech", 5, 100, "KEYBOARDTHREE",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MX Keysss 2345 iui", "Logitech", 5, 100, "KEYBOARDTHREE",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+
+        DataBase.getInstance().addProduct("MMX Keys ytf", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MXXX Keys tyf", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MXX Keys 56 err", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        DataBase.getInstance().addProduct("MMX Keys fdzdx", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+
+        return DataBase.getInstance().getMainProducts();
     }
 
     /*@GetMapping("/signup")
