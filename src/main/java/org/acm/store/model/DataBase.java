@@ -141,6 +141,17 @@ public class DataBase {
         return commentHashMap;
     }
 
+    public void editProduct(long id,String title, String description, int quantityAvailable,
+                            int price, String category, String imgAddress){
+        Product product = products.get(id);
+        product.setTitle(title);
+        product.setDescription(description);
+        product.setQuantityAvailable(quantityAvailable);
+        product.setPrice(price);
+        product.setCategory(category);
+        product.setImgAddress(imgAddress);
+    }
+
     public ArrayList<Comment> getProductComments(long productId) {
         ArrayList<Comment> userComments = new ArrayList<>();
         for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
@@ -193,10 +204,6 @@ public class DataBase {
 
     public Product findProduct(long ID) {
         return products.get(ID);
-    }
-
-    public void updateProduct() {
-        //todo many methods or if/else ?
     }
 
     public void addComment(long userID, long productID, String text) {

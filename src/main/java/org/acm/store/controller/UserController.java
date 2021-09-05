@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @PostMapping("/profile/password")
-    public String changePassord(@RequestParam(required = false) @NotBlank @Valid String newPassword,
+    public String changePassword(@RequestParam(required = false) @NotBlank @Valid String newPassword,
                                 @RequestParam(required = false) @NotBlank @Valid String email,
                                 @RequestParam(required = false) @NotBlank @Valid String password) {
 //        if (!Authentication.isLogin(request))

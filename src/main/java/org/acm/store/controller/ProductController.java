@@ -6,6 +6,7 @@ import org.acm.store.model.DataBase;
 import org.acm.store.model.Product;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -18,12 +19,12 @@ import java.util.ArrayList;
 public class ProductController {
 
     @GetMapping
-    public ArrayList<Product> getProducts(){
+    public ArrayList<Product> getProducts() {
         return DataBase.getInstance().getProducts();
     }
 
     @PostMapping("/search")
-    public ArrayList<Product> searchProduct(@RequestParam(required = false) @NotBlank @Valid String name){
+    public ArrayList<Product> searchProduct(@RequestParam(required = false) @NotBlank @Valid String name) {
         return DataBase.getInstance().searchProducts(name);
     }
 
@@ -43,24 +44,24 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product findProductById(@PathVariable("id") long id){
-        if(DataBase.getInstance().findProduct(id) == null) throw new CustomException("Product Id Doesn't Exist.");
+    public Product findProductById(@PathVariable("id") long id) {
+        if (DataBase.getInstance().findProduct(id) == null) throw new CustomException("Product Id Doesn't Exist.");
         return DataBase.getInstance().findProduct(id);
     }
 
     @PostMapping("/rate")
     public String rateProduct(@RequestParam(required = false) @NotBlank @Valid String productId,
                               @RequestParam(required = false) @NotBlank @Valid String rating,
-                              HttpServletRequest request){
+                              HttpServletRequest request) {
         if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if(DataBase.getInstance().findProduct(Long.parseLong(productId)) == null)
+        if (DataBase.getInstance().findProduct(Long.parseLong(productId)) == null)
             throw new CustomException("Product Id Doesn't Exist.");
         DataBase.getInstance().addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
         return "The product has been successfully rated.";
     }
 
     @PostMapping("/category/add")
-    public String addCategory(@RequestParam(required = false) @NotBlank @Valid String name){
+    public String addCategory(@RequestParam(required = false) @NotBlank @Valid String name) {
 //        System.out.println(name);
 //        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
 //        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
@@ -70,7 +71,20 @@ public class ProductController {
     }
 
     @GetMapping("/category")
-    public ArrayList<String> getCategories(){
+    public ArrayList<String> getCategories() {
         return DataBase.getInstance().getCategories();
+    }
+
+    @PostMapping("/edit")
+    public String editProduct(@RequestParam(required = false) @NotBlank @Valid String id,
+                              @RequestParam(required = false) @NotBlank @Valid String title,
+                              @RequestParam(required = false) @NotBlank @Valid String description,
+                              @RequestParam(required = false) @NotBlank @Valid String quantityAvailable,
+                              @RequestParam(required = false) @NotBlank @Valid String price,
+                              @RequestParam(required = false) @NotBlank @Valid String category,
+                              @RequestParam(required = false) @NotBlank @Valid String imgAddress) {
+        DataBase.getInstance().editProduct(Long.parseLong(id), title, description, Integer.parseInt(quantityAvailable),
+                Integer.parseInt(price), category, imgAddress);
+        return "Edited successfully";
     }
 }
