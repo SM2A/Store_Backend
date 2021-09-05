@@ -23,9 +23,14 @@ public class ProductController {
         return DataBase.getInstance().getProducts();
     }
 
-    @PostMapping("/search")
-    public ArrayList<Product> searchProduct(@RequestParam(required = false) @NotBlank @Valid String name) {
-        return DataBase.getInstance().searchProducts(name);
+    @PostMapping("/search/name")
+    public ArrayList<Product> searchProductByName(@RequestParam(required = false) @NotBlank @Valid String name) {
+        return DataBase.getInstance().searchProductsByName(name);
+    }
+
+    @PostMapping("/search/category")
+    public ArrayList<Product> searchProductByCategory(@RequestParam(required = false) @NotBlank @Valid String category){
+        return DataBase.getInstance().searchProductsByCategory(category);
     }
 
     @PostMapping("/add")

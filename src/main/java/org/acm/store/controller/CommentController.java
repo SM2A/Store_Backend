@@ -53,7 +53,7 @@ public class CommentController {
         return "Your comment has been successfully added";
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping(path = "/{productId}",produces = "application/json")
     public String showProductComments(@PathVariable("productId") long productId) throws JSONException {
         if (DataBase.getInstance().findProduct(productId) == null)
             throw new CustomException("Product Id Doesn't Exist");

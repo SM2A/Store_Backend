@@ -344,7 +344,7 @@ public class DataBase {
         return selectedProducts;
     }
 
-    public ArrayList<Product> searchProducts(String name) {
+    public ArrayList<Product> searchProductsByName(String name) {
         ArrayList<Product> searchedProducts = new ArrayList<>();
         for (Product product : products.values()) {
             if (product.getTitle().equalsIgnoreCase(name)) searchedProducts.add(product);
@@ -352,6 +352,14 @@ public class DataBase {
             else if (Pattern.compile(Pattern.quote(name), Pattern.CASE_INSENSITIVE).matcher(product.getTitle())
                     .find()) searchedProducts.add(product);
             else if (product.getTitle().matches("(?i).*" + name + ".*")) searchedProducts.add(product);
+        }
+        return searchedProducts;
+    }
+
+    public ArrayList<Product> searchProductsByCategory(String category) {
+        ArrayList<Product> searchedProducts = new ArrayList<>();
+        for (Product product : products.values()) {
+            if (product.getCategory().equalsIgnoreCase(category)) searchedProducts.add(product);
         }
         return searchedProducts;
     }
