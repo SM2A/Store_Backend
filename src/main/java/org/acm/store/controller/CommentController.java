@@ -54,27 +54,39 @@ public class CommentController {
     }
 
     @GetMapping("/{productId}")
-    public ArrayList<Comment> showProductComments(@PathVariable("productId") long productId) {
+    public String showProductComments(@PathVariable("productId") long productId) throws JSONException {
         if (DataBase.getInstance().findProduct(productId) == null)
             throw new CustomException("Product Id Doesn't Exist");
-        return DataBase.getInstance().getProductComments(productId);
+        JSONArray jsonArray = new JSONArray();
+        for (Comment comment : DataBase.getInstance().getProductComments(productId)) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", comment.getID());
+            String userName = DataBase.getInstance().findUser(comment.getUserID()).getFirstName() + " " +
+                    DataBase.getInstance().findUser(comment.getUserID()).getLastName();
+            jsonObject.put("user", userName);
+            jsonObject.put("text", comment.getText());
+            jsonObject.put("likes", comment.getLikes());
+            jsonObject.put("dislikes", comment.getDislikes());
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray.toString();
     }
 
     @PostMapping("/{id}/like")
-    public String likeComment(@PathVariable("id") long id, HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
+    public String likeComment(@PathVariable("id") long id) {
+//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("Make sure you are a costumer");
         if (DataBase.getInstance().findComment(id) == null) throw new CustomException("Comment Id Doesn't Exist");
         DataBase.getInstance().likeComment(id);
         return "successfully liked";
     }
 
     @PostMapping("/{id}/dislike")
-    public String dislikeComment(@PathVariable("id") long id, HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-            throw new CustomException("Make sure you are a costumer");
+    public String dislikeComment(@PathVariable("id") long id) {
+//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
+//            throw new CustomException("Make sure you are a costumer");
         if (DataBase.getInstance().findComment(id) == null) throw new CustomException("Comment Id Doesn't Exist.");
         DataBase.getInstance().dislikeComment(id);
         return "successfully disliked";
