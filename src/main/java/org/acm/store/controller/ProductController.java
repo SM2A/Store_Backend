@@ -58,9 +58,9 @@ public class ProductController {
     public String rateProduct(@RequestParam(required = false) @NotBlank @Valid String productId,
                               @RequestParam(required = false) @NotBlank @Valid String rating,
                               HttpServletRequest request) {
-        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-        if (DataBase.getInstance().findProduct(Long.parseLong(productId)) == null)
-            throw new CustomException("Product Id Doesn't Exist.");
+//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
+//        if (DataBase.getInstance().findProduct(Long.parseLong(productId)) == null)
+//            throw new CustomException("Product Id Doesn't Exist.");
         DataBase.getInstance().addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
         return "The product has been successfully rated.";
     }

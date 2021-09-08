@@ -12,6 +12,7 @@ public class Product {
     private long price;
     private String category;
     private String imgAddress;
+    private int rateCount;
 
     public Product(long id, String title, String description, int quantityAvailable, long price, String category, String imgAddress) {
         this.ID = id;
@@ -22,6 +23,7 @@ public class Product {
         this.price = price;
         this.category = category;
         this.imgAddress = imgAddress;
+        this.rateCount = 0;
         //imgAddress = "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80";
     }
 
@@ -40,9 +42,16 @@ public class Product {
         }
     }
 
-    public void addRating(int newRating) {//rate function???
-        if (newRating <= 5) {
-            rating = (rating + newRating) / 2;
+    public void addRating(int newRating) {
+        if (rating == 0) {
+            rating = newRating;
+            rateCount++;
+        }
+        else {
+            float sum = (float) rateCount * rating;
+            sum += (float)newRating;
+            rateCount++;
+            rating = sum / (float) rateCount;
         }
     }
 

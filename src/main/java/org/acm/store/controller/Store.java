@@ -102,18 +102,18 @@ public class Store {
 
         Cart cart = DataBase.getInstance().findOpenCartByUser(2);
 
-        DataBase.getInstance().addItem(cart.getID(), 1);
-        DataBase.getInstance().addItem(cart.getID(), 1);
-        DataBase.getInstance().addItem(cart.getID(), 1);
-        DataBase.getInstance().addItem(cart.getID(), 2);
-        DataBase.getInstance().addItem(cart.getID(), 2);
-        DataBase.getInstance().addItem(cart.getID(), 3);
+        DataBase.getInstance().addItem(cart.getID(), 13);
+        DataBase.getInstance().addItem(cart.getID(), 13);
+        DataBase.getInstance().addItem(cart.getID(), 13);
+        DataBase.getInstance().addItem(cart.getID(), 14);
+        DataBase.getInstance().addItem(cart.getID(), 14);
+        DataBase.getInstance().addItem(cart.getID(), 15);
 
-        DataBase.getInstance().addComment(3,1,"wowwww");
-        DataBase.getInstance().addComment(4,1,"greattttt!!!!");
+        DataBase.getInstance().addComment(3,13,"wowwww");
+        DataBase.getInstance().addComment(4,13,"greattttt!!!!");
 
-        DataBase.getInstance().addComment(5,2,"wowwww");
-        DataBase.getInstance().addComment(2,3,"greattttt!!!!");
+        DataBase.getInstance().addComment(5,14,"wowwww");
+        DataBase.getInstance().addComment(2,15,"greattttt!!!!");
 
         DataBase.getInstance().addCredit(3, 10000);
         DataBase.getInstance().addCredit(4, 10000);
@@ -126,6 +126,24 @@ public class Store {
 
         DataBase.getInstance().addItem(cart.getID(), 1);
         DataBase.getInstance().addItem(cart.getID(), 2);
+        
+        DataBase.getInstance().addRatingToProduct(13,5);
+        DataBase.getInstance().addRatingToProduct(13,5);
+        DataBase.getInstance().addRatingToProduct(13,2);
+        DataBase.getInstance().addRatingToProduct(13,1);
+        DataBase.getInstance().addRatingToProduct(13,3);
+
+        DataBase.getInstance().addRatingToProduct(14,4);
+        DataBase.getInstance().addRatingToProduct(14,5);
+        DataBase.getInstance().addRatingToProduct(14,2);
+        DataBase.getInstance().addRatingToProduct(14,1);
+        DataBase.getInstance().addRatingToProduct(14,3);
+
+        DataBase.getInstance().addRatingToProduct(15,1);
+        DataBase.getInstance().addRatingToProduct(15,5);
+        DataBase.getInstance().addRatingToProduct(15,2);
+        DataBase.getInstance().addRatingToProduct(15,1);
+        DataBase.getInstance().addRatingToProduct(15,3);
 
         return "Test 1";
     }
