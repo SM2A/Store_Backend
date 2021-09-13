@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.List;
 
 @Validated
 @RestController
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 public class ProductController {
 
     @GetMapping
-    public ArrayList<Product> getProducts() {
+    public List<Product> getProducts() {
         return DataBase.getInstance().getProducts();
     }
 

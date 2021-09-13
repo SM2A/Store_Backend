@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import org.acm.store.controller.validation.CustomException;
+import org.hibernate.Session;
 
 /**
  * Created by SM2A
@@ -13,7 +14,7 @@ import org.acm.store.controller.validation.CustomException;
 public class DataBase {
 
     private static DataBase instance;
-    private long lastUserID, lastProductID, lastCommentID, lastCartID;
+    private long lastUserID, lastCommentID, lastCartID;
     private final HashMap<Long, User> users;
     private final HashMap<Long, Product> products;
     private final HashMap<Long, Comment> comments;
@@ -30,7 +31,6 @@ public class DataBase {
         categories = new ArrayList<>();
         lastCartID = 0;
         lastCommentID = 0;
-        lastProductID = 0;
         lastUserID = 0;
     }
 
@@ -129,8 +129,12 @@ public class DataBase {
         return new ArrayList<>(cartHashMap.values());
     }
 
-    public ArrayList<Product> getProducts() {
-        return new ArrayList<>(products.values());
+    public List<Product> getProducts() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        List<Product> list = session.createQuery("FROM product p", Product.class).getResultList();
+        session.close();
+        return list;
     }
 
     public HashMap<Long, Comment> getUserComments(long userID) {
@@ -141,8 +145,8 @@ public class DataBase {
         return commentHashMap;
     }
 
-    public void editProduct(long id,String title, String description, int quantityAvailable,
-                            int price, String category, String imgAddress){
+    public void editProduct(long id, String title, String description, int quantityAvailable,
+                            int price, String category, String imgAddress) {
         Product product = products.get(id);
         product.setTitle(title);
         product.setDescription(description);
@@ -196,9 +200,30 @@ public class DataBase {
             Product product = getExistedProduct(title, category);
             product.addToStock(quantityAvailable);
         } else {
-            long ID = ++lastProductID;
+            //todo get categories
             if (!categories.contains(category)) throw new CustomException("Category not available");
-            products.put(ID, new Product(ID, title, description, quantityAvailable, price, category, imgAddress));
+            /*EntityManager entityManager = null;
+            EntityTransaction entityTransaction = null;
+            EntityManagerFactory entityManagerFactory = null;
+            try {
+                entityManagerFactory = Persistence.createEntityManagerFactory("store");
+                entityManager = entityManagerFactory.createEntityManager();
+                entityTransaction = entityManager.getTransaction();
+                entityTransaction.begin();
+                entityManager.persist(new Product(title, description, quantityAvailable, price, category, imgAddress));
+                entityTransaction.commit();
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                entityTransaction.rollback();
+            }finally {
+                entityManager.close();
+                entityManagerFactory.close();
+            }*/
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            session.save(new Product(title, description, quantityAvailable, price, category, imgAddress));
+            session.getTransaction().commit();
+            session.close();
         }
     }
 

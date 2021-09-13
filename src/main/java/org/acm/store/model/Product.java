@@ -1,21 +1,40 @@
 package org.acm.store.model;
 
 import org.acm.store.controller.validation.CustomException;
+import javax.persistence.*;
 
+@Table(name = "product",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID"),
+        @UniqueConstraint(columnNames = "Title")
+})
+@Entity(name = "product")
 public class Product {
 
-    private final long ID;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "ID")
+    private long ID;
+    @Column(name = "Title")
     private String title;
+    @Column(name = "Description")
     private String description;
+    @Column(name = "Quantity")
     private int quantityAvailable;
+    @Column(name = "Rating")
     private float rating;
+    @Column(name = "Price")
     private long price;
+    @Column(name = "Category")
     private String category;
+    @Column(name = "ImgaeAddress")
     private String imgAddress;
+    @Column(name = "RateCount")
     private int rateCount;
 
-    public Product(long id, String title, String description, int quantityAvailable, long price, String category, String imgAddress) {
-        this.ID = id;
+    public Product() {}
+
+    public Product(String title,
+                   String description, int quantityAvailable, long price, String category, String imgAddress) {
         this.title = title;
         this.description = description;
         this.quantityAvailable = quantityAvailable;
@@ -24,22 +43,6 @@ public class Product {
         this.category = category;
         this.imgAddress = imgAddress;
         this.rateCount = 0;
-        //imgAddress = "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80";
-    }
-
-    private String getCategoryByString(String category) {
-        //if(category == "X")
-        return this.category;
-        //for all categories...
-    }
-
-    public void takeFromStock(int quantity) {
-        if (quantityAvailable - quantity >= 0) {
-            quantityAvailable -= quantity;
-        } else {
-            System.out.println("ERROR! Out Of Stock.");
-            throw new CustomException("ERROR! Out Of Stock.");
-        }
     }
 
     public void addRating(int newRating) {
