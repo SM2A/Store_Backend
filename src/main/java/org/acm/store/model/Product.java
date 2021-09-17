@@ -26,7 +26,7 @@ public class Product {
     private long price;
     @Column(name = "Category")
     private String category;
-    @Column(name = "ImgaeAddress")
+    @Column(name = "ImageAddress")
     private String imgAddress;
     @Column(name = "RateCount")
     private int rateCount;

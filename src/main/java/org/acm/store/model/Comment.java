@@ -1,13 +1,29 @@
 package org.acm.store.model;
 
+import javax.persistence.*;
+
+@Table(name = "comment", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID")
+})
+@Entity(name = "comment")
 public class Comment {
 
-    private final long ID;
-    private final long userID;
-    private final long productID;
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name = "ID")
+    private long ID;
+    @Column(name = "UserId")
+    private long userID;
+    @Column(name = "ProductID")
+    private long productID;
+    @Column(name = "Content")
     private String text;
+    @Column(name = "Like")
     private int likes;
+    @Column(name = "Dislike")
     private int dislikes;
+
+    public Comment() {}
 
     public Comment(long ID, long userID, long productID, String text) {
         this.ID = ID;

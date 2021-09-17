@@ -53,14 +53,14 @@ public class DataBase {
     public void addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
-        users.put(ID, new Costumer(ID, firstName, lastName, password, email, phoneNumber, address));
+        users.put(ID, new Costumer(firstName, lastName, password, email, phoneNumber, address));
         createCart(ID);
     }
 
     public void addAdmin(String firstName, String lastName, String password,
                          String email, String phoneNumber, String address) {
         long ID = ++lastUserID;
-        users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
+        users.put(ID, new Admin(firstName, lastName, password, email, phoneNumber, address));
     }
 
     public void editUser(long id, String firstName, String lastName, String email,
@@ -254,7 +254,7 @@ public class DataBase {
 
     public void createCart(long userID) {
         long ID = ++lastCartID;
-        carts.put(ID, new Cart(ID, userID));
+        carts.put(ID, new Cart(userID));
         items.put(ID, new HashMap<>());
     }
 

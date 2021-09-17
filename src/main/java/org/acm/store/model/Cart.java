@@ -1,18 +1,30 @@
 package org.acm.store.model;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Table(name = "cart", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID")
+})
+@Entity(name = "cart")
 public class Cart {
 
-    private final long ID;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "ID")
+    private long ID;
+    @Column(name = "Status")
     private Status status;
+    @Column(name = "UserID")
     private long userID;
+    @Column(name = "PurchaseDate")
     private Date purchaseDate;
 
-    public Cart(long ID,long userID) {
+    public Cart() {}
+
+    public Cart(long userID) {
         this.status = Status.OPEN;
         this.userID = userID;
-        this.ID = ID;
     }
 
     public long getID() {
@@ -43,7 +55,7 @@ public class Cart {
         this.purchaseDate = purchaseDate;
     }
 
-    public void purchase(){
+    public void purchase() {
         purchaseDate = new Date();
         purchaseDate.getTime();
     }
