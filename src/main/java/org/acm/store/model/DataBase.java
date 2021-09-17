@@ -54,10 +54,6 @@ public class DataBase {
         session.beginTransaction();
         session.save(new Admin(firstName, lastName, password, email, phoneNumber, address));
         session.getTransaction().commit();
-        Admin admin = (Admin) session.getNamedQuery(Admin.GET_ADMIN_ID_BY_EMAIL_PASSWORD)
-                .setParameter("email",email)
-                .setParameter("password",password).uniqueResult();
-        createCart(admin.getID());
         session.close();
     }
 

@@ -27,7 +27,7 @@ public class Item {
             = "FROM item i WHERE i.cartID = :cid AND i.productID = :pid";
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.TABLE)
     @Column(name = "ID")
     private long ID;
     @Column(name = "CartID")

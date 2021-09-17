@@ -6,7 +6,6 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 
 /**
  * Created by SM2A
@@ -20,24 +19,16 @@ public class HibernateUtil {
     private static SessionFactory buildSessionFactory() {
         try {
             if (sessionFactory == null) {
-                /*StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                        .configure("hibernate.cfg.xml").build();
-                Metadata metadata = new MetadataSources(registry).getMetadataBuilder().build();
-                sessionFactory = metadata.getSessionFactoryBuilder().build();*/
-                /*Configuration configuration = new Configuration().configure();
-                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-                        .applySettings(configuration.getProperties());
-                sessionFactory = configuration.buildSessionFactory(builder.build());*/
-                Configuration configuration = new Configuration()
-                        .configure(HibernateUtil.class.getResource("/hibernate.cfg.xml"));
-                StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
-                serviceRegistryBuilder.applySettings(configuration.getProperties());
-                ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
-                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+                Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
+                StandardServiceRegistry standardRegistry =
+                        new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+                MetadataSources sources = new MetadataSources(standardRegistry);
+                sources.addAnnotatedClass(Admin.class);
+                Metadata metaData = sources.getMetadataBuilder().build();
+                sessionFactory = metaData.getSessionFactoryBuilder().build();
             }
             return sessionFactory;
         } catch (Throwable ex) {
-            System.out.println("#############################  "+ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
