@@ -14,7 +14,6 @@ import org.hibernate.Session;
 public class DataBase {
 
     private static DataBase instance;
-    private long lastUserID, lastCommentID, lastCartID;
     private final HashMap<Long, User> users;
     private final HashMap<Long, Product> products;
     private final HashMap<Long, Comment> comments;

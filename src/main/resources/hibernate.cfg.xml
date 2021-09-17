@@ -21,5 +21,6 @@
         <mapping class="org.acm.store.model.User"/>
         <mapping class="org.acm.store.model.Admin"/>
         <mapping class="org.acm.store.model.Costumer"/>
+        <mapping class="org.acm.store.model.Category"/>
     </session-factory>
 </hibernate-configuration>
