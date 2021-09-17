@@ -20,7 +20,7 @@ import java.util.ArrayList;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-    @GetMapping
+    /*@GetMapping
     public ArrayList<User> getUsers() {
 //        if (!Authentication.isLogin(request))
 //            throw new CustomException("please login first");
@@ -37,9 +37,9 @@ public class UserController {
         if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("You dont have permission");
         return DataBase.getInstance().findUser(id);
-    }
+    }*/
 
-    @PostMapping("/profile")
+    /*@PostMapping("/profile")
     public User seeProfile(@RequestParam(required = false) @NotBlank @Valid String password,
                            @RequestParam(required = false) @NotBlank @Valid String email) {
 //        if (!Authentication.isLogin(request))
@@ -65,9 +65,9 @@ public class UserController {
             throw new CustomException("This email or phone-number is taken");
         dataBase.editUser(user.getID(), firstName, lastName, newEmail, phoneNumber, address);
         return "Edited successfully";
-    }
+    }*/
 
-    @PostMapping("/profile/password")
+    /*@PostMapping("/profile/password")
     public String changePassword(@RequestParam(required = false) @NotBlank @Valid String newPassword,
                                 @RequestParam(required = false) @NotBlank @Valid String email,
                                 @RequestParam(required = false) @NotBlank @Valid String password) {
@@ -78,5 +78,5 @@ public class UserController {
         User user = Authentication.loggedInUser(email, password);
         dataBase.changePassword(user.getID(),newPassword);
         return "Changed successfully";
-    }
+    }*/
 }

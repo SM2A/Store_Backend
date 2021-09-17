@@ -21,7 +21,7 @@ import java.util.ArrayList;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CommentController {
 
-    @GetMapping(produces = "application/json")
+    /*@GetMapping(produces = "application/json")
     public String getComments() throws JSONException {
         JSONArray jsonArray = new JSONArray();
         for (Comment comment : DataBase.getInstance().getAllComments()) {
@@ -36,9 +36,9 @@ public class CommentController {
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
-    }
+    }*/
 
-    @PostMapping("/add")
+    /*@PostMapping("/add")
     public String addComment(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email,
                              @RequestParam(required = false) @NotBlank @Valid String productID,
@@ -51,9 +51,9 @@ public class CommentController {
         User user = Authentication.loggedInUser(email, password);
         DataBase.getInstance().addComment(user.getID(), Long.parseLong(productID), text);
         return "Your comment has been successfully added";
-    }
+    }*/
 
-    @GetMapping("/{productId}")
+    /*@GetMapping("/{productId}")
     public String showProductComments(@PathVariable("productId") long productId) throws JSONException {
         if (DataBase.getInstance().findProduct(productId) == null)
             throw new CustomException("Product Id Doesn't Exist");
@@ -70,9 +70,9 @@ public class CommentController {
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
-    }
+    }*/
 
-    @PostMapping("/{id}/like")
+    /*@PostMapping("/{id}/like")
     public String likeComment(@PathVariable("id") long id) {
 //        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
 //        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
@@ -90,5 +90,5 @@ public class CommentController {
         if (DataBase.getInstance().findComment(id) == null) throw new CustomException("Comment Id Doesn't Exist.");
         DataBase.getInstance().dislikeComment(id);
         return "successfully disliked";
-    }
+    }*/
 }

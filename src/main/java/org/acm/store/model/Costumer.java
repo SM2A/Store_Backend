@@ -1,9 +1,8 @@
 package org.acm.store.model;
 
 import org.acm.store.controller.validation.CustomException;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 /**
  * Created by SM2A
@@ -12,7 +11,17 @@ import javax.persistence.Table;
 
 @Entity(name = "costumer")
 @Table(name = "customer")
+@NamedQueries({
+        @NamedQuery(name = "GET_CUSTOMER_ID_BY_EMAIL_PASSWORD", query = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PASSWORD),
+        @NamedQuery(name = "GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER", query = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER)
+})
 public class Costumer extends User{
+
+    public static final String GET_CUSTOMER_ID_BY_EMAIL_PASSWORD
+            = "SELECT costumer FROM costumer c WHERE c.email = :email AND c.password = :password";
+
+    public static final String GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER
+            = "SELECT costumer FROM costumer c WHERE c.email = :email AND c.phoneNumber = :phonenumber";
 
     @Column(name = "Credit")
     private long credit;

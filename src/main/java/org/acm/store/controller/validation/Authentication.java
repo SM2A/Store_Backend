@@ -62,7 +62,7 @@ public class Authentication {
         return false;
     }
 
-    public static User loggedInUser(HttpServletRequest request) {
+    /*public static User loggedInUser(HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();
         String email, password;
         if (cookie[0].getName().equals("email")) {
@@ -74,9 +74,9 @@ public class Authentication {
         }
         DataBase dataBase = DataBase.getInstance();
         return dataBase.findUser(dataBase.validateUserByID(email, password));
-    }
+    }*/
 
-    public static User loggedInUser(String email, String password) {
+    /*public static User loggedInUser(String email, String password) {
         User user;
         DataBase dataBase = DataBase.getInstance();
         try {
@@ -85,5 +85,5 @@ public class Authentication {
             user = null;
         }
         return user;
-    }
+    }*/
 }

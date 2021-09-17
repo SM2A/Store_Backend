@@ -24,7 +24,7 @@ public class ProductController {
         return DataBase.getInstance().getProducts();
     }
 
-    @PostMapping("/search/name")
+    /*@PostMapping("/search/name")
     public ArrayList<Product> searchProductByName(@RequestParam(required = false) @NotBlank @Valid String name) {
         return DataBase.getInstance().searchProductsByName(name);
     }
@@ -32,7 +32,7 @@ public class ProductController {
     @PostMapping("/search/category")
     public ArrayList<Product> searchProductByCategory(@RequestParam(required = false) @NotBlank @Valid String category){
         return DataBase.getInstance().searchProductsByCategory(category);
-    }
+    }*/
 
     @PostMapping("/add")
     public String addProduct(@RequestParam(required = false) @NotBlank @Valid String title,
@@ -75,12 +75,12 @@ public class ProductController {
         return "Category add successfully";
     }
 
-    @GetMapping("/category")
+    /*@GetMapping("/category")
     public ArrayList<String> getCategories() {
         return DataBase.getInstance().getCategories();
-    }
+    }*/
 
-    @PostMapping("/edit")
+    /*@PostMapping("/edit")
     public String editProduct(@RequestParam(required = false) @NotBlank @Valid String id,
                               @RequestParam(required = false) @NotBlank @Valid String title,
                               @RequestParam(required = false) @NotBlank @Valid String description,
@@ -91,5 +91,5 @@ public class ProductController {
         DataBase.getInstance().editProduct(Long.parseLong(id), title, description, Integer.parseInt(quantityAvailable),
                 Integer.parseInt(price), category, imgAddress);
         return "Edited successfully";
-    }
+    }*/
 }

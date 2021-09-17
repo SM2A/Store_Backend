@@ -9,7 +9,12 @@ import javax.persistence.*;
 
 @Entity(name = "category")
 @Table(name = "category")
+@NamedQueries({
+        @NamedQuery(name = "GET_CATEGORY_BY_NAME", query = Category.SEARCH_CATEGORY)
+})
 public class Category {
+
+    public static final String SEARCH_CATEGORY = "FROM category c WHERE c.name = :name";
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

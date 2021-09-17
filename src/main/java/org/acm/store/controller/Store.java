@@ -31,15 +31,15 @@ import java.util.List;
 public class Store {
 
     @GetMapping("/")
-    public /*String*/List<ArrayList<Product>> homePage() {
-        if (!Validation.isTaken("admin@admin.com", "007"))
+    public String/*List<ArrayList<Product>>*/ homePage() {
+//        if (!Validation.isTaken("admin@admin.com", "007"))
             DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
-        return DataBase.getInstance().getMainProducts();
-        //return "Home page";
+//        return DataBase.getInstance().getMainProducts();
+        return "Home page";
     }
 
     @GetMapping("/test")
-    public List<ArrayList<Product>> test() {
+    public String/*List<ArrayList<Product>>*/ test() {
 
         DataBase.getInstance().addCategory("KEYBOARDTWO");
         DataBase.getInstance().addCategory("KEYBOARDTHREE");
@@ -73,7 +73,8 @@ public class Store {
         DataBase.getInstance().addProduct("MMX Keys fdzdx", "Logitech", 5, 100, "KEYBOARDFOUR",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
 
-        return DataBase.getInstance().getMainProducts();
+//        return DataBase.getInstance().getMainProducts();
+        return "OK";
     }
 
     /*@GetMapping("/signup")
@@ -120,7 +121,7 @@ public class Store {
         DataBase.getInstance().addCredit(5, 10000);
 
         DataBase.getInstance().addCredit(2, 10000);
-        DataBase.getInstance().purchase(2);
+//        DataBase.getInstance().purchase(2);
 
         cart = DataBase.getInstance().findOpenCartByUser(2);
 
@@ -148,7 +149,7 @@ public class Store {
         return "Test 1";
     }
 
-    @PostMapping("/signup")
+    /*@PostMapping("/signup")
     public String signup(@RequestParam(required = false) @NotBlank @Valid String firstName,
                          @RequestParam(required = false) @NotBlank @Valid String lastName,
                          @RequestParam(required = false) @NotBlank @Valid String password,
@@ -165,7 +166,7 @@ public class Store {
         jsonObject.put("password", password);
 
         return jsonObject.toString();
-    }
+    }*/
 
     /*@GetMapping("/login")
     public String loginPage(HttpServletRequest request) {
@@ -173,7 +174,7 @@ public class Store {
         return "login page";
     }*/
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
                         @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
         DataBase dataBase = DataBase.getInstance();
@@ -186,7 +187,7 @@ public class Store {
             jsonObject.put("password", password);
             return jsonObject.toString();
         } else throw new CustomException("email or password in correct");
-    }
+    }*/
 
     /*@GetMapping("/logout")
     public String logout(HttpServletResponse response, HttpServletRequest request) {
@@ -196,20 +197,20 @@ public class Store {
         return "goodbye " + user.getFirstName();
     }*/
 
-    @PostMapping("/valid_login")
+    /*@PostMapping("/valid_login")
     public String validLogin(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email) {
         if (Authentication.loggedInUser(email, password) != null) return "1";
         else return "0";
-    }
+    }*/
 
-    @PostMapping("/valid_admin")
+    /*@PostMapping("/valid_admin")
     public String validAdmin(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email) {
         User user = Authentication.loggedInUser(email, password);
         if (Authentication.isAdmin(user)) return "1";
         else return "0";
-    }
+    }*/
 
     /*@GetMapping("/add/admin")
     public String addAdminPage(HttpServletRequest request) {
@@ -219,7 +220,7 @@ public class Store {
         return "add admin page";
     }*/
 
-    @PostMapping("/admin/add")
+    /*@PostMapping("/admin/add")
     public String addAdmin(@RequestParam(required = false) @NotBlank @Valid String firstName,
                            @RequestParam(required = false) @NotBlank @Valid String lastName,
                            @RequestParam(required = false) @NotBlank @Valid String password,
@@ -233,9 +234,9 @@ public class Store {
         DataBase dataBase = DataBase.getInstance();
         dataBase.addAdmin(firstName, lastName, password, email, phoneNumber, address);
         return String.valueOf(dataBase.validateUserByID(email, password));
-    }
+    }*/
 
-    @PostMapping("/purchase")
+    /*@PostMapping("/purchase")
     public String purchase(@RequestParam(required = false) @NotBlank @Valid String password,
                            @RequestParam(required = false) @NotBlank @Valid String email) {
 //        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
@@ -244,9 +245,9 @@ public class Store {
         User user = Authentication.loggedInUser(email,password);
         DataBase.getInstance().purchase(user.getID());
         return "Thank you for your order";
-    }
+    }*/
 
-    @PostMapping("/credit/add")
+    /*@PostMapping("/credit/add")
     public String addCredit(@RequestParam(required = false) @NotBlank @Valid String password,
                             @RequestParam(required = false) @NotBlank @Valid String email,
                             @RequestParam(required = false) @NotBlank @Valid String amount) {
@@ -256,5 +257,5 @@ public class Store {
         User user = Authentication.loggedInUser(email, password);
         DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
         return "Successful payment";
-    }
+    }*/
 }

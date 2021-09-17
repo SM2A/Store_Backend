@@ -25,8 +25,7 @@ public class Comment {
 
     public Comment() {}
 
-    public Comment(long ID, long userID, long productID, String text) {
-        this.ID = ID;
+    public Comment(long userID, long productID, String text) {
         this.userID = userID;
         this.productID = productID;
         this.text = text;

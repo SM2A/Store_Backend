@@ -13,8 +13,9 @@
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.connection.verifyServerCertificate">false</property>
         <property name="hibernate.connection.useSSL">false</property>
-        <property name="hibernate.hbm2ddl.auto">validate</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
         <mapping class="org.acm.store.model.Product"/>
         <mapping class="org.acm.store.model.Cart"/>
         <mapping class="org.acm.store.model.Comment"/>

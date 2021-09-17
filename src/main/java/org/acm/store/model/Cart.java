@@ -7,13 +7,20 @@ import java.util.Date;
         @UniqueConstraint(columnNames = "ID")
 })
 @Entity(name = "cart")
+@NamedQueries({
+        @NamedQuery(name = "GET_USER_OPEN_CART_BY_ID", query = Cart.GET_USER_OPEN_CART)
+})
 public class Cart {
+
+    public static final String GET_USER_OPEN_CART
+            = "FROM cart c WHERE c.userID = :id AND c.status = :status";
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "ID")
     private long ID;
-    @Column(name = "Status")
+    @Column(name = "Status",columnDefinition = "enum('OPEN', 'CLOSE')")
+    @Enumerated(EnumType.STRING)
     private Status status;
     @Column(name = "UserID")
     private long userID;

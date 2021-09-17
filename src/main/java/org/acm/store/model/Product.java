@@ -8,7 +8,13 @@ import javax.persistence.*;
         @UniqueConstraint(columnNames = "Title")
 })
 @Entity(name = "product")
+@NamedQueries({
+        @NamedQuery(name = "GET_PRODUCT_BY_TITLE_CATEGORY", query = Product.GET_PRODUCT_BY_TITLE_CATEGORY)
+})
 public class Product {
+
+    public static final String GET_PRODUCT_BY_TITLE_CATEGORY
+            = "FROM product p WHERE p.title = :title AND p.category = :category";
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
