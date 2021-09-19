@@ -17,7 +17,7 @@ public class Category {
     public static final String SEARCH_CATEGORY = "FROM category c WHERE c.name = :name";
 
     @Id
-    @GeneratedValue(strategy= GenerationType.TABLE)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "ID")
     private long ID;
     @Column(name = "Name")

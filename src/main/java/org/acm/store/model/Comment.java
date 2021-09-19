@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.TABLE)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "ID")
     private long ID;
     @Column(name = "UserId")

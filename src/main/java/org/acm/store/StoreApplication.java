@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
 
 @SpringBootApplication
-@EntityScan("org.acm.store.model")
 public class StoreApplication {
 
     public static void main(String[] args) {

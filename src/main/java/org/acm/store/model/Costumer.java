@@ -1,7 +1,6 @@
 package org.acm.store.model;
 
 import org.acm.store.controller.validation.CustomException;
-
 import javax.persistence.*;
 
 /**
@@ -12,16 +11,20 @@ import javax.persistence.*;
 @Entity(name = "costumer")
 @Table(name = "customer")
 @NamedQueries({
-        @NamedQuery(name = "GET_CUSTOMER_ID_BY_EMAIL_PASSWORD", query = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PASSWORD),
-        @NamedQuery(name = "GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER", query = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER)
+        @NamedQuery(name = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PASSWORD,
+                query = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PASSWORD_Q),
+        @NamedQuery(name = Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER,
+                query = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER_Q)
 })
 public class Costumer extends User{
 
-    public static final String GET_CUSTOMER_ID_BY_EMAIL_PASSWORD
-            = "SELECT costumer FROM costumer c WHERE c.email = :email AND c.password = :password";
+    public static final String GET_CUSTOMER_ID_BY_EMAIL_PASSWORD = "GET_CUSTOMER_ID_BY_EMAIL_PASSWORD";
+    public static final String GET_CUSTOMER_ID_BY_EMAIL_PASSWORD_Q
+            = "SELECT costumer.id FROM costumer c WHERE c.email = :email AND c.password = :password";
 
-    public static final String GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER
-            = "SELECT costumer FROM costumer c WHERE c.email = :email AND c.phoneNumber = :phonenumber";
+    public static final String GET_CUSTOMER_BY_EMAIL_PHONENUMBER = "GET_CUSTOMER_BY_EMAIL_PHONENUMBER";
+    public static final String GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER_Q
+            = "FROM costumer c WHERE c.email = :email AND c.phoneNumber = :phonenumber";
 
     @Column(name = "Credit")
     private long credit;

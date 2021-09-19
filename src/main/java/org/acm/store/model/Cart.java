@@ -16,7 +16,7 @@ public class Cart {
             = "FROM cart c WHERE c.userID = :id AND c.status = :status";
 
     @Id
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "ID")
     private long ID;
     @Column(name = "Status",columnDefinition = "enum('OPEN', 'CLOSE')")

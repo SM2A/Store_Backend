@@ -24,15 +24,18 @@ public class DataBase {
     }
 
     public boolean isTaken(String email, String phoneNumber) {
-        //todo admin is taken
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        Costumer costumer = (Costumer) session.createNamedQuery(Costumer.GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER)
-                .setParameter("email",email)
-                .setParameter("phonenumber",phoneNumber)
+        Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER,Costumer.class)
+                .setParameter("email", email)
+                .setParameter("phonenumber", phoneNumber)
+                .uniqueResult();
+        Admin admin = session.createNamedQuery("GET_ADMIN_BY_EMAIL_PHONENUMBER",Admin.class)
+                .setParameter("email", email)
+                .setParameter("phonenumber", phoneNumber)
                 .uniqueResult();
         session.close();
-        return costumer != null;
+        return costumer != null || admin != null;
     }
 
     public void addCostumer(String firstName, String lastName, String password,

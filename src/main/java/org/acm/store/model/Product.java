@@ -17,7 +17,7 @@ public class Product {
             = "FROM product p WHERE p.title = :title AND p.category = :category";
 
     @Id
-    @GeneratedValue(strategy=GenerationType.TABLE)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "ID")
     private long ID;
     @Column(name = "Title")

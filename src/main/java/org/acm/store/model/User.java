@@ -7,7 +7,7 @@ import java.util.Date;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.TABLE)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "ID")
     protected long ID;
     @Column(name = "FirstName")
