@@ -8,13 +8,16 @@ import javax.persistence.*;
  */
 
 @Entity(name = "category")
-@Table(name = "category")
+@Table(name = "category" , uniqueConstraints = {
+        @UniqueConstraint(columnNames = "name")
+})
 @NamedQueries({
-        @NamedQuery(name = "GET_CATEGORY_BY_NAME", query = Category.SEARCH_CATEGORY)
+        @NamedQuery(name = Category.SEARCH_CATEGORY, query = Category.SEARCH_CATEGORY_Q)
 })
 public class Category {
 
-    public static final String SEARCH_CATEGORY = "FROM category c WHERE c.name = :name";
+    public static final String SEARCH_CATEGORY = "SEARCH_CATEGORY";
+    public static final String SEARCH_CATEGORY_Q = "FROM category c WHERE c.name = :name";
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
