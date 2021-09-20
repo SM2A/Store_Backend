@@ -1,9 +1,7 @@
 package org.acm.store.model.user.admin;
 
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -14,7 +12,7 @@ import java.util.List;
 
 @Service
 public class AdminService {
-    
+
     @Autowired
     AdminDAO adminDAO;
 
@@ -30,7 +28,7 @@ public class AdminService {
 
     @Transactional
     public Admin getAdminEmailPassword(String email, String password) {
-        return adminDAO.getAdminEmailPassword(email,password);
+        return adminDAO.getAdminEmailPassword(email, password);
     }
 
     @Transactional

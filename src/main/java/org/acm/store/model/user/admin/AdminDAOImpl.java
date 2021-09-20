@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @Repository
-public class AdminDAOImpl implements AdminDAO{
+public class AdminDAOImpl implements AdminDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -30,7 +30,7 @@ public class AdminDAOImpl implements AdminDAO{
     @Override
     public Admin getAdmin(long id) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.get(Admin.class,id);
+        return session.get(Admin.class, id);
     }
 
     @Override

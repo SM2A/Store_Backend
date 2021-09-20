@@ -9,12 +9,23 @@ import javax.persistence.*;
 })
 @Entity(name = "product")
 @NamedQueries({
-        @NamedQuery(name = "GET_PRODUCT_BY_TITLE_CATEGORY", query = Product.GET_PRODUCT_BY_TITLE_CATEGORY)
+        @NamedQuery(name = Product.GET_PRODUCT_BY_TITLE_CATEGORY, query = Product.GET_PRODUCT_BY_TITLE_CATEGORY_Q),
+        @NamedQuery(name = Product.GET_PRODUCT_BY_TITLE, query = Product.GET_PRODUCT_BY_TITLE_Q),
+        @NamedQuery(name = Product.GET_PRODUCT_BY_CATEGORY, query = Product.GET_PRODUCT_BY_CATEGORY_Q)
 })
 public class Product {
 
-    public static final String GET_PRODUCT_BY_TITLE_CATEGORY
+    public static final String GET_PRODUCT_BY_TITLE_CATEGORY = "GET_PRODUCT_BY_TITLE_CATEGORY";
+    public static final String GET_PRODUCT_BY_TITLE_CATEGORY_Q
             = "FROM product p WHERE p.title = :title AND p.category = :category";
+
+    public static final String GET_PRODUCT_BY_TITLE = "GET_PRODUCT_BY_TITLE";
+    public static final String GET_PRODUCT_BY_TITLE_Q
+            = "FROM product p WHERE p.title = :title";
+
+    public static final String GET_PRODUCT_BY_CATEGORY = "GET_PRODUCT_BY_CATEGORY";
+    public static final String GET_PRODUCT_BY_CATEGORY_Q
+            = "FROM product p WHERE p.category = :category";
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
