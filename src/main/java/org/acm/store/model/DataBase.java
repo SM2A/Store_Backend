@@ -1,30 +1,47 @@
 package org.acm.store.model;
 
 import java.util.*;
-import java.util.regex.Pattern;
-import org.acm.store.controller.validation.CustomException;
+
+import org.acm.store.controller.util.CustomException;
+import org.acm.store.model.cart.Cart;
+import org.acm.store.model.cart.Item;
+import org.acm.store.model.cart.Status;
+import org.acm.store.model.category.Category;
+import org.acm.store.model.comment.Comment;
+import org.acm.store.model.product.Product;
+import org.acm.store.model.user.admin.Admin;
+import org.acm.store.model.user.customer.Costumer;
 import org.hibernate.Session;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by SM2A
  * Seyed Mohammad Amin Atyabi
  */
 
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class DataBase {
 
-    private static DataBase instance;
+//    private static DataBase instance;
 
-    private DataBase() {}
+    private final StoreRepository repo;
 
-    public static DataBase getInstance() {
+    private DataBase(StoreRepository repo) {
+        this.repo = repo;
+    }
+
+    /*public static DataBase getInstance() {
         if (instance == null) {
             instance = new DataBase();
         }
         return instance;
-    }
+    }*/
 
     public boolean isTaken(String email, String phoneNumber) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER,Costumer.class)
                 .setParameter("email", email)
@@ -40,7 +57,7 @@ public class DataBase {
 
     public void addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(new Costumer(firstName, lastName, password, email, phoneNumber, address));
         session.getTransaction().commit();
@@ -53,7 +70,7 @@ public class DataBase {
 
     public void addAdmin(String firstName, String lastName, String password,
                          String email, String phoneNumber, String address) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(new Admin(firstName, lastName, password, email, phoneNumber, address));
         session.getTransaction().commit();
@@ -127,7 +144,7 @@ public class DataBase {
     }*/
 
     public List<Product> getProducts() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         List<Product> list = session.createQuery("FROM product p", Product.class).getResultList();
         session.close();
@@ -163,7 +180,7 @@ public class DataBase {
 
     public void addRatingToProduct(long productID, int rating) {
         if ((rating > 5) || (rating < 0)) throw new CustomException("Enter correct number");
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Product product = session.get(Product.class,productID);
         product.addRating(rating);
@@ -174,7 +191,7 @@ public class DataBase {
 
     public void addCredit(long ID, long amount) {
         if (amount <= 0) throw new CustomException("Enter correct amount");
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Costumer costumer = session.get(Costumer.class,ID);
         costumer.addCredit(amount);
@@ -204,7 +221,7 @@ public class DataBase {
 
     public void addProduct(String title, String description, int quantityAvailable,
                            int price, String category, String imgAddress) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         try (session) {
             session.beginTransaction();
             if (getExistedProduct(title, category) != null) {
@@ -238,7 +255,7 @@ public class DataBase {
     }
 
     public Product findProduct(long ID) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Product product = session.get(Product.class,ID);
         session.close();
@@ -246,7 +263,7 @@ public class DataBase {
     }
 
     public void addComment(long userID, long productID, String text) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(new Comment(userID, productID, text));
         session.getTransaction().commit();
@@ -270,7 +287,7 @@ public class DataBase {
     }*/
 
     public void createCart(long userID) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(new Cart(userID));
         session.getTransaction().commit();
@@ -282,7 +299,7 @@ public class DataBase {
     }*/
 
     public Cart findOpenCartByUser(long userId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Cart cart = (Cart) session.createNamedQuery(Cart.GET_USER_OPEN_CART)
                 .setParameter("id", userId)
@@ -305,7 +322,7 @@ public class DataBase {
     }*/
 
     public long cartPrice(long cartID) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         long price = (long) session.createNamedQuery(Item.GET_CART_PRICE)
                 .setParameter("cid", cartID)
@@ -316,7 +333,7 @@ public class DataBase {
 
 
     public void addItem(long cartID, long productID) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         try(session) {
             session.beginTransaction();
             if (findProduct(productID).getQuantityAvailable() <= 0)
@@ -337,7 +354,7 @@ public class DataBase {
     }*/
 
     public void increaseItem(long productID, long cartID) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         try (session) {
             session.beginTransaction();
             Item item = (Item) session.getNamedQuery(Item.GET_ITEM)
@@ -369,7 +386,7 @@ public class DataBase {
     }*/
 
     public HashMap<Product, Integer> getCartItems(long cartID) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         List<Item> list = session.createQuery("FROM item i WHERE i.cartID = :cid", Item.class)
                 .setParameter("cid",cartID)
@@ -381,7 +398,7 @@ public class DataBase {
     }
 
     public Product getExistedProduct(String title, String category) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Product product = (Product) session.getNamedQuery(Product.GET_PRODUCT_BY_TITLE_CATEGORY)
                 .setParameter("title",title)
@@ -391,7 +408,7 @@ public class DataBase {
     }
 
     private boolean isCategoryAvailable(String name) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Category category = (Category) session.getNamedQuery(Category.SEARCH_CATEGORY)
                 .setParameter("name", name.toUpperCase()).uniqueResult();
@@ -401,7 +418,7 @@ public class DataBase {
     public void addCategory(String name) {
         if (isCategoryAvailable(name)) throw new CustomException("This category was added");
         else {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+            Session session = repo.getSessionFactory().openSession();
             session.beginTransaction();
             session.save(new Category(name.toUpperCase()));
             session.getTransaction().commit();

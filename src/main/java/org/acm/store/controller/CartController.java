@@ -1,20 +1,14 @@
 package org.acm.store.controller;
 
-import org.acm.store.controller.validation.Authentication;
-import org.acm.store.controller.validation.CustomException;
-import org.acm.store.model.Cart;
 import org.acm.store.model.DataBase;
-import org.acm.store.model.Product;
-import org.acm.store.model.User;
+import org.acm.store.model.product.Product;
+
 import java.util.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
 
 @Validated
@@ -22,6 +16,12 @@ import javax.validation.constraints.NotBlank;
 @RequestMapping("/carts")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
+
+    private final DataBase dataBase;
+
+    public CartController(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
 
     /*@PostMapping
     public String showUserCarts(@RequestParam(required = false) @NotBlank @Valid String password,
@@ -32,31 +32,31 @@ public class CartController {
 //            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(email,password);
         JSONArray jsonArray = new JSONArray();
-        for (Cart cart : DataBase.getInstance().showUserCarts(user.getID())) {
+        for (Cart cart : dataBase.showUserCarts(user.getID())) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", cart.getID());
             jsonObject.put("userID", cart.getUserID());
             jsonObject.put("status", cart.getStatus());
             if (cart.getPurchaseDate() == null) jsonObject.put("purchaseDate", "OPEN");
             else jsonObject.put("purchaseDate", cart.getPurchaseDate());
-            jsonObject.put("total", DataBase.getInstance().cartPrice(cart.getID()));
+            jsonObject.put("total", dataBase.cartPrice(cart.getID()));
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
-//        return DataBase.getInstance().showUserCarts(user.getID());
+//        return dataBase.showUserCarts(user.getID());
     }*/
 
     /*@GetMapping("/all")
     public String getCarts() throws JSONException {
         JSONArray jsonArray = new JSONArray();
-        for (Cart cart : DataBase.getInstance().getCarts()) {
+        for (Cart cart : dataBase.getCarts()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", cart.getID());
             jsonObject.put("userID", cart.getUserID());
             jsonObject.put("status", cart.getStatus());
             if (cart.getPurchaseDate() == null) jsonObject.put("purchaseDate", "OPEN");
             else jsonObject.put("purchaseDate", cart.getPurchaseDate());
-            jsonObject.put("total", DataBase.getInstance().cartPrice(cart.getID()));
+            jsonObject.put("total", dataBase.cartPrice(cart.getID()));
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
@@ -65,7 +65,7 @@ public class CartController {
     @GetMapping("/{id}")
     public String getCartItems(@PathVariable("id") long id) throws JSONException {
         JSONArray jsonArray = new JSONArray();
-        for (Map.Entry<Product, Integer> entry : DataBase.getInstance().getCartItems(id).entrySet()) {
+        for (Map.Entry<Product, Integer> entry : dataBase.getCartItems(id).entrySet()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", entry.getKey().getID());
             jsonObject.put("title", entry.getKey().getTitle());
@@ -85,7 +85,7 @@ public class CartController {
         if (Authentication.isAdmin(Authentication.loggedInUser(request)))
             throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(request);
-        return DataBase.getInstance().getItemsInOpenCart(user.getID());
+        return dataBase.getItemsInOpenCart(user.getID());
     }*/
 
 
@@ -98,8 +98,8 @@ public class CartController {
 //        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(email, password);
-        Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
-        DataBase.getInstance().addItem(cart.getID(), Long.parseLong(productId));
+        Cart cart = dataBase.findOpenCartByUser(user.getID());
+        dataBase.addItem(cart.getID(), Long.parseLong(productId));
         return "Your item has been successfully added to cart.";
     }*/
 
@@ -113,8 +113,8 @@ public class CartController {
 //        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(email, password);
-        Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
-        DataBase.getInstance().decreaseItem(Long.parseLong(productId), cart.getID());
+        Cart cart = dataBase.findOpenCartByUser(user.getID());
+        dataBase.decreaseItem(Long.parseLong(productId), cart.getID());
         return "Your item has been successfully subtracted from cart.";
     }*/
 
@@ -128,8 +128,8 @@ public class CartController {
 //        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(email, password);
-        Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
-        DataBase.getInstance().deleteItem(Long.parseLong(productId), cart.getID());
+        Cart cart = dataBase.findOpenCartByUser(user.getID());
+        dataBase.deleteItem(Long.parseLong(productId), cart.getID());
         return "Your item has been successfully deleted from cart.";
     }*/
 
@@ -145,13 +145,13 @@ public class CartController {
         if (Integer.parseInt(quantity) < 1)
             throw new CustomException("Quantity must be greater than zero!");
         User user = Authentication.loggedInUser(request);
-        Cart cart = DataBase.getInstance().findOpenCartByUser(user.getID());
-        DataBase.getInstance().setQuantityToAnItem(Long.parseLong(productId), cart.getID(), Integer.parseInt(quantity));
+        Cart cart = dataBase.findOpenCartByUser(user.getID());
+        dataBase.setQuantityToAnItem(Long.parseLong(productId), cart.getID(), Integer.parseInt(quantity));
         if (Integer.parseInt(quantity) == 1)
-            return "One " + DataBase.getInstance().findProduct(Long.parseLong(productId)).getTitle() +
+            return "One " + dataBase.findProduct(Long.parseLong(productId)).getTitle() +
                     "has been successfully added to cart.";
         else
-            return quantity + " " + DataBase.getInstance().findProduct(Long.parseLong(productId)).getTitle() +
+            return quantity + " " + dataBase.findProduct(Long.parseLong(productId)).getTitle() +
                     "s have been successfully added to cart.";
     }*/
 }

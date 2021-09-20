@@ -1,4 +1,6 @@
-package org.acm.store.model;
+package org.acm.store.model.user.admin;
+
+import org.acm.store.model.user.User;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -17,7 +19,7 @@ import javax.persistence.Table;
         @NamedQuery(name = "GET_ADMIN_BY_EMAIL_PHONENUMBER", query = Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER_Q)
 
 })
-public class Admin extends User{
+public class Admin extends User {
 
     public static final String GET_ADMIN_ID_BY_EMAIL_PASSWORD_Q
             = "SELECT admin.id FROM admin a WHERE a.email = :email AND a.password = :password";

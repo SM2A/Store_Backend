@@ -1,4 +1,4 @@
-package org.acm.store.controller.validation;
+package org.acm.store.controller.util;
 
 /**
  * Created by SM2A

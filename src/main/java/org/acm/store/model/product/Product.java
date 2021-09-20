@@ -1,6 +1,6 @@
-package org.acm.store.model;
+package org.acm.store.model.product;
 
-import org.acm.store.controller.validation.CustomException;
+import org.acm.store.controller.util.CustomException;
 import javax.persistence.*;
 
 @Table(name = "product",uniqueConstraints = {

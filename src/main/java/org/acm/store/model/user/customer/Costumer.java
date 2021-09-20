@@ -1,6 +1,8 @@
-package org.acm.store.model;
+package org.acm.store.model.user.customer;
 
-import org.acm.store.controller.validation.CustomException;
+import org.acm.store.controller.util.CustomException;
+import org.acm.store.model.user.User;
+
 import javax.persistence.*;
 
 /**
@@ -16,7 +18,7 @@ import javax.persistence.*;
         @NamedQuery(name = Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER,
                 query = Costumer.GET_CUSTOMER_ID_BY_EMAIL_PHONENUMBER_Q)
 })
-public class Costumer extends User{
+public class Costumer extends User {
 
     public static final String GET_CUSTOMER_ID_BY_EMAIL_PASSWORD = "GET_CUSTOMER_ID_BY_EMAIL_PASSWORD";
     public static final String GET_CUSTOMER_ID_BY_EMAIL_PASSWORD_Q

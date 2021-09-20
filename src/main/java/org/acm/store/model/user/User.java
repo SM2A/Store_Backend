@@ -1,4 +1,4 @@
-package org.acm.store.model;
+package org.acm.store.model.user;
 
 import javax.persistence.*;
 import java.util.Date;

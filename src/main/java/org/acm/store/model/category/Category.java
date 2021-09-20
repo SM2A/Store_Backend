@@ -1,4 +1,4 @@
-package org.acm.store.model;
+package org.acm.store.model.category;
 
 import javax.persistence.*;
 

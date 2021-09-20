@@ -1,12 +1,10 @@
-package org.acm.store.controller.validation;
+package org.acm.store.controller.util;
 
-import org.acm.store.model.DataBase;
-import org.acm.store.model.User;
-import org.acm.store.model.Admin;
+import org.acm.store.model.user.User;
+import org.acm.store.model.user.admin.Admin;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Optional;
 

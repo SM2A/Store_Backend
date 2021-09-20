@@ -1,19 +1,7 @@
 package org.acm.store.controller;
 
-import org.acm.store.controller.validation.Authentication;
-import org.acm.store.controller.validation.CustomException;
-import org.acm.store.model.Comment;
-import org.acm.store.model.DataBase;
-import org.acm.store.model.User;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 
 @Validated
 @RestController
