@@ -1,6 +1,8 @@
 package org.acm.store.controller;
 
 
+import org.acm.store.model.user.customer.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
+
+    @Autowired
+    CustomerService customerService;
 
     /*@GetMapping
     public ArrayList<User> getUsers() {

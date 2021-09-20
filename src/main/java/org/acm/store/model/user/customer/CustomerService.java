@@ -17,27 +17,37 @@ public class CustomerService {
     CustomerDAO customerDAO;
 
     @Transactional
-    public List<Costumer> getAllCustomers(){
+    public List<Costumer> getAllCustomers() {
         return customerDAO.getAllCustomers();
     }
 
     @Transactional
-    public Costumer getCustomer(long id){
+    public Costumer getCustomer(long id) {
         return customerDAO.getCustomer(id);
     }
 
     @Transactional
-    public long addCustomer(Costumer customer){
+    public Costumer getCustomerEmailPassword(String email, String password) {
+        return customerDAO.getCustomerEmailPassword(email, password);
+    }
+
+    @Transactional
+    public Costumer getCustomerEmailPhoneNumber(String email, String phoneNumber) {
+        return customerDAO.getCustomerEmailPhoneNumber(email, phoneNumber);
+    }
+
+    @Transactional
+    public long addCustomer(Costumer customer) {
         return customerDAO.addCustomer(customer);
     }
 
     @Transactional
-    public void updateCustomer(Costumer customer){
+    public void updateCustomer(Costumer customer) {
         customerDAO.updateCustomer(customer);
     }
 
     @Transactional
-    public void deleteCustomer(long id){
+    public void deleteCustomer(long id) {
         customerDAO.deleteCustomer(id);
     }
 }

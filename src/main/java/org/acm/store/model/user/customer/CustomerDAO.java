@@ -13,6 +13,10 @@ public interface CustomerDAO {
 
     public Costumer getCustomer(long id);
 
+    public Costumer getCustomerEmailPassword(String email, String password);
+
+    public Costumer getCustomerEmailPhoneNumber(String email, String phoneNumber);
+
     public long addCustomer(Costumer costumer);
 
     public void updateCustomer(Costumer costumer);

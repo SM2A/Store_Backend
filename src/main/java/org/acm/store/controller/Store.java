@@ -2,6 +2,8 @@ package org.acm.store.controller;
 
 import org.acm.store.model.cart.Cart;
 import org.acm.store.model.DataBase;
+import org.acm.store.model.user.customer.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class Store {
+
+    @Autowired
+    CustomerService customerService;
     
     private final DataBase dataBase;
 

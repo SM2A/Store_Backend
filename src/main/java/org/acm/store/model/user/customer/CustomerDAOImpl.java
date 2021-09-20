@@ -34,6 +34,20 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
+    public Costumer getCustomerEmailPassword(String email, String password) {
+        Session session = this.sessionFactory.getCurrentSession();
+        return session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PASSWORD, Costumer.class)
+                .setParameter("email", email).setParameter("password", password).uniqueResult();
+    }
+
+    @Override
+    public Costumer getCustomerEmailPhoneNumber(String email, String phoneNumber) {
+        Session session = this.sessionFactory.getCurrentSession();
+        return session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER, Costumer.class)
+                .setParameter("email", email).setParameter("phonenumer", phoneNumber).uniqueResult();
+    }
+
+    @Override
     public long addCustomer(Costumer costumer) {
         Session session = this.sessionFactory.getCurrentSession();
         session.save(costumer);
