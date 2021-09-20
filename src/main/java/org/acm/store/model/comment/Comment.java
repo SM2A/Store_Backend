@@ -6,10 +6,16 @@ import javax.persistence.*;
         @UniqueConstraint(columnNames = "ID")
 })
 @Entity(name = "comment")
+@NamedQueries({
+        @NamedQuery(name = Comment.GET_COMMENT_BY_PRODUCTID, query = Comment.GET_COMMENT_BY_PRODUCTID_Q)
+})
 public class Comment {
 
+    public static final String GET_COMMENT_BY_PRODUCTID = "GET_COMMENT_BY_PRODUCTID";
+    public static final String GET_COMMENT_BY_PRODUCTID_Q = "FROM comment c WHERE c.productID = :pid";
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private long ID;
     @Column(name = "UserId")
@@ -23,7 +29,8 @@ public class Comment {
     @Column(name = "Dislike")
     private int dislikes;
 
-    public Comment() {}
+    public Comment() {
+    }
 
     public Comment(long userID, long productID, String text) {
         this.userID = userID;
