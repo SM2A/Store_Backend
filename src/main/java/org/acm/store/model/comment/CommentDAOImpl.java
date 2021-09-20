@@ -40,7 +40,11 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     public void addComment(Comment comment) {
-        this.sessionFactory.getCurrentSession().save(comment);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.save(comment);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override

@@ -1,19 +1,20 @@
 package org.acm.store.model;
 
 import java.util.*;
-
 import org.acm.store.controller.util.CustomException;
-import org.acm.store.model.cart.Cart;
-import org.acm.store.model.cart.Item;
-import org.acm.store.model.cart.Status;
+import org.acm.store.model.cart.*;
 import org.acm.store.model.category.Category;
+import org.acm.store.model.category.CategoryService;
 import org.acm.store.model.comment.Comment;
+import org.acm.store.model.comment.CommentService;
 import org.acm.store.model.product.Product;
+import org.acm.store.model.product.ProductService;
 import org.acm.store.model.user.admin.Admin;
+import org.acm.store.model.user.admin.AdminService;
 import org.acm.store.model.user.customer.Costumer;
+import org.acm.store.model.user.customer.CustomerService;
 import org.hibernate.Session;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,25 +23,44 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class DataBase {
 
-//    private static DataBase instance;
+    @Autowired
+    AdminService adminService;
 
-    private final StoreRepository repo;
+    @Autowired
+    CustomerService customerService;
 
-    private DataBase(StoreRepository repo) {
-        this.repo = repo;
-    }
+    @Autowired
+    ProductService productService;
 
-    /*public static DataBase getInstance() {
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    CartService cartService;
+
+    @Autowired
+    ItemService itemService;
+
+
+    /*private static DataBase instance;
+
+    private DataBase() {}
+
+    public static DataBase getInstance() {
         if (instance == null) {
             instance = new DataBase();
         }
         return instance;
     }*/
 
-    public boolean isTaken(String email, String phoneNumber) {
+    public DataBase() {}
+
+    /*public boolean isTaken(String email, String phoneNumber) {
         Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER,Costumer.class)
@@ -53,28 +73,16 @@ public class DataBase {
                 .uniqueResult();
         session.close();
         return costumer != null || admin != null;
-    }
+    }*/
 
     public void addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        session.save(new Costumer(firstName, lastName, password, email, phoneNumber, address));
-        session.getTransaction().commit();
-        Costumer costumer = (Costumer) session.getNamedQuery(Costumer.GET_CUSTOMER_ID_BY_EMAIL_PASSWORD)
-                .setParameter("email",email)
-                .setParameter("password",password).uniqueResult();
-        createCart(costumer.getID());
-        session.close();
+        createCart(customerService.addCustomer(new Costumer(firstName,lastName,password,email,phoneNumber,address)));
     }
 
     public void addAdmin(String firstName, String lastName, String password,
                          String email, String phoneNumber, String address) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        session.save(new Admin(firstName, lastName, password, email, phoneNumber, address));
-        session.getTransaction().commit();
-        session.close();
+        adminService.addAdmin(new Admin(firstName, lastName, password, email, phoneNumber, address));
     }
 
     /*public void editUser(long id, String firstName, String lastName, String email,
@@ -144,11 +152,7 @@ public class DataBase {
     }*/
 
     public List<Product> getProducts() {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        List<Product> list = session.createQuery("FROM product p", Product.class).getResultList();
-        session.close();
-        return list;
+        return productService.getAllProduct();
     }
 
     /*public HashMap<Long, Comment> getUserComments(long userID) {
@@ -180,24 +184,16 @@ public class DataBase {
 
     public void addRatingToProduct(long productID, int rating) {
         if ((rating > 5) || (rating < 0)) throw new CustomException("Enter correct number");
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        Product product = session.get(Product.class,productID);
+        Product product = productService.getProduct(productID);
         product.addRating(rating);
-        //todo not sure
-        session.update(rating);
-        session.close();
+        productService.updateProduct(product);
     }
 
     public void addCredit(long ID, long amount) {
         if (amount <= 0) throw new CustomException("Enter correct amount");
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        Costumer costumer = session.get(Costumer.class,ID);
+        Costumer costumer = customerService.getCustomer(ID);
         costumer.addCredit(amount);
-        //todo not sure
-        session.update(costumer);
-        session.close();
+        customerService.updateCustomer(costumer);
     }
 
     /*public void purchase(long userId) {
@@ -221,53 +217,24 @@ public class DataBase {
 
     public void addProduct(String title, String description, int quantityAvailable,
                            int price, String category, String imgAddress) {
-        Session session = repo.getSessionFactory().openSession();
-        try (session) {
-            session.beginTransaction();
-            if (getExistedProduct(title, category) != null) {
-                Product product = getExistedProduct(title, category);
-                product.addToStock(quantityAvailable);
-                session.update(product);
-                session.getTransaction().commit();
-            } else {
-                if (!isCategoryAvailable(category)) throw new CustomException("Category not available");
-                /*EntityManager entityManager = null;
-                EntityTransaction entityTransaction = null;
-                EntityManagerFactory entityManagerFactory = null;
-                try {
-                    entityManagerFactory = Persistence.createEntityManagerFactory("store");
-                    entityManager = entityManagerFactory.createEntityManager();
-                    entityTransaction = entityManager.getTransaction();
-                    entityTransaction.begin();
-                    entityManager.persist(new Product(title, description, quantityAvailable, price, category, imgAddress));
-                    entityTransaction.commit();
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                    entityTransaction.rollback();
-                }finally {
-                    entityManager.close();
-                    entityManagerFactory.close();
-                }*/
-                session.save(new Product(title, description, quantityAvailable, price, category, imgAddress));
-                session.getTransaction().commit();
-            }
+
+        if (getExistedProduct(title, category) != null) {
+            Product product = getExistedProduct(title, category);
+            product.addToStock(quantityAvailable);
+            productService.updateProduct(product);
+        } else {
+            if (!isCategoryAvailable(category)) throw new CustomException("Category not available");
+            productService.addProduct(new Product(title, description, quantityAvailable, price, category, imgAddress));
         }
+
     }
 
     public Product findProduct(long ID) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        Product product = session.get(Product.class,ID);
-        session.close();
-        return product;
+        return productService.getProduct(ID);
     }
 
     public void addComment(long userID, long productID, String text) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        session.save(new Comment(userID, productID, text));
-        session.getTransaction().commit();
-        session.close();
+        commentService.addComment(new Comment(userID,productID,text));
     }
 
     /*public Comment findComment(long ID) {
@@ -287,11 +254,7 @@ public class DataBase {
     }*/
 
     public void createCart(long userID) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        session.save(new Cart(userID));
-        session.getTransaction().commit();
-        session.close();
+        cartService.addCart(new Cart(userID));
     }
 
     /*public ArrayList<Cart> getCarts() {
@@ -299,14 +262,7 @@ public class DataBase {
     }*/
 
     public Cart findOpenCartByUser(long userId) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        Cart cart = (Cart) session.createNamedQuery(Cart.GET_USER_OPEN_CART)
-                .setParameter("id", userId)
-                .setParameter("status", Status.OPEN)
-                .uniqueResult();
-        session.close();
-        return cart;
+        return cartService.getCart(userId,Status.OPEN).get(0);
     }
 
     /*public HashMap<Long, Integer> getItemsInOpenCart(long userId) {
@@ -321,7 +277,7 @@ public class DataBase {
         return carts.get(ID);
     }*/
 
-    public long cartPrice(long cartID) {
+    /*public long cartPrice(long cartID) {
         Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         long price = (long) session.createNamedQuery(Item.GET_CART_PRICE)
@@ -329,10 +285,10 @@ public class DataBase {
                 .uniqueResult();
         session.close();
         return price;
-    }
+    }*/
 
 
-    public void addItem(long cartID, long productID) {
+    /*public void addItem(long cartID, long productID) {
         Session session = repo.getSessionFactory().openSession();
         try(session) {
             session.beginTransaction();
@@ -345,7 +301,7 @@ public class DataBase {
                 session.getTransaction().commit();
             }
         }
-    }
+    }*/
 
     /*public void deleteItem(long productID, long cartID) {
         if (!items.get(cartID).containsKey(productID))
@@ -353,7 +309,7 @@ public class DataBase {
         items.get(cartID).remove(productID);
     }*/
 
-    public void increaseItem(long productID, long cartID) {
+    /*public void increaseItem(long productID, long cartID) {
         Session session = repo.getSessionFactory().openSession();
         try (session) {
             session.beginTransaction();
@@ -367,7 +323,7 @@ public class DataBase {
             session.update(item);
             session.getTransaction().commit();
         }
-    }
+    }*/
 
     /*public void decreaseItem(long productID, long cartID) {
         if (!items.get(cartID).containsKey(productID))
@@ -385,7 +341,7 @@ public class DataBase {
             items.get(cartID).put(productID, quantity);
     }*/
 
-    public HashMap<Product, Integer> getCartItems(long cartID) {
+    /*public HashMap<Product, Integer> getCartItems(long cartID) {
         Session session = repo.getSessionFactory().openSession();
         session.beginTransaction();
         List<Item> list = session.createQuery("FROM item i WHERE i.cartID = :cid", Item.class)
@@ -395,34 +351,20 @@ public class DataBase {
         HashMap<Product, Integer> itemsHashMap = new HashMap<>();
         for (Item item : list) itemsHashMap.put(findProduct(item.getProductID()),item.getCount());
         return itemsHashMap;
-    }
+    }*/
 
     public Product getExistedProduct(String title, String category) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        Product product = (Product) session.getNamedQuery(Product.GET_PRODUCT_BY_TITLE_CATEGORY)
-                .setParameter("title",title)
-                .setParameter("category",category).uniqueResult();
-        session.close();
-        return product;
+        return productService.getProduct(title,new Category(category));
     }
 
     private boolean isCategoryAvailable(String name) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        Category category = (Category) session.getNamedQuery(Category.SEARCH_CATEGORY)
-                .setParameter("name", name.toUpperCase()).uniqueResult();
-        return category != null;
+        return categoryService.getCategory(name.toUpperCase()) != null;
     }
 
     public void addCategory(String name) {
         if (isCategoryAvailable(name)) throw new CustomException("This category was added");
         else {
-            Session session = repo.getSessionFactory().openSession();
-            session.beginTransaction();
-            session.save(new Category(name.toUpperCase()));
-            session.getTransaction().commit();
-            session.close();
+            categoryService.addCategory(new Category(name.toUpperCase()));
         }
     }
 

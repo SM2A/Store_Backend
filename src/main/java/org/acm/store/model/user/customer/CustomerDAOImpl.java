@@ -50,7 +50,10 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public long addCustomer(Costumer costumer) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         session.save(costumer);
+        session.getTransaction().commit();
+        session.close();
         return costumer.getID();
     }
 

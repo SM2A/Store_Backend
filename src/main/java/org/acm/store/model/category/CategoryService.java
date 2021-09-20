@@ -32,6 +32,11 @@ public class CategoryService {
     }
 
     @Transactional
+    public void addCategory(Category category) {
+        categoryDAO.addCategory(category);
+    }
+
+    @Transactional
     public void updateCategory(Category category) {
         categoryDAO.updateCategory(category);
     }

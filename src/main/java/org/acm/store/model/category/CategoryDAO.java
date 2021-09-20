@@ -15,6 +15,8 @@ public interface CategoryDAO {
 
     public Category getCategory(String name);
 
+    public void addCategory(Category category);
+
     public void updateCategory(Category category);
 
     public void deleteCategory(long id);

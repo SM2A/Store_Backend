@@ -18,7 +18,7 @@ public interface ProductDAO {
 
     public List<Product> getProduct(Category category);
 
-    public List<Product> getProduct(String title, Category category);
+    public Product getProduct(String title, Category category);
 
     public void addProduct(Product product);
 

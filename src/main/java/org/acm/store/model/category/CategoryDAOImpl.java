@@ -34,8 +34,20 @@ public class CategoryDAOImpl implements CategoryDAO {
     @Override
     public Category getCategory(String name) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Category.SEARCH_CATEGORY, Category.class)
+        session.beginTransaction();
+        Category category = session.createNamedQuery(Category.SEARCH_CATEGORY, Category.class)
                 .setParameter("name", name).uniqueResult();
+        session.close();
+        return category;
+    }
+
+    @Override
+    public void addCategory(Category category) {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.save(category);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override

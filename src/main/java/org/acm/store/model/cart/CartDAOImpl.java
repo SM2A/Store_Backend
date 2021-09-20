@@ -36,13 +36,20 @@ public class CartDAOImpl implements CartDAO {
     @Override
     public List<Cart> getCart(long userID, Status status) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Cart.GET_USER_CARTS, Cart.class)
+        session.beginTransaction();
+        List<Cart> list =  session.createNamedQuery(Cart.GET_USER_CARTS_STATUS, Cart.class)
                 .setParameter("id", userID).setParameter("status", status).list();
+        session.close();
+        return list;
     }
 
     @Override
     public void addCart(Cart cart) {
-        this.sessionFactory.getCurrentSession().save(cart);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.save(cart);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override

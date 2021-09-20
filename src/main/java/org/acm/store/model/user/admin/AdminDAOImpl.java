@@ -50,7 +50,9 @@ public class AdminDAOImpl implements AdminDAO {
     @Override
     public long addAdmin(Admin admin) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         session.save(admin);
+        session.getTransaction().commit();
         return admin.getID();
     }
 

@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-    @Autowired
-    CustomerService customerService;
-
     /*@GetMapping
     public ArrayList<User> getUsers() {
 //        if (!Authentication.isLogin(request))

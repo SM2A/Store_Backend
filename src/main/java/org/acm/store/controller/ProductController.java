@@ -16,16 +16,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
 
-    private final DataBase dataBase;
-
-    public ProductController(DataBase dataBase) {
-        this.dataBase = dataBase;
-    }
-
-    @GetMapping
+    /*@GetMapping
     public List<Product> getProducts() {
-        return dataBase.getProducts();
-    }
+        return DataBase.getInstance().getProducts();
+    }*/
 
     /*@PostMapping("/search/name")
     public ArrayList<Product> searchProductByName(@RequestParam(required = false) @NotBlank @Valid String name) {
@@ -37,7 +31,7 @@ public class ProductController {
         return dataBase.searchProductsByCategory(category);
     }*/
 
-    @PostMapping("/add")
+    /*@PostMapping("/add")
     public String addProduct(@RequestParam(required = false) @NotBlank @Valid String title,
                              @RequestParam(required = false) @NotBlank @Valid String description,
                              @RequestParam(required = false) @NotBlank @Valid String quantityAvailable,
@@ -47,15 +41,15 @@ public class ProductController {
 //        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
 //        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("You dont have permission");
-        dataBase.addProduct(title, description, Integer.parseInt(quantityAvailable),
+        DataBase.getInstance().addProduct(title, description, Integer.parseInt(quantityAvailable),
                 Integer.parseInt(price), category, imgAddress);
         return "The product has been successfully added.";
     }
 
     @GetMapping("/{id}")
     public Product findProductById(@PathVariable("id") long id) {
-        if (dataBase.findProduct(id) == null) throw new CustomException("Product Id Doesn't Exist.");
-        return dataBase.findProduct(id);
+        if (DataBase.getInstance().findProduct(id) == null) throw new CustomException("Product Id Doesn't Exist.");
+        return DataBase.getInstance().findProduct(id);
     }
 
     @PostMapping("/rate")
@@ -64,7 +58,7 @@ public class ProductController {
 //        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
 //        if (dataBase.findProduct(Long.parseLong(productId)) == null)
 //            throw new CustomException("Product Id Doesn't Exist.");
-        dataBase.addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
+        DataBase.getInstance().addRatingToProduct(Long.parseLong(productId), Integer.parseInt(rating));
         return "The product has been successfully rated.";
     }
 
@@ -74,9 +68,9 @@ public class ProductController {
 //        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
 //        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("You dont have permission");
-        dataBase.addCategory(name);
+        DataBase.getInstance().addCategory(name);
         return "Category add successfully";
-    }
+    }*/
 
     /*@GetMapping("/category")
     public ArrayList<String> getCategories() {

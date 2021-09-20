@@ -17,12 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
 
-    private final DataBase dataBase;
-
-    public CartController(DataBase dataBase) {
-        this.dataBase = dataBase;
-    }
-
     /*@PostMapping
     public String showUserCarts(@RequestParam(required = false) @NotBlank @Valid String password,
                                 @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
@@ -62,7 +56,7 @@ public class CartController {
         return jsonArray.toString();
     }*/
 
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public String getCartItems(@PathVariable("id") long id) throws JSONException {
         JSONArray jsonArray = new JSONArray();
         for (Map.Entry<Product, Integer> entry : dataBase.getCartItems(id).entrySet()) {
@@ -76,7 +70,7 @@ public class CartController {
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
-    }
+    }*/
 
     /*@GetMapping("/items")
     public HashMap<Long, Integer> showItemsInCurrentCart(HttpServletRequest request) {

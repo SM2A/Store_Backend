@@ -48,15 +48,22 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public List<Product> getProduct(String title, Category category) {
+    public Product getProduct(String title, Category category) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Product.GET_PRODUCT_BY_CATEGORY, Product.class)
-                .setParameter("category", category.getName()).setParameter("title", title).list();
+        session.beginTransaction();
+        Product product = session.createNamedQuery(Product.GET_PRODUCT_BY_TITLE_CATEGORY, Product.class)
+                .setParameter("category", category.getName()).setParameter("title", title).uniqueResult();
+        session.close();
+        return product;
     }
 
     @Override
     public void addProduct(Product product) {
-        this.sessionFactory.getCurrentSession().save(product);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.save(product);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override

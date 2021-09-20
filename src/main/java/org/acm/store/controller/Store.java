@@ -2,6 +2,8 @@ package org.acm.store.controller;
 
 import org.acm.store.model.cart.Cart;
 import org.acm.store.model.DataBase;
+import org.acm.store.model.user.admin.Admin;
+import org.acm.store.model.user.admin.AdminService;
 import org.acm.store.model.user.customer.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -19,20 +21,19 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class Store {
 
-    @Autowired
-    CustomerService customerService;
-    
-    private final DataBase dataBase;
+    /*@Autowired
+    AdminService adminService;*/
 
-    public Store(DataBase dataBase) {
-        this.dataBase = dataBase;
-    }
+    @Autowired
+    DataBase dataBase;
 
     @GetMapping("/")
     public String/*List<ArrayList<Product>>*/ homePage() {
+//        adminService.addAdmin(new Admin("admin", "admin", "admin", "admin@admin.com", "007", "admin"));
 //        if (!Validation.isTaken("admin@admin.com", "007"))
-            dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
-//        return dataBase.getMainProducts();
+//            DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
+        dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
+//        return DataBase.getInstance().getMainProducts();
         return "Home page";
     }
 
@@ -71,7 +72,7 @@ public class Store {
         dataBase.addProduct("MMX Keys fdzdx", "Logitech", 5, 100, "KEYBOARDFOUR",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
 
-//        return dataBase.getMainProducts();
+//        return DataBase.getInstance().getMainProducts();
         return "OK";
     }
 
@@ -99,50 +100,50 @@ public class Store {
         dataBase.addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD",
                 "https://www.logitech.com/content/dam/logitech/en/products/keyboards/mx-keys/gallery/us-mx-keys-gallery-graphite-front.png");
 
-        Cart cart = dataBase.findOpenCartByUser(2);
+//        Cart cart = dataBase.findOpenCartByUser(2);
 
-        dataBase.addItem(cart.getID(), 13);
+        /*dataBase.addItem(cart.getID(), 13);
         dataBase.addItem(cart.getID(), 13);
         dataBase.addItem(cart.getID(), 13);
         dataBase.addItem(cart.getID(), 14);
         dataBase.addItem(cart.getID(), 14);
-        dataBase.addItem(cart.getID(), 15);
+        dataBase.addItem(cart.getID(), 15);*/
 
-        dataBase.addComment(3,13,"wowwww");
-        dataBase.addComment(4,13,"greattttt!!!!");
+//        dataBase.addComment(3,164,"wowwww");
+//        dataBase.addComment(4,13,"greattttt!!!!");
 
-        dataBase.addComment(5,14,"wowwww");
-        dataBase.addComment(2,15,"greattttt!!!!");
+//        dataBase.addComment(5,14,"wowwww");
+//        dataBase.addComment(2,15,"greattttt!!!!");
 
-        dataBase.addCredit(3, 10000);
-        dataBase.addCredit(4, 10000);
-        dataBase.addCredit(5, 10000);
+//        dataBase.addCredit(3, 10000);
+//        dataBase.addCredit(4, 10000);
+//        dataBase.addCredit(5, 10000);
 
-        dataBase.addCredit(2, 10000);
+//        dataBase.addCredit(2, 10000);
 //        dataBase.purchase(2);
 
-        cart = dataBase.findOpenCartByUser(2);
+//        cart = dataBase.findOpenCartByUser(2);
 
-        dataBase.addItem(cart.getID(), 1);
-        dataBase.addItem(cart.getID(), 2);
-        
-        dataBase.addRatingToProduct(13,5);
-        dataBase.addRatingToProduct(13,5);
-        dataBase.addRatingToProduct(13,2);
-        dataBase.addRatingToProduct(13,1);
-        dataBase.addRatingToProduct(13,3);
+        /*dataBase.addItem(cart.getID(), 1);
+        dataBase.addItem(cart.getID(), 2);*/
 
-        dataBase.addRatingToProduct(14,4);
-        dataBase.addRatingToProduct(14,5);
-        dataBase.addRatingToProduct(14,2);
-        dataBase.addRatingToProduct(14,1);
-        dataBase.addRatingToProduct(14,3);
+//        dataBase.addRatingToProduct(13,5);
+//        dataBase.addRatingToProduct(13,5);
+//        dataBase.addRatingToProduct(13,2);
+//        dataBase.addRatingToProduct(13,1);
+//        dataBase.addRatingToProduct(13,3);
 
-        dataBase.addRatingToProduct(15,1);
-        dataBase.addRatingToProduct(15,5);
-        dataBase.addRatingToProduct(15,2);
-        dataBase.addRatingToProduct(15,1);
-        dataBase.addRatingToProduct(15,3);
+//        dataBase.addRatingToProduct(14,4);
+//        dataBase.addRatingToProduct(14,5);
+//        dataBase.addRatingToProduct(14,2);
+//        dataBase.addRatingToProduct(14,1);
+//        dataBase.addRatingToProduct(14,3);
+
+//        dataBase.addRatingToProduct(15,1);
+//        dataBase.addRatingToProduct(15,5);
+//        dataBase.addRatingToProduct(15,2);
+//        dataBase.addRatingToProduct(15,1);
+//        dataBase.addRatingToProduct(15,3);
 
         return "Test 1";
     }
@@ -154,12 +155,12 @@ public class Store {
                          @RequestParam(required = false) @NotBlank @Valid String email,
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                          @RequestParam(required = false) @NotBlank @Valid String address) throws JSONException {
-        DataBase dataBase = dataBase;
+        DataBase.getInstance() DataBase.getInstance() = DataBase.getInstance();
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
+        DataBase.getInstance().addCostumer(firstName, lastName, password, email, phoneNumber, address);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code", 1);
-        jsonObject.put("ID", dataBase.validateUserByID(email, password));
+        jsonObject.put("ID", DataBase.getInstance().validateUserByID(email, password));
         jsonObject.put("email", email);
         jsonObject.put("password", password);
 
@@ -175,12 +176,12 @@ public class Store {
     /*@PostMapping("/login")
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
                         @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
-        DataBase dataBase = dataBase;
-        long ID = dataBase.validateUserByID(email, password);
+        DataBase.getInstance() DataBase.getInstance() = DataBase.getInstance();
+        long ID = DataBase.getInstance().validateUserByID(email, password);
         if (ID != -1) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("code", 1);
-            jsonObject.put("ID", dataBase.validateUserByID(email, password));
+            jsonObject.put("ID", DataBase.getInstance().validateUserByID(email, password));
             jsonObject.put("email", email);
             jsonObject.put("password", password);
             return jsonObject.toString();
@@ -229,9 +230,9 @@ public class Store {
 //        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("You dont have permission");
         if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        DataBase dataBase = dataBase;
-        dataBase.addAdmin(firstName, lastName, password, email, phoneNumber, address);
-        return String.valueOf(dataBase.validateUserByID(email, password));
+        DataBase.getInstance() DataBase.getInstance() = DataBase.getInstance();
+        DataBase.getInstance().addAdmin(firstName, lastName, password, email, phoneNumber, address);
+        return String.valueOf(DataBase.getInstance().validateUserByID(email, password));
     }*/
 
     /*@PostMapping("/purchase")
@@ -241,7 +242,7 @@ public class Store {
 //        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(email,password);
-        dataBase.purchase(user.getID());
+        DataBase.getInstance().purchase(user.getID());
         return "Thank you for your order";
     }*/
 
@@ -253,7 +254,7 @@ public class Store {
 //        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
 //            throw new CustomException("Make sure you are a costumer");
         User user = Authentication.loggedInUser(email, password);
-        dataBase.addCredit(user.getID(), Long.parseLong(amount));
+        DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
         return "Successful payment";
     }*/
 }

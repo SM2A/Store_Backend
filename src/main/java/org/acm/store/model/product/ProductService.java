@@ -38,7 +38,7 @@ public class ProductService {
     }
 
     @Transactional
-    public List<Product> getProduct(String title, Category category) {
+    public Product getProduct(String title, Category category) {
         return productDAO.getProduct(title, category);
     }
 

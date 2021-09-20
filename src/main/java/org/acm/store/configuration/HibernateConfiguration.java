@@ -1,9 +1,19 @@
 package org.acm.store.configuration;
 
+import org.acm.store.model.DataBase;
+import org.acm.store.model.cart.Cart;
+import org.acm.store.model.cart.Item;
+import org.acm.store.model.category.Category;
+import org.acm.store.model.comment.Comment;
+import org.acm.store.model.product.Product;
+import org.acm.store.model.user.User;
+import org.acm.store.model.user.admin.Admin;
+import org.acm.store.model.user.customer.Costumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -20,6 +30,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
+//@ImportResource({"classpath:Hibernate.cfg.xml"})
 //@EntityScan({"org.acm.store.model"})
 public class HibernateConfiguration {
 
@@ -59,8 +70,8 @@ public class HibernateConfiguration {
     @Value("${hibernate.connection.useSSL}")
     private String USE_SSL;
 
-    @Value("${entitymanager.packagesToScan}")
-    private String PACKAGES_TO_SCAN;
+    /*@Value("${entitymanager.packagesToScan}")
+    private String PACKAGES_TO_SCAN;*/
 
     @Bean
     public DataSource dataSource() {
@@ -76,7 +87,26 @@ public class HibernateConfiguration {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
         localSessionFactoryBean.setDataSource(dataSource());
-        localSessionFactoryBean.setPackagesToScan(PACKAGES_TO_SCAN);
+        localSessionFactoryBean.setPackagesToScan("{org.acm.store.model}");
+//        localSessionFactoryBean.setAnnotatedClasses(Admin.class);
+//        localSessionFactoryBean.setAnnotatedClasses(Costumer.class);
+//        localSessionFactoryBean.setAnnotatedClasses(User.class);
+//        localSessionFactoryBean.setAnnotatedClasses(Product.class);
+//        localSessionFactoryBean.setAnnotatedClasses(Comment.class);
+//        localSessionFactoryBean.setAnnotatedClasses(Cart.class);
+//        localSessionFactoryBean.setAnnotatedClasses(Item.class);
+//        localSessionFactoryBean.setAnnotatedClasses(DataBase.class);
+//        localSessionFactoryBean.setAnnotatedPackages("org.acm.store.model");
+//        localSessionFactoryBean.setcoo("Hibernate.cfg.xml");
+        Class[] classes = new Class[6];
+        classes[0] = Admin.class;
+        classes[1] = Costumer.class;
+        classes[2] = Cart.class;
+        classes[3] = Category.class;
+        classes[4] = Product.class;
+        classes[5] = Comment.class;
+//        classes[6] = Admin.class;
+        localSessionFactoryBean.setAnnotatedClasses(classes);
         Properties properties = new Properties();
         properties.put("hibernate.dialect", DIALECT);
         properties.put("hibernate.show_sql", SHOW_SQL);
