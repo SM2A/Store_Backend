@@ -8,12 +8,16 @@ import java.util.Date;
 })
 @Entity(name = "cart")
 @NamedQueries({
-        @NamedQuery(name = "GET_USER_OPEN_CART_BY_ID", query = Cart.GET_USER_OPEN_CART)
+        @NamedQuery(name = Cart.GET_USER_CARTS_STATUS, query = Cart.GET_USER_CARTS_STATUS_Q),
+        @NamedQuery(name = Cart.GET_USER_CARTS, query = Cart.GET_USER_CARTS_Q)
 })
 public class Cart {
 
-    public static final String GET_USER_OPEN_CART
-            = "FROM cart c WHERE c.userID = :id AND c.status = :status";
+    public static final String GET_USER_CARTS = "GET_USER_CARTS";
+    public static final String GET_USER_CARTS_Q = "FROM cart c WHERE c.userID = :id";
+
+    public static final String GET_USER_CARTS_STATUS = "GET_USER_CARTS_STATUS";
+    public static final String GET_USER_CARTS_STATUS_Q = "FROM cart c WHERE c.userID = :id AND c.status = :status";
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
