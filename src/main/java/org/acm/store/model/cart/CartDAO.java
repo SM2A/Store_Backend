@@ -11,9 +11,9 @@ public interface CartDAO {
 
     public List<Cart> getAllCart();
 
-    public List<Cart> getCart(long userID);
+    public Cart getCart(long ID);
 
-    public List<Cart> getCart(long userID,Status status);
+    public List<Cart> getCart(long userID, Status status);
 
     public void addCart(Cart cart);
 

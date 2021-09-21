@@ -31,13 +31,12 @@ public class CartDAOImpl implements CartDAO {
     }
 
     @Override
-    public List<Cart> getCart(long userID) {
+    public Cart getCart(long ID) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        List<Cart> list = session.createNamedQuery(Cart.GET_USER_CARTS, Cart.class)
-                .setParameter("id", userID).list();
+        Cart cart = session.get(Cart.class, ID);
         session.close();
-        return list;
+        return cart;
     }
 
     @Override

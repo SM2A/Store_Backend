@@ -108,15 +108,6 @@ public class DataBase {
         return commentService.getAllComments();
     }
 
-    /*public long validateUserByID(String email, String password) {
-        for (Map.Entry<Long, User> user : users.entrySet()) {
-            if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
-                return user.getKey();
-            }
-        }
-        return -1;
-    }*/
-
     public User validateUser(String email, String password) {
         Costumer costumer = customerService.getCustomerEmailPassword(email, password);
         if (costumer == null) return adminService.getAdminEmailPassword(email, password);
@@ -129,14 +120,6 @@ public class DataBase {
         return costumer;
     }
 
-    /*public HashMap<Long, Cart> getUserCarts(long userID) {
-        HashMap<Long, Cart> cartHashMap = new HashMap<>();
-        for (Map.Entry<Long, Cart> entry : carts.entrySet()) {
-            if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return cartHashMap;
-    }*/
-
     public List<User> getUsers() {
         List<User> userList = new ArrayList<>();
         userList.addAll(adminService.getAllAdmins());
@@ -144,21 +127,16 @@ public class DataBase {
         return userList;
     }
 
-    public List<Cart> showUserCarts(long userID) {
-        return cartService.getCart(userID);
+    public List<Cart> getUserCarts(long userID) {
+        List<Cart> list = new ArrayList<>();
+        list.addAll(cartService.getCart(userID,Status.OPEN));
+        list.addAll(cartService.getCart(userID,Status.CLOSED));
+        return list;
     }
 
     public List<Product> getProducts() {
         return productService.getAllProduct();
     }
-
-    /*public HashMap<Long, Comment> getUserComments(long userID) {
-        HashMap<Long, Comment> commentHashMap = new HashMap<>();
-        for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
-            if (entry.getValue().getUserID() == userID) commentHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return commentHashMap;
-    }*/
 
     public void editProduct(long id, String title, String description, int quantityAvailable,
                             int price, String category, String imgAddress) {
@@ -272,9 +250,9 @@ public class DataBase {
         return null;
     }*/
 
-    /*public Cart findCart(long ID) {
-        return carts.get(ID);
-    }*/
+    public Cart findCart(long ID) {
+        return cartService.getCart(ID);
+    }
 
     /*public long cartPrice(long cartID) {
         Session session = repo.getSessionFactory().openSession();
@@ -379,19 +357,19 @@ public class DataBase {
         return productService.getProduct(new Category(category));
     }
 
-    /*public List<ArrayList<Product>> getMainProducts() {//Randomly get 4 products for 3 categories to show in  home page
+    public List<ArrayList<Product>> getMainProducts() {//Randomly get 4 products for 3 categories to show in  home page
         List<ArrayList<Product>> allMainProducts = new ArrayList<>();
-        if (categories.size() < 3) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
+        if (categoryService.getAllCategories().size() < 3) throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");
         for (int j = 0; j < 3; j++) {
             ArrayList<Product> mainProductsInACategory = new ArrayList<>();
-            ArrayList<Product> list = getProductsByCategory(categories.get(j));
+            List<Product> list = productService.getProduct(categoryService.getAllCategories().get(j));
             Collections.shuffle(list);
-            if (list.size() < 4) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
+            if (list.size() < 4) throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");
             for (int i = 0; i < 4; i++) {
                 mainProductsInACategory.add(list.get(i));
             }
             allMainProducts.add(mainProductsInACategory);
         }
         return allMainProducts;
-    }*/
+    }
 }

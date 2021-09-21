@@ -1,5 +1,6 @@
 package org.acm.store.model.cart;
 
+import org.acm.store.model.user.customer.Costumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -22,8 +23,8 @@ public class CartService {
     }
 
     @Transactional
-    public List<Cart> getCart(long userID) {
-        return cartDAO.getCart(userID);
+    public Cart getCart(long ID) {
+        return cartDAO.getCart(ID);
     }
 
     @Transactional

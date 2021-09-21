@@ -2,9 +2,12 @@ package org.acm.store.controller;
 
 import org.acm.store.model.DataBase;
 import org.acm.store.model.cart.Cart;
+import org.acm.store.model.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by SM2A
@@ -20,14 +23,13 @@ public class Store {
     DataBase dataBase;
 
     @GetMapping("/")
-    public String/*List<ArrayList<Product>>*/ homePage() {
+    public List<ArrayList<Product>> homePage() {
         dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
-//        return DataBase.getInstance().getMainProducts();
-        return "Home page";
+        return dataBase.getMainProducts();
     }
 
     @GetMapping("/test")
-    public String/*List<ArrayList<Product>>*/ test() {
+    public List<ArrayList<Product>> test() {
 
         dataBase.addCategory("KEYBOARDTWO");
         dataBase.addCategory("KEYBOARDTHREE");
@@ -61,8 +63,7 @@ public class Store {
         dataBase.addProduct("MMX Keys fdzdx", "Logitech", 5, 100, "KEYBOARDFOUR",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
 
-//        return DataBase.getInstance().getMainProducts();
-        return "OK";
+        return dataBase.getMainProducts();
     }
 
     /*@GetMapping("/signup")
