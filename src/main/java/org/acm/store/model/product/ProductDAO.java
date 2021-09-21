@@ -20,7 +20,7 @@ public interface ProductDAO {
 
     public Product getProduct(String title, Category category);
 
-    public void addProduct(Product product);
+    public long addProduct(Product product);
 
     public void updateProduct(Product product);
 

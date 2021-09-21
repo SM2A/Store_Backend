@@ -1,37 +1,26 @@
 package org.acm.store.controller;
 
-import org.acm.store.model.cart.Cart;
 import org.acm.store.model.DataBase;
-import org.acm.store.model.user.admin.Admin;
-import org.acm.store.model.user.admin.AdminService;
-import org.acm.store.model.user.customer.CustomerService;
+import org.acm.store.model.cart.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 
 /**
  * Created by SM2A
  * Seyed Mohammad Amin Atyabi
  */
 
-
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class Store {
-
-    /*@Autowired
-    AdminService adminService;*/
 
     @Autowired
     DataBase dataBase;
 
     @GetMapping("/")
     public String/*List<ArrayList<Product>>*/ homePage() {
-//        adminService.addAdmin(new Admin("admin", "admin", "admin", "admin@admin.com", "007", "admin"));
-//        if (!Validation.isTaken("admin@admin.com", "007"))
-//            DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
         dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
 //        return DataBase.getInstance().getMainProducts();
         return "Home page";
@@ -85,22 +74,22 @@ public class Store {
     @GetMapping("/test1")
     public String test1(){
 
-        dataBase.addCostumer("Amin","Atyabi","123","amin@amin.net","123654789","Tehran");
-        dataBase.addCostumer("Paria","Khoshtab","123","test@test.net","987456321","Tehran");
-        dataBase.addCostumer("Parnian","Fazel","123","salam@test.net","147852369","Tehran");
+        long c1 = dataBase.addCostumer("Amin","Atyabi","123","amin@amin.net","123654789","Tehran");
+        long c2 = dataBase.addCostumer("Paria","Khoshtab","123","test@test.net","987456321","Tehran");
+        long c3 = dataBase.addCostumer("Parnian","Fazel","123","salam@test.net","147852369","Tehran");
 
         dataBase.addCategory("game");
         dataBase.addCategory("mouse");
         dataBase.addCategory("keyboard");
 
-        dataBase.addProduct("MFSX", "Microsoft", 5, 60, "GAME",
+        long p1 = dataBase.addProduct("MFSX", "Microsoft", 5, 60, "GAME",
                 "https://i1.sndcdn.com/artworks-000538033689-8y3q0k-t500x500.jpg");
-        dataBase.addProduct("Death Adder", "Razer", 5, 30, "MOUSE",
+        long p2 = dataBase.addProduct("Death Adder", "Razer", 5, 30, "MOUSE",
                 "https://hardwaremarket.net/wp-content/uploads/2021/03/razer-deathadder-essential-optical-gaming-mouse-white-1571981760387.jpg");
-        dataBase.addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD",
+        long p3 = dataBase.addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD",
                 "https://www.logitech.com/content/dam/logitech/en/products/keyboards/mx-keys/gallery/us-mx-keys-gallery-graphite-front.png");
 
-//        Cart cart = dataBase.findOpenCartByUser(2);
+        Cart cart = dataBase.findOpenCartByUser(c1);
 
         /*dataBase.addItem(cart.getID(), 13);
         dataBase.addItem(cart.getID(), 13);
@@ -109,17 +98,17 @@ public class Store {
         dataBase.addItem(cart.getID(), 14);
         dataBase.addItem(cart.getID(), 15);*/
 
-//        dataBase.addComment(3,164,"wowwww");
-//        dataBase.addComment(4,13,"greattttt!!!!");
+        dataBase.addComment(c2,p1,"wowwww");
+        dataBase.addComment(c3,p1,"greattttt!!!!");
 
-//        dataBase.addComment(5,14,"wowwww");
-//        dataBase.addComment(2,15,"greattttt!!!!");
+        dataBase.addComment(c1,p2,"wowwww");
+        dataBase.addComment(c2,p3,"greattttt!!!!");
 
-//        dataBase.addCredit(3, 10000);
-//        dataBase.addCredit(4, 10000);
-//        dataBase.addCredit(5, 10000);
+        dataBase.addCredit(c1, 10000);
+        dataBase.addCredit(c2, 10000);
+        dataBase.addCredit(c3, 10000);
 
-//        dataBase.addCredit(2, 10000);
+        dataBase.addCredit(2, 10000);
 //        dataBase.purchase(2);
 
 //        cart = dataBase.findOpenCartByUser(2);
@@ -127,23 +116,23 @@ public class Store {
         /*dataBase.addItem(cart.getID(), 1);
         dataBase.addItem(cart.getID(), 2);*/
 
-//        dataBase.addRatingToProduct(13,5);
-//        dataBase.addRatingToProduct(13,5);
-//        dataBase.addRatingToProduct(13,2);
-//        dataBase.addRatingToProduct(13,1);
-//        dataBase.addRatingToProduct(13,3);
+        dataBase.addRatingToProduct(p1,5);
+        dataBase.addRatingToProduct(p1,5);
+        dataBase.addRatingToProduct(p1,2);
+        dataBase.addRatingToProduct(p1,1);
+        dataBase.addRatingToProduct(p1,3);
 
-//        dataBase.addRatingToProduct(14,4);
-//        dataBase.addRatingToProduct(14,5);
-//        dataBase.addRatingToProduct(14,2);
-//        dataBase.addRatingToProduct(14,1);
-//        dataBase.addRatingToProduct(14,3);
+        dataBase.addRatingToProduct(p2,4);
+        dataBase.addRatingToProduct(p2,5);
+        dataBase.addRatingToProduct(p2,2);
+        dataBase.addRatingToProduct(p2,1);
+        dataBase.addRatingToProduct(p2,3);
 
-//        dataBase.addRatingToProduct(15,1);
-//        dataBase.addRatingToProduct(15,5);
-//        dataBase.addRatingToProduct(15,2);
-//        dataBase.addRatingToProduct(15,1);
-//        dataBase.addRatingToProduct(15,3);
+        dataBase.addRatingToProduct(p3,1);
+        dataBase.addRatingToProduct(p3,5);
+        dataBase.addRatingToProduct(p3,2);
+        dataBase.addRatingToProduct(p3,1);
+        dataBase.addRatingToProduct(p3,3);
 
         return "Test 1";
     }

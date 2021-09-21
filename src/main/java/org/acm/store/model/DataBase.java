@@ -13,7 +13,6 @@ import org.acm.store.model.user.admin.Admin;
 import org.acm.store.model.user.admin.AdminService;
 import org.acm.store.model.user.customer.Costumer;
 import org.acm.store.model.user.customer.CustomerService;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,43 +45,26 @@ public class DataBase {
     @Autowired
     ItemService itemService;
 
-
-    /*private static DataBase instance;
-
-    private DataBase() {}
-
-    public static DataBase getInstance() {
-        if (instance == null) {
-            instance = new DataBase();
-        }
-        return instance;
-    }*/
-
     public DataBase() {}
 
-    /*public boolean isTaken(String email, String phoneNumber) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER,Costumer.class)
-                .setParameter("email", email)
-                .setParameter("phonenumber", phoneNumber)
-                .uniqueResult();
-        Admin admin = session.createNamedQuery("GET_ADMIN_BY_EMAIL_PHONENUMBER",Admin.class)
-                .setParameter("email", email)
-                .setParameter("phonenumber", phoneNumber)
-                .uniqueResult();
-        session.close();
+    private boolean isTaken(String email, String phoneNumber) {
+        Costumer costumer = customerService.getCustomerEmailPhoneNumber(email, phoneNumber);
+        Admin admin = adminService.getAdminEmailPhoneNumber(email, phoneNumber);
         return costumer != null || admin != null;
-    }*/
-
-    public void addCostumer(String firstName, String lastName, String password,
-                            String email, String phoneNumber, String address) {
-        createCart(customerService.addCustomer(new Costumer(firstName,lastName,password,email,phoneNumber,address)));
     }
 
-    public void addAdmin(String firstName, String lastName, String password,
+    public long addCostumer(String firstName, String lastName, String password,
+                            String email, String phoneNumber, String address) {
+        if (isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+        long id = customerService.addCustomer(new Costumer(firstName,lastName,password,email,phoneNumber,address));
+        createCart(id);
+        return id;
+    }
+
+    public long addAdmin(String firstName, String lastName, String password,
                          String email, String phoneNumber, String address) {
-        adminService.addAdmin(new Admin(firstName, lastName, password, email, phoneNumber, address));
+        if (isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+        return adminService.addAdmin(new Admin(firstName, lastName, password, email, phoneNumber, address));
     }
 
     /*public void editUser(long id, String firstName, String lastName, String email,
@@ -215,18 +197,19 @@ public class DataBase {
         createCart(user.getID());
     }*/
 
-    public void addProduct(String title, String description, int quantityAvailable,
+    public long addProduct(String title, String description, int quantityAvailable,
                            int price, String category, String imgAddress) {
 
         if (getExistedProduct(title, category) != null) {
             Product product = getExistedProduct(title, category);
             product.addToStock(quantityAvailable);
             productService.updateProduct(product);
+            return product.getID();
         } else {
             if (!isCategoryAvailable(category)) throw new CustomException("Category not available");
-            productService.addProduct(new Product(title, description, quantityAvailable, price, category, imgAddress));
+            return productService
+                    .addProduct(new Product(title, description, quantityAvailable, price, category, imgAddress));
         }
-
     }
 
     public Product findProduct(long ID) {

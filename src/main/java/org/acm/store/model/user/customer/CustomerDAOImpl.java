@@ -24,27 +24,39 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public List<Costumer> getAllCustomers() {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createQuery("FROM costumer", Costumer.class).list();
+        session.beginTransaction();
+        List<Costumer> list = session.createQuery("FROM costumer", Costumer.class).list();
+        session.close();
+        return list;
     }
 
     @Override
     public Costumer getCustomer(long id) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.get(Costumer.class, id);
+        session.beginTransaction();
+        Costumer costumer = session.get(Costumer.class, id);
+        session.close();
+        return costumer;
     }
 
     @Override
     public Costumer getCustomerEmailPassword(String email, String password) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PASSWORD, Costumer.class)
+        session.beginTransaction();
+        Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PASSWORD, Costumer.class)
                 .setParameter("email", email).setParameter("password", password).uniqueResult();
+        session.close();
+        return costumer;
     }
 
     @Override
     public Costumer getCustomerEmailPhoneNumber(String email, String phoneNumber) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER, Costumer.class)
-                .setParameter("email", email).setParameter("phonenumer", phoneNumber).uniqueResult();
+        session.beginTransaction();
+        Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER, Costumer.class)
+                .setParameter("email", email).setParameter("phonenumber", phoneNumber).uniqueResult();
+        session.close();
+        return costumer;
     }
 
     @Override
@@ -60,13 +72,19 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public void updateCustomer(Costumer costumer) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         session.update(costumer);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override
     public void deleteCustomer(long id) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         Costumer costumer = session.get(Costumer.class, id);
         if (costumer != null) session.delete(costumer);
+        session.getTransaction().commit();
+        session.close();
     }
 }

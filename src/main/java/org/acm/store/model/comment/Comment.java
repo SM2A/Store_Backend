@@ -24,9 +24,9 @@ public class Comment {
     private long productID;
     @Column(name = "Content")
     private String text;
-    @Column(name = "Like")
+    @Column(name = "Likes")
     private int likes;
-    @Column(name = "Dislike")
+    @Column(name = "Dislikes")
     private int dislikes;
 
     public Comment() {

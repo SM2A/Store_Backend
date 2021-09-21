@@ -43,8 +43,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void addProduct(Product product) {
-        productDAO.addProduct(product);
+    public long addProduct(Product product) {
+        return productDAO.addProduct(product);
     }
 
     @Transactional

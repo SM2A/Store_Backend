@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 /**
@@ -25,26 +24,40 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public List<Product> getAllProduct() {
-        return this.sessionFactory.getCurrentSession().createQuery("FROM product", Product.class).list();
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        List<Product> list = session.createQuery("FROM product", Product.class).list();
+        session.close();
+        return list;
     }
 
     @Override
     public Product getProduct(long id) {
-        return this.sessionFactory.getCurrentSession().get(Product.class, id);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        Product product = session.get(Product.class, id);
+        session.close();
+        return product;
     }
 
     @Override
     public List<Product> getProduct(String title) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Product.GET_PRODUCT_BY_TITLE, Product.class)
+        session.beginTransaction();
+        List<Product> list = session.createNamedQuery(Product.GET_PRODUCT_BY_TITLE, Product.class)
                 .setParameter("title", title).list();
+        session.close();
+        return list;
     }
 
     @Override
     public List<Product> getProduct(Category category) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Product.GET_PRODUCT_BY_CATEGORY, Product.class)
+        session.beginTransaction();
+        List<Product> list = session.createNamedQuery(Product.GET_PRODUCT_BY_CATEGORY, Product.class)
                 .setParameter("category", category.getName()).list();
+        session.close();
+        return list;
     }
 
     @Override
@@ -58,23 +71,31 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public void addProduct(Product product) {
+    public long addProduct(Product product) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
         session.save(product);
         session.getTransaction().commit();
         session.close();
+        return product.getID();
     }
 
     @Override
     public void updateProduct(Product product) {
-        this.sessionFactory.getCurrentSession().update(product);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.update(product);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override
     public void deleteProduct(long id) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         Product product = session.get(Product.class, id);
         if (product != null) session.delete(product);
+        session.getTransaction().commit();
+        session.close();
     }
 }

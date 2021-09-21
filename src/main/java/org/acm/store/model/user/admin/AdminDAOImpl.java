@@ -24,27 +24,39 @@ public class AdminDAOImpl implements AdminDAO {
     @Override
     public List<Admin> getAllAdmins() {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createQuery("FROM admin ", Admin.class).list();
+        session.beginTransaction();
+        List<Admin> list = session.createQuery("FROM admin ", Admin.class).list();
+        session.close();
+        return list;
     }
 
     @Override
     public Admin getAdmin(long id) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.get(Admin.class, id);
+        session.beginTransaction();
+        Admin admin = session.get(Admin.class, id);
+        session.close();
+        return admin;
     }
 
     @Override
     public Admin getAdminEmailPassword(String email, String password) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Admin.GET_ADMIN_BY_EMAIL_PASSWORD, Admin.class)
+        session.beginTransaction();
+        Admin admin = session.createNamedQuery(Admin.GET_ADMIN_BY_EMAIL_PASSWORD, Admin.class)
                 .setParameter("email", email).setParameter("password", password).uniqueResult();
+        session.close();
+        return admin;
     }
 
     @Override
     public Admin getAdminEmailPhoneNumber(String email, String phoneNumber) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER, Admin.class)
+        session.beginTransaction();
+        Admin admin = session.createNamedQuery(Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER, Admin.class)
                 .setParameter("email", email).setParameter("phonenumber", phoneNumber).uniqueResult();
+        session.close();
+        return admin;
     }
 
     @Override
@@ -59,13 +71,19 @@ public class AdminDAOImpl implements AdminDAO {
     @Override
     public void updateAdmin(Admin admin) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         session.update(admin);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override
     public void deleteAdmin(long id) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         Admin admin = session.get(Admin.class, id);
         if (admin != null) session.delete(admin);
+        session.getTransaction().commit();
+        session.close();
     }
 }
