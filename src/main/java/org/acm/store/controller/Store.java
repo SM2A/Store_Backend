@@ -92,12 +92,12 @@ public class Store {
 
         Cart cart = dataBase.findOpenCartByUser(c1);
 
-        /*dataBase.addItem(cart.getID(), 13);
-        dataBase.addItem(cart.getID(), 13);
-        dataBase.addItem(cart.getID(), 13);
-        dataBase.addItem(cart.getID(), 14);
-        dataBase.addItem(cart.getID(), 14);
-        dataBase.addItem(cart.getID(), 15);*/
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p2);
+        dataBase.addItem(cart.getID(), p2);
+        dataBase.addItem(cart.getID(), p3);
 
         dataBase.addComment(c2,p1,"wowwww");
         dataBase.addComment(c3,p1,"greattttt!!!!");
@@ -109,13 +109,13 @@ public class Store {
         dataBase.addCredit(c2, 10000);
         dataBase.addCredit(c3, 10000);
 
-//        dataBase.addCredit(2, 10000);
-//        dataBase.purchase(2);
+        dataBase.addCredit(c1, 10000);
+        dataBase.purchase(c1);
 
-//        cart = dataBase.findOpenCartByUser(2);
+        cart = dataBase.findOpenCartByUser(c1);
 
-        /*dataBase.addItem(cart.getID(), 1);
-        dataBase.addItem(cart.getID(), 2);*/
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p2);
 
         dataBase.addRatingToProduct(p1,5);
         dataBase.addRatingToProduct(p1,5);

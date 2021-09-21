@@ -1,6 +1,7 @@
 package org.acm.store.model;
 
 import java.util.*;
+
 import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.cart.*;
 import org.acm.store.model.category.Category;
@@ -129,8 +130,8 @@ public class DataBase {
 
     public List<Cart> getUserCarts(long userID) {
         List<Cart> list = new ArrayList<>();
-        list.addAll(cartService.getCart(userID,Status.OPEN));
-        list.addAll(cartService.getCart(userID,Status.CLOSED));
+        list.addAll(cartService.getCart(userID, Status.OPEN));
+        list.addAll(cartService.getCart(userID, Status.CLOSED));
         return list;
     }
 
@@ -168,24 +169,25 @@ public class DataBase {
         customerService.updateCustomer(costumer);
     }
 
-    /*public void purchase(long userId) {
-        Costumer user = (Costumer) users.get(userId);
-        Cart cart = null;
-        for (Map.Entry<Long, Cart> entry : getUserCarts(userId).entrySet()) {
-            if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
-        }
+    public void purchase(long userId) {
+        Costumer user = customerService.getCustomer(userId);
+        Cart cart = cartService.getCart(userId, Status.OPEN).get(0);
         if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
             throw new CustomException("Not enough credit");
         }
-        for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
+        for (Item item : itemService.getCartItems(cart.getID())) {
             //todo maybe quantities changed
-            entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
+            Product product = productService.getProduct(item.getProductID());
+            product.setQuantityAvailable(product.getQuantityAvailable() - item.getCount());
+            productService.updateProduct(product);
         }
         user.purchase(cartPrice(cart.getID()));
         cart.purchase();
         cart.setStatus(Status.CLOSED);
         createCart(user.getID());
-    }*/
+        customerService.updateCustomer(user);
+        cartService.updateCart(cart);
+    }
 
     public long addProduct(String title, String description, int quantityAvailable,
                            int price, String category, String imgAddress) {
@@ -242,93 +244,57 @@ public class DataBase {
         return cartService.getCart(userId, Status.OPEN).get(0);
     }
 
-    /*public HashMap<Long, Integer> getItemsInOpenCart(long userId) {
+    public List<Item> getItemsInOpenCart(long userId) {
         Cart cart = findOpenCartByUser(userId);
-        if (items.get(cart.getID()) != null) {
-            return items.get(cart.getID());
-        }
-        return null;
-    }*/
+        return itemService.getCartItems(cart.getID());
+    }
 
     public Cart findCart(long ID) {
         return cartService.getCart(ID);
     }
 
-    /*public long cartPrice(long cartID) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        long price = (long) session.createNamedQuery(Item.GET_CART_PRICE)
-                .setParameter("cid", cartID)
-                .uniqueResult();
-        session.close();
-        return price;
-    }*/
-
-
-    /*public void addItem(long cartID, long productID) {
-        Session session = repo.getSessionFactory().openSession();
-        try(session) {
-            session.beginTransaction();
-            if (findProduct(productID).getQuantityAvailable() <= 0)
-                throw new CustomException("Not enough quantity");
-            if (getCartItems(cartID).containsKey(findProduct(productID))) {
-                increaseItem(productID, cartID);
-            } else {
-                session.save(new Item(cartID,productID,1));
-                session.getTransaction().commit();
-            }
-        }
-    }*/
-
-    /*public void deleteItem(long productID, long cartID) {
-        if (!items.get(cartID).containsKey(productID))
-            throw new CustomException("Your cart doesn't contain item with id: " + productID);
-        items.get(cartID).remove(productID);
-    }*/
-
-    /*public void increaseItem(long productID, long cartID) {
-        Session session = repo.getSessionFactory().openSession();
-        try (session) {
-            session.beginTransaction();
-            Item item = (Item) session.getNamedQuery(Item.GET_ITEM)
-                    .setParameter("cid",cartID)
-                    .setParameter("pid",productID)
-                    .uniqueResult();
-            if (findProduct(productID).getQuantityAvailable() == item.getCount())
-                throw new CustomException("Not enough quantity");
-            item.setCount(item.getCount()+1);
-            session.update(item);
-            session.getTransaction().commit();
-        }
-    }*/
-
-    /*public void decreaseItem(long productID, long cartID) {
-        if (!items.get(cartID).containsKey(productID))
-            throw new CustomException("Your cart doesn't contain item with id: " + productID);
-        if (items.get(cartID).get(productID) == 1) deleteItem(productID, cartID);
-        else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
+    public long cartPrice(long cartID) {
+        return itemService.getCartPrice(cartID);
     }
 
-    public void setQuantityToAnItem(long productID, long cartID, int quantity) {
-        if (findProduct(productID).getQuantityAvailable() < quantity)
+    public void addItem(long cartID, long productID) {
+        if (findProduct(productID).getQuantityAvailable() <= 0)
             throw new CustomException("Not enough quantity");
-        if (getCartItems(cartID).containsKey(findProduct(productID)))
-            items.get(cartID).replace(productID, quantity);
-        else
-            items.get(cartID).put(productID, quantity);
-    }*/
+        if (getCartItems(cartID).stream().filter(item -> item.getProductID() == productID)
+                .findAny().orElse(null) != null) {
+            increaseItem(productID, cartID);
+        } else {
+            itemService.addItem(new Item(cartID, productID, 1));
+        }
+    }
 
-    /*public HashMap<Product, Integer> getCartItems(long cartID) {
-        Session session = repo.getSessionFactory().openSession();
-        session.beginTransaction();
-        List<Item> list = session.createQuery("FROM item i WHERE i.cartID = :cid", Item.class)
-                .setParameter("cid",cartID)
-                .getResultList();
-        session.close();
-        HashMap<Product, Integer> itemsHashMap = new HashMap<>();
-        for (Item item : list) itemsHashMap.put(findProduct(item.getProductID()),item.getCount());
-        return itemsHashMap;
-    }*/
+    public void deleteItem(long productID, long cartID) {
+        if (itemService.getItem(cartID, productID) == null)
+            throw new CustomException("Your cart doesn't contain item with id: " + productID);
+        itemService.deleteItem(cartID, productID);
+    }
+
+    public void increaseItem(long productID, long cartID) {
+        Item item = itemService.getItem(cartID, productID);
+        if (findProduct(productID).getQuantityAvailable() == item.getCount())
+            throw new CustomException("Not enough quantity");
+        item.setCount(item.getCount() + 1);
+        itemService.updateItem(item);
+    }
+
+    public void decreaseItem(long productID, long cartID) {
+        Item item = itemService.getItem(cartID, productID);
+        if (item == null) throw new CustomException("Your cart doesn't contain item with id: " + productID);
+        if (item.getCount() <= 1) itemService.deleteItem(item.getCartID(), item.getProductID());
+        else {
+            item.setCount(item.getCount() - 1);
+            itemService.updateItem(item);
+        }
+    }
+
+    public List<Item> getCartItems(long cartID) {
+        return itemService.getCartItems(cartID);
+    }
 
     public Product getExistedProduct(String title, String category) {
         return productService.getProduct(title, new Category(category));
@@ -359,7 +325,8 @@ public class DataBase {
 
     public List<ArrayList<Product>> getMainProducts() {//Randomly get 4 products for 3 categories to show in  home page
         List<ArrayList<Product>> allMainProducts = new ArrayList<>();
-        if (categoryService.getAllCategories().size() < 3) throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");
+        if (categoryService.getAllCategories().size() < 3)
+            throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");
         for (int j = 0; j < 3; j++) {
             ArrayList<Product> mainProductsInACategory = new ArrayList<>();
             List<Product> list = productService.getProduct(categoryService.getAllCategories().get(j));
