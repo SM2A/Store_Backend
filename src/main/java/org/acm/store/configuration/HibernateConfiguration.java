@@ -1,5 +1,6 @@
 package org.acm.store.configuration;
 
+import org.acm.store.model.DataBase;
 import org.acm.store.model.cart.Cart;
 import org.acm.store.model.category.Category;
 import org.acm.store.model.comment.Comment;
@@ -16,7 +17,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
-
 
 /**
  * Created by SM2A
@@ -79,7 +79,7 @@ public class HibernateConfiguration {
         localSessionFactoryBean.setDataSource(dataSource());
         localSessionFactoryBean.setPackagesToScan("{org.acm.store.model}");
         localSessionFactoryBean.setAnnotatedClasses(Admin.class, Comment.class, Product.class, Category.class,
-                Cart.class, Costumer.class, User.class);
+                Cart.class, Costumer.class, User.class, DataBase.class);
         Properties properties = new Properties();
         properties.put("hibernate.dialect", DIALECT);
         /*properties.put("hibernate.show_sql", SHOW_SQL);

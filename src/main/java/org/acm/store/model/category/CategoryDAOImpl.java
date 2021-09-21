@@ -23,12 +23,20 @@ public class CategoryDAOImpl implements CategoryDAO {
 
     @Override
     public List<Category> getAllCategories() {
-        return this.sessionFactory.getCurrentSession().createQuery("FROM category", Category.class).list();
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        List<Category> list = session.createQuery("FROM category", Category.class).list();
+        session.close();
+        return list;
     }
 
     @Override
     public Category getCategory(long id) {
-        return this.sessionFactory.getCurrentSession().get(Category.class, id);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        Category category = session.get(Category.class, id);
+        session.close();
+        return category;
     }
 
     @Override
@@ -52,13 +60,20 @@ public class CategoryDAOImpl implements CategoryDAO {
 
     @Override
     public void updateCategory(Category category) {
-        this.sessionFactory.getCurrentSession().update(category);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.update(category);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override
     public void deleteCategory(long id) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         Category category = session.get(Category.class, id);
         if (category != null) session.delete(category);
+        session.getTransaction().commit();
+        session.close();
     }
 }

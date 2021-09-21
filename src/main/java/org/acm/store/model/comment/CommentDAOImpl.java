@@ -23,19 +23,30 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     public List<Comment> getAllComments() {
-        return this.sessionFactory.getCurrentSession().createQuery("FROM comment", Comment.class).list();
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        List<Comment> list = session.createQuery("FROM comment", Comment.class).list();
+        session.close();
+        return list;
     }
 
     @Override
     public List<Comment> getProductComments(long productID) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Comment.GET_COMMENT_BY_PRODUCTID, Comment.class)
+        session.beginTransaction();
+        List<Comment> list = session.createNamedQuery(Comment.GET_COMMENT_BY_PRODUCTID, Comment.class)
                 .setParameter("pid", productID).list();
+        session.close();
+        return list;
     }
 
     @Override
     public Comment getComment(long id) {
-        return this.sessionFactory.getCurrentSession().get(Comment.class, id);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        Comment comment = session.get(Comment.class, id);
+        session.close();
+        return comment;
     }
 
     @Override
@@ -49,13 +60,20 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     public void updateComment(Comment comment) {
-        this.sessionFactory.getCurrentSession().update(comment);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.update(comment);
+        session.getTransaction().commit();
+        session.close();
     }
 
     @Override
     public void deleteComment(long id) {
         Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
         Comment comment = session.get(Comment.class, id);
         if (comment != null) session.delete(comment);
+        session.getTransaction().commit();
+        session.close();
     }
 }

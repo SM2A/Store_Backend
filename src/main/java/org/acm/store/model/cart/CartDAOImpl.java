@@ -23,21 +23,28 @@ public class CartDAOImpl implements CartDAO {
 
     @Override
     public List<Cart> getAllCart() {
-        return this.sessionFactory.getCurrentSession().createQuery("FROM cart", Cart.class).list();
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        List<Cart> list = session.createQuery("FROM cart", Cart.class).list();
+        session.close();
+        return list;
     }
 
     @Override
     public List<Cart> getCart(long userID) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createNamedQuery(Cart.GET_USER_CARTS, Cart.class)
+        session.beginTransaction();
+        List<Cart> list = session.createNamedQuery(Cart.GET_USER_CARTS, Cart.class)
                 .setParameter("id", userID).list();
+        session.close();
+        return list;
     }
 
     @Override
     public List<Cart> getCart(long userID, Status status) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        List<Cart> list =  session.createNamedQuery(Cart.GET_USER_CARTS_STATUS, Cart.class)
+        List<Cart> list = session.createNamedQuery(Cart.GET_USER_CARTS_STATUS, Cart.class)
                 .setParameter("id", userID).setParameter("status", status).list();
         session.close();
         return list;
@@ -54,6 +61,10 @@ public class CartDAOImpl implements CartDAO {
 
     @Override
     public void updateCart(Cart cart) {
-        this.sessionFactory.getCurrentSession().update(cart);
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.update(cart);
+        session.getTransaction().commit();
+        session.close();
     }
 }

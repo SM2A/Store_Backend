@@ -108,7 +108,7 @@ public class Store {
         dataBase.addCredit(c2, 10000);
         dataBase.addCredit(c3, 10000);
 
-        dataBase.addCredit(2, 10000);
+//        dataBase.addCredit(2, 10000);
 //        dataBase.purchase(2);
 
 //        cart = dataBase.findOpenCartByUser(2);
