@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface CartDAO {
 
-    public List<Cart> getAllCart();
+    List<Cart> getAllCart();
 
-    public Cart getCart(long ID);
+    Cart getCart(long ID);
 
-    public List<Cart> getCart(long userID, Status status);
+    List<Cart> getCart(long userID, Status status);
 
-    public void addCart(Cart cart);
+    void addCart(Cart cart);
 
-    public void updateCart(Cart cart);
+    void updateCart(Cart cart);
 }

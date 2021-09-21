@@ -10,24 +10,27 @@ import javax.persistence.*;
 @Entity(name = "item")
 @Table(name = "item")
 @NamedQueries({
-        @NamedQuery(name = "GET_CART_PRICE", query = Item.GET_CART_PRICE),
-        @NamedQuery(name = "GET_CART_ITEMS", query = Item.GET_CART_ITEMS),
-        @NamedQuery(name = "GET_ITEM", query = Item.GET_ITEM),
+        @NamedQuery(name = Item.GET_CART_PRICE, query = Item.GET_CART_PRICE_Q),
+        @NamedQuery(name = Item.GET_CART_ITEMS, query = Item.GET_CART_ITEMS_Q),
+        @NamedQuery(name = Item.GET_ITEM, query = Item.GET_ITEM_Q),
 })
 public class Item {
 
-    public static final String GET_CART_PRICE
+    public static final String GET_CART_PRICE = "GET_CART_PRICE";
+    public static final String GET_CART_PRICE_Q
             = "SELECT SUM(item.count * product.price)" +
             "FROM item i INNER JOIN product ON i.productID=product.id WHERE i.cartID = :cid";
 
-    public static final String GET_CART_ITEMS
-            = "SELECT product FROM item i INNER JOIN product ON i.productID=product.id WHERE i.cartID = :cid";
+    public static final String GET_CART_ITEMS = "GET_CART_ITEMS";
+    public static final String GET_CART_ITEMS_Q
+            = "FROM item i WHERE i.cartID = :cid";
 
-    public static final String GET_ITEM
+    public static final String GET_ITEM = "GET_ITEM";
+    public static final String GET_ITEM_Q
             = "FROM item i WHERE i.cartID = :cid AND i.productID = :pid";
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private long ID;
     @Column(name = "CartID")
@@ -37,7 +40,8 @@ public class Item {
     @Column(name = "Count")
     private int count;
 
-    public Item() {}
+    public Item() {
+    }
 
     public Item(long cartID, long productID, int count) {
         this.cartID = cartID;

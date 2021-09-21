@@ -10,19 +10,19 @@ import java.util.List;
 
 public interface ProductDAO {
 
-    public List<Product> getAllProduct();
+    List<Product> getAllProduct();
 
-    public Product getProduct(long id);
+    Product getProduct(long id);
 
-    public List<Product> getProduct(String title);
+    List<Product> getProduct(String title);
 
-    public List<Product> getProduct(Category category);
+    List<Product> getProduct(Category category);
 
-    public Product getProduct(String title, Category category);
+    Product getProduct(String title, Category category);
 
-    public long addProduct(Product product);
+    long addProduct(Product product);
 
-    public void updateProduct(Product product);
+    void updateProduct(Product product);
 
-    public void deleteProduct(long id);
+    void deleteProduct(long id);
 }

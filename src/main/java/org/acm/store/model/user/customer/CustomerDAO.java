@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface CustomerDAO {
 
-    public List<Costumer> getAllCustomers();
+    List<Costumer> getAllCustomers();
 
-    public Costumer getCustomer(long id);
+    Costumer getCustomer(long id);
 
-    public Costumer getCustomerEmailPassword(String email, String password);
+    Costumer getCustomerEmailPassword(String email, String password);
 
-    public Costumer getCustomerEmailPhoneNumber(String email, String phoneNumber);
+    Costumer getCustomerEmailPhoneNumber(String email, String phoneNumber);
 
-    public long addCustomer(Costumer costumer);
+    long addCustomer(Costumer costumer);
 
-    public void updateCustomer(Costumer costumer);
+    void updateCustomer(Costumer costumer);
 
-    public void deleteCustomer(long id);
+    void deleteCustomer(long id);
 }

@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface AdminDAO {
 
-    public List<Admin> getAllAdmins();
+    List<Admin> getAllAdmins();
 
-    public Admin getAdmin(long id);
+    Admin getAdmin(long id);
 
-    public Admin getAdminEmailPassword(String email, String password);
+    Admin getAdminEmailPassword(String email, String password);
 
-    public Admin getAdminEmailPhoneNumber(String email, String phoneNumber);
+    Admin getAdminEmailPhoneNumber(String email, String phoneNumber);
 
-    public long addAdmin(Admin admin);
+    long addAdmin(Admin admin);
 
-    public void updateAdmin(Admin admin);
+    void updateAdmin(Admin admin);
 
-    public void deleteAdmin(long id);
+    void deleteAdmin(long id);
 }

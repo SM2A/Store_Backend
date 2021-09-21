@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface CategoryDAO {
 
-    public List<Category> getAllCategories();
+    List<Category> getAllCategories();
 
-    public Category getCategory(long id);
+    Category getCategory(long id);
 
-    public Category getCategory(String name);
+    Category getCategory(String name);
 
-    public void addCategory(Category category);
+    void addCategory(Category category);
 
-    public void updateCategory(Category category);
+    void updateCategory(Category category);
 
-    public void deleteCategory(long id);
+    void deleteCategory(long id);
 }

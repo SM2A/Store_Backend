@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface CommentDAO {
 
-    public List<Comment> getAllComments();
+    List<Comment> getAllComments();
 
-    public List<Comment> getProductComments(long productID);
+    List<Comment> getProductComments(long productID);
 
-    public Comment getComment(long id);
+    Comment getComment(long id);
 
-    public void addComment(Comment comment);
+    void addComment(Comment comment);
 
-    public void updateComment(Comment comment);
+    void updateComment(Comment comment);
 
-    public void deleteComment(long id);
+    void deleteComment(long id);
 }
