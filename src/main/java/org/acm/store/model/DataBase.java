@@ -4,6 +4,8 @@ import java.util.*;
 
 import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.cart.*;
+import org.acm.store.model.item.Item;
+import org.acm.store.model.item.ItemService;
 import org.acm.store.model.category.Category;
 import org.acm.store.model.category.CategoryService;
 import org.acm.store.model.comment.Comment;

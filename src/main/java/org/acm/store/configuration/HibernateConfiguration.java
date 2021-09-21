@@ -2,7 +2,7 @@ package org.acm.store.configuration;
 
 import org.acm.store.model.DataBase;
 import org.acm.store.model.cart.Cart;
-import org.acm.store.model.cart.Item;
+import org.acm.store.model.item.Item;
 import org.acm.store.model.category.Category;
 import org.acm.store.model.comment.Comment;
 import org.acm.store.model.product.Product;
@@ -11,6 +11,7 @@ import org.acm.store.model.user.admin.Admin;
 import org.acm.store.model.user.customer.Costumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -27,6 +28,8 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
+//@EntityScan("org.acm.store.model")
+@ComponentScan(basePackages = "org.acm.store")
 public class HibernateConfiguration {
 
     @Value("${db.driver}")
@@ -79,7 +82,7 @@ public class HibernateConfiguration {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
         localSessionFactoryBean.setDataSource(dataSource());
-//        localSessionFactoryBean.setPackagesToScan("{org.acm.store.model.cart}");
+        localSessionFactoryBean.setPackagesToScan("org.acm.store");
         localSessionFactoryBean.setAnnotatedClasses(Admin.class, Comment.class, Product.class, Category.class,
                 Cart.class, Costumer.class, User.class, DataBase.class, Item.class);
         Properties properties = new Properties();

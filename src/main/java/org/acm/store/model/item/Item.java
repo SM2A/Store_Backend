@@ -1,4 +1,4 @@
-package org.acm.store.model.cart;
+package org.acm.store.model.item;
 
 import javax.persistence.*;
 
@@ -8,7 +8,9 @@ import javax.persistence.*;
  */
 
 @Entity(name = "item")
-@Table(name = "item")
+@Table(name = "item",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID")
+})
 @NamedQueries({
         @NamedQuery(name = Item.GET_CART_PRICE, query = Item.GET_CART_PRICE_Q),
         @NamedQuery(name = Item.GET_CART_ITEMS, query = Item.GET_CART_ITEMS_Q),
@@ -40,8 +42,7 @@ public class Item {
     @Column(name = "Count")
     private int count;
 
-    public Item() {
-    }
+    public Item() {}
 
     public Item(long cartID, long productID, int count) {
         this.cartID = cartID;

@@ -1,4 +1,4 @@
-package org.acm.store.model.cart;
+package org.acm.store.model.item;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

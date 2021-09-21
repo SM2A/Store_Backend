@@ -30,8 +30,7 @@ public class Costumer extends User {
     @Column(name = "Credit")
     private long credit;
 
-    public Costumer() {
-    }
+    public Costumer() {}
 
     public Costumer(String firstName, String lastName, String password,
                     String email, String phoneNumber, String address) {
