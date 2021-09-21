@@ -9,6 +9,7 @@ import org.acm.store.model.comment.Comment;
 import org.acm.store.model.comment.CommentService;
 import org.acm.store.model.product.Product;
 import org.acm.store.model.product.ProductService;
+import org.acm.store.model.user.User;
 import org.acm.store.model.user.admin.Admin;
 import org.acm.store.model.user.admin.AdminService;
 import org.acm.store.model.user.customer.Costumer;
@@ -45,7 +46,8 @@ public class DataBase {
     @Autowired
     ItemService itemService;
 
-    public DataBase() {}
+    public DataBase() {
+    }
 
     private boolean isTaken(String email, String phoneNumber) {
         Costumer costumer = customerService.getCustomerEmailPhoneNumber(email, phoneNumber);
@@ -56,7 +58,7 @@ public class DataBase {
     public long addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
         if (isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        long id = customerService.addCustomer(new Costumer(firstName,lastName,password,email,phoneNumber,address));
+        long id = customerService.addCustomer(new Costumer(firstName, lastName, password, email, phoneNumber, address));
         createCart(id);
         return id;
     }
@@ -67,27 +69,44 @@ public class DataBase {
         return adminService.addAdmin(new Admin(firstName, lastName, password, email, phoneNumber, address));
     }
 
-    /*public void editUser(long id, String firstName, String lastName, String email,
+    public void editUser(long id, String firstName, String lastName, String email,
                          String phoneNumber, String address) {
-        User user = users.get(id);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        user.setAddress(address);
-    }*/
+        Costumer customer = customerService.getCustomer(id);
+        if (customer == null) {
+            Admin admin = adminService.getAdmin(id);
+            admin.setFirstName(firstName);
+            admin.setLastName(lastName);
+            admin.setEmail(email);
+            admin.setPhoneNumber(phoneNumber);
+            admin.setAddress(address);
+            adminService.updateAdmin(admin);
+        }
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        customer.setEmail(email);
+        customer.setPhoneNumber(phoneNumber);
+        customer.setAddress(address);
+        customerService.updateCustomer(customer);
+    }
 
-    /*public void changePassword(long id, String password) {
-        users.get(id).setPassword(password);
-    }*/
+    public void changePassword(long id, String password) {
+        Costumer customer = customerService.getCustomer(id);
+        if (customer == null) {
+            Admin admin = adminService.getAdmin(id);
+            admin.setPassword(password);
+            adminService.updateAdmin(admin);
+        }
+        customer.setPassword(password);
+        customerService.updateCustomer(customer);
+    }
 
-    /*public Comment findCommentByID(long id) {
-        return comments.get(id);
-    }*/
+    public Comment findCommentByID(long id) {
+        return commentService.getComment(id);
+    }
 
-    /*public ArrayList<Comment> getAllComments() {
-        return new ArrayList<>(comments.values());
-    }*/
+    public List<Comment> getAllComments() {
+        return commentService.getAllComments();
+    }
 
     /*public long validateUserByID(String email, String password) {
         for (Map.Entry<Long, User> user : users.entrySet()) {
@@ -96,22 +115,19 @@ public class DataBase {
             }
         }
         return -1;
-    }
+    }*/
 
     public User validateUser(String email, String password) {
-        for (Map.Entry<Long, User> user : users.entrySet()) {
-            if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
-                return user.getValue();
-            }
-        }
-        return null;
+        Costumer costumer = customerService.getCustomerEmailPassword(email, password);
+        if (costumer == null) return adminService.getAdminEmailPassword(email, password);
+        return costumer;
     }
 
     public User findUser(long ID) {
-        if (!users.containsKey(ID))
-            throw new CustomException("User not found.");
-        return users.get(ID);
-    }*/
+        Costumer costumer = customerService.getCustomer(ID);
+        if (costumer == null) return adminService.getAdmin(ID);
+        return costumer;
+    }
 
     /*public HashMap<Long, Cart> getUserCarts(long userID) {
         HashMap<Long, Cart> cartHashMap = new HashMap<>();
@@ -119,19 +135,18 @@ public class DataBase {
             if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(), entry.getValue());
         }
         return cartHashMap;
-    }
-
-    public ArrayList<User> getUsers() {
-        return new ArrayList<>(users.values());
-    }
-
-    public ArrayList<Cart> showUserCarts(long userID) {
-        HashMap<Long, Cart> cartHashMap = new HashMap<>();
-        for (Map.Entry<Long, Cart> entry : carts.entrySet()) {
-            if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return new ArrayList<>(cartHashMap.values());
     }*/
+
+    public List<User> getUsers() {
+        List<User> userList = new ArrayList<>();
+        userList.addAll(adminService.getAllAdmins());
+        userList.addAll(customerService.getAllCustomers());
+        return userList;
+    }
+
+    public List<Cart> showUserCarts(long userID) {
+        return cartService.getCart(userID);
+    }
 
     public List<Product> getProducts() {
         return productService.getAllProduct();
@@ -143,26 +158,23 @@ public class DataBase {
             if (entry.getValue().getUserID() == userID) commentHashMap.put(entry.getKey(), entry.getValue());
         }
         return commentHashMap;
-    }
+    }*/
 
     public void editProduct(long id, String title, String description, int quantityAvailable,
                             int price, String category, String imgAddress) {
-        Product product = products.get(id);
+        Product product = productService.getProduct(id);
         product.setTitle(title);
         product.setDescription(description);
         product.setQuantityAvailable(quantityAvailable);
         product.setPrice(price);
         product.setCategory(category);
         product.setImgAddress(imgAddress);
-    }*/
+        productService.updateProduct(product);
+    }
 
-    /*public ArrayList<Comment> getProductComments(long productId) {
-        ArrayList<Comment> userComments = new ArrayList<>();
-        for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
-            if (entry.getValue().getProductID() == productId) userComments.add(entry.getValue());
-        }
-        return userComments;
-    }*/
+    public List<Comment> getProductComments(long productId) {
+        return commentService.getProductComments(productId);
+    }
 
     public void addRatingToProduct(long productID, int rating) {
         if ((rating > 5) || (rating < 0)) throw new CustomException("Enter correct number");
@@ -217,35 +229,39 @@ public class DataBase {
     }
 
     public void addComment(long userID, long productID, String text) {
-        commentService.addComment(new Comment(userID,productID,text));
+        commentService.addComment(new Comment(userID, productID, text));
     }
 
-    /*public Comment findComment(long ID) {
-        return comments.get(ID);
+    public Comment findComment(long ID) {
+        return commentService.getComment(ID);
     }
 
     public void likeComment(long ID) {
-        comments.get(ID).like();
+        Comment comment = commentService.getComment(ID);
+        comment.like();
+        commentService.updateComment(comment);
     }
 
     public void dislikeComment(long ID) {
-        comments.get(ID).dislike();
+        Comment comment = commentService.getComment(ID);
+        comment.dislike();
+        commentService.updateComment(comment);
     }
 
     public void deleteComment(long ID) {
-        comments.remove(ID);
-    }*/
+        commentService.deleteComment(ID);
+    }
 
     public void createCart(long userID) {
         cartService.addCart(new Cart(userID));
     }
 
-    /*public ArrayList<Cart> getCarts() {
-        return new ArrayList<>(carts.values());
-    }*/
+    public List<Cart> getCarts() {
+        return cartService.getAllCart();
+    }
 
     public Cart findOpenCartByUser(long userId) {
-        return cartService.getCart(userId,Status.OPEN).get(0);
+        return cartService.getCart(userId, Status.OPEN).get(0);
     }
 
     /*public HashMap<Long, Integer> getItemsInOpenCart(long userId) {
@@ -337,7 +353,7 @@ public class DataBase {
     }*/
 
     public Product getExistedProduct(String title, String category) {
-        return productService.getProduct(title,new Category(category));
+        return productService.getProduct(title, new Category(category));
     }
 
     private boolean isCategoryAvailable(String name) {
@@ -351,39 +367,17 @@ public class DataBase {
         }
     }
 
-    /*public ArrayList<String> getCategories() {
-        return categories;
+    public List<Category> getCategories() {
+        return categoryService.getAllCategories();
     }
 
-    public ArrayList<Product> getProductsByCategory(String category) {
-        ArrayList<Product> selectedProducts = new ArrayList<>();
-        for (Product product : products.values()) {
-            if (product.getCategory().equals(category)) {
-                selectedProducts.add(product);
-            }
-        }
-        return selectedProducts;
-    }*/
+    public List<Product> searchProductsByName(String name) {
+        return productService.getProduct(name);
+    }
 
-    /*public ArrayList<Product> searchProductsByName(String name) {
-        ArrayList<Product> searchedProducts = new ArrayList<>();
-        for (Product product : products.values()) {
-            if (product.getTitle().equalsIgnoreCase(name)) searchedProducts.add(product);
-            else if (product.getTitle().contains(name)) searchedProducts.add(product);
-            else if (Pattern.compile(Pattern.quote(name), Pattern.CASE_INSENSITIVE).matcher(product.getTitle())
-                    .find()) searchedProducts.add(product);
-            else if (product.getTitle().matches("(?i).*" + name + ".*")) searchedProducts.add(product);
-        }
-        return searchedProducts;
-    }*/
-
-    /*public ArrayList<Product> searchProductsByCategory(String category) {
-        ArrayList<Product> searchedProducts = new ArrayList<>();
-        for (Product product : products.values()) {
-            if (product.getCategory().equalsIgnoreCase(category)) searchedProducts.add(product);
-        }
-        return searchedProducts;
-    }*/
+    public List<Product> searchProductsByCategory(String category) {
+        return productService.getProduct(new Category(category));
+    }
 
     /*public List<ArrayList<Product>> getMainProducts() {//Randomly get 4 products for 3 categories to show in  home page
         List<ArrayList<Product>> allMainProducts = new ArrayList<>();

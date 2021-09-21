@@ -6,6 +6,7 @@ package org.acm.store.controller.util;
  */
 
 public class CustomException extends RuntimeException {
+
     public CustomException() {
         super();
     }
