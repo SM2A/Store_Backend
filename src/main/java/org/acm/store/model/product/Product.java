@@ -1,9 +1,10 @@
 package org.acm.store.model.product;
 
 import org.acm.store.controller.util.CustomException;
+
 import javax.persistence.*;
 
-@Table(name = "product",uniqueConstraints = {
+@Table(name = "product", uniqueConstraints = {
         @UniqueConstraint(columnNames = "ID"),
         @UniqueConstraint(columnNames = "Title")
 })
@@ -28,24 +29,24 @@ public class Product {
             = "FROM product p WHERE p.category = :category";
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID", nullable = false)
     private long ID;
-    @Column(name = "Title")
+    @Column(name = "Title", nullable = false)
     private String title;
-    @Column(name = "Description")
+    @Column(name = "info", nullable = false)
     private String description;
-    @Column(name = "Quantity")
+    @Column(name = "Quantity", nullable = false)
     private int quantityAvailable;
-    @Column(name = "Rating")
+    @Column(name = "Rating", nullable = false)
     private float rating;
-    @Column(name = "Price")
+    @Column(name = "Price", nullable = false)
     private long price;
-    @Column(name = "Category")
+    @Column(name = "Category", nullable = false)
     private String category;
-    @Column(name = "ImageAddress")
+    @Column(name = "ImageAddress", nullable = false)
     private String imgAddress;
-    @Column(name = "RateCount")
+    @Column(name = "RateCount", nullable = false)
     private int rateCount;
 
     public Product() {}
@@ -66,10 +67,9 @@ public class Product {
         if (rating == 0) {
             rating = newRating;
             rateCount++;
-        }
-        else {
+        } else {
             float sum = (float) rateCount * rating;
-            sum += (float)newRating;
+            sum += (float) newRating;
             rateCount++;
             rating = sum / (float) rateCount;
         }

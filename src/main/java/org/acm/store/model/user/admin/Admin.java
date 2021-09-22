@@ -1,10 +1,8 @@
 package org.acm.store.model.user.admin;
 
 import org.acm.store.model.user.User;
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 /**
  * Created by SM2A
@@ -12,7 +10,11 @@ import javax.persistence.Table;
  */
 
 @Entity(name = "admin")
-@Table(name = "admin")
+@Table(name = "admin", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID"),
+        @UniqueConstraint(columnNames = "Email"),
+        @UniqueConstraint(columnNames = "PhoneNumber"),
+})
 @NamedQueries({
         @NamedQuery(name = Admin.GET_ADMIN_BY_EMAIL_PASSWORD, query = Admin.GET_ADMIN_BY_EMAIL_PASSWORD_Q),
         @NamedQuery(name = Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER, query = Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER_Q)

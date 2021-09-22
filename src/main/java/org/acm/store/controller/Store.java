@@ -1,11 +1,18 @@
 package org.acm.store.controller;
 
+import org.acm.store.controller.util.Authentication;
+import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.cart.Cart;
 import org.acm.store.model.product.Product;
+import org.acm.store.model.user.User;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,24 +145,18 @@ public class Store {
         return "Test 1";
     }
 
-    /*@PostMapping("/signup")
+    @PostMapping("/signup")
     public String signup(@RequestParam(required = false) @NotBlank @Valid String firstName,
                          @RequestParam(required = false) @NotBlank @Valid String lastName,
                          @RequestParam(required = false) @NotBlank @Valid String password,
                          @RequestParam(required = false) @NotBlank @Valid String email,
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                          @RequestParam(required = false) @NotBlank @Valid String address) throws JSONException {
-        DataBase.getInstance() DataBase.getInstance() = DataBase.getInstance();
-        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        DataBase.getInstance().addCostumer(firstName, lastName, password, email, phoneNumber, address);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", 1);
-        jsonObject.put("ID", DataBase.getInstance().validateUserByID(email, password));
-        jsonObject.put("email", email);
-        jsonObject.put("password", password);
 
-        return jsonObject.toString();
-    }*/
+//        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+        dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
+        return userInfo(password, email);
+    }
 
     /*@GetMapping("/login")
     public String loginPage(HttpServletRequest request) {
@@ -163,20 +164,22 @@ public class Store {
         return "login page";
     }*/
 
-    /*@PostMapping("/login")
+    @PostMapping("/login")
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
                         @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
-        DataBase.getInstance() DataBase.getInstance() = DataBase.getInstance();
-        long ID = DataBase.getInstance().validateUserByID(email, password);
-        if (ID != -1) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", 1);
-            jsonObject.put("ID", DataBase.getInstance().validateUserByID(email, password));
-            jsonObject.put("email", email);
-            jsonObject.put("password", password);
-            return jsonObject.toString();
+        if (dataBase.validateUser(email, password) != null) {
+            return userInfo(password, email);
         } else throw new CustomException("email or password in correct");
-    }*/
+    }
+
+    private String userInfo(String password, String email) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", 1);
+        jsonObject.put("ID", dataBase.validateUser(email, password).getID());
+        jsonObject.put("email", email);
+        jsonObject.put("password", password);
+        return jsonObject.toString();
+    }
 
     /*@GetMapping("/logout")
     public String logout(HttpServletResponse response, HttpServletRequest request) {
@@ -186,20 +189,20 @@ public class Store {
         return "goodbye " + user.getFirstName();
     }*/
 
-    /*@PostMapping("/valid_login")
+    @PostMapping("/valid_login")
     public String validLogin(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email) {
-        if (Authentication.loggedInUser(email, password) != null) return "1";
+        if (dataBase.validateUser(email, password) != null) return "1";
         else return "0";
-    }*/
+    }
 
-    /*@PostMapping("/valid_admin")
+    @PostMapping("/valid_admin")
     public String validAdmin(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email) {
-        User user = Authentication.loggedInUser(email, password);
+        User user = dataBase.validateUser(email, password);
         if (Authentication.isAdmin(user)) return "1";
         else return "0";
-    }*/
+    }
 
     /*@GetMapping("/add/admin")
     public String addAdminPage(HttpServletRequest request) {

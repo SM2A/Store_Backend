@@ -1,23 +1,19 @@
 package org.acm.store.configuration;
 
-import org.acm.store.model.DataBase;
 import org.acm.store.model.cart.Cart;
-import org.acm.store.model.item.Item;
+import org.acm.store.model.cartitem.CartItem;
 import org.acm.store.model.category.Category;
 import org.acm.store.model.comment.Comment;
 import org.acm.store.model.product.Product;
-import org.acm.store.model.user.User;
 import org.acm.store.model.user.admin.Admin;
 import org.acm.store.model.user.customer.Costumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -28,8 +24,6 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-//@EntityScan("org.acm.store.model")
-@ComponentScan(basePackages = "org.acm.store")
 public class HibernateConfiguration {
 
     @Value("${db.driver}")
@@ -78,17 +72,16 @@ public class HibernateConfiguration {
         return driverManagerDataSource;
     }
 
-    @Bean
+    @Bean(name = "sessionFactory")
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
         localSessionFactoryBean.setDataSource(dataSource());
-        localSessionFactoryBean.setPackagesToScan("org.acm.store");
         localSessionFactoryBean.setAnnotatedClasses(Admin.class, Comment.class, Product.class, Category.class,
-                Cart.class, Costumer.class, User.class, DataBase.class, Item.class);
+                Cart.class, Costumer.class,CartItem.class);
         Properties properties = new Properties();
         properties.put("hibernate.dialect", DIALECT);
-        /*properties.put("hibernate.show_sql", SHOW_SQL);
-        properties.put("hibernate.format_sql", FORMAT_SQL);*/
+//        properties.put("hibernate.show_sql", SHOW_SQL);
+//        properties.put("hibernate.format_sql", FORMAT_SQL);
         properties.put("hibernate.hbm2ddl.auto", HBM2DDL_AUTO);
         properties.put("hibernate.connection.pool_size", POOL_SIZE);
         properties.put("hibernate.current_session_context_class", SESSION);

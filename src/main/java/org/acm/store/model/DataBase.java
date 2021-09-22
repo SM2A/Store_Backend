@@ -4,8 +4,8 @@ import java.util.*;
 
 import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.cart.*;
-import org.acm.store.model.item.Item;
-import org.acm.store.model.item.ItemService;
+import org.acm.store.model.cartitem.CartItem;
+import org.acm.store.model.cartitem.CartItemService;
 import org.acm.store.model.category.Category;
 import org.acm.store.model.category.CategoryService;
 import org.acm.store.model.comment.Comment;
@@ -47,7 +47,7 @@ public class DataBase {
     CartService cartService;
 
     @Autowired
-    ItemService itemService;
+    CartItemService itemService;
 
     public DataBase() {
     }
@@ -177,7 +177,7 @@ public class DataBase {
         if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
             throw new CustomException("Not enough credit");
         }
-        for (Item item : itemService.getCartItems(cart.getID())) {
+        for (CartItem item : itemService.getCartItems(cart.getID())) {
             //todo maybe quantities changed
             Product product = productService.getProduct(item.getProductID());
             product.setQuantityAvailable(product.getQuantityAvailable() - item.getCount());
@@ -246,7 +246,7 @@ public class DataBase {
         return cartService.getCart(userId, Status.OPEN).get(0);
     }
 
-    public List<Item> getItemsInOpenCart(long userId) {
+    public List<CartItem> getItemsInOpenCart(long userId) {
         Cart cart = findOpenCartByUser(userId);
         return itemService.getCartItems(cart.getID());
     }
@@ -266,7 +266,7 @@ public class DataBase {
                 .findAny().orElse(null) != null) {
             increaseItem(productID, cartID);
         } else {
-            itemService.addItem(new Item(cartID, productID, 1));
+            itemService.addItem(new CartItem(cartID, productID, 1));
         }
     }
 
@@ -277,7 +277,7 @@ public class DataBase {
     }
 
     public void increaseItem(long productID, long cartID) {
-        Item item = itemService.getItem(cartID, productID);
+        CartItem item = itemService.getItem(cartID, productID);
         if (findProduct(productID).getQuantityAvailable() == item.getCount())
             throw new CustomException("Not enough quantity");
         item.setCount(item.getCount() + 1);
@@ -285,7 +285,7 @@ public class DataBase {
     }
 
     public void decreaseItem(long productID, long cartID) {
-        Item item = itemService.getItem(cartID, productID);
+        CartItem item = itemService.getItem(cartID, productID);
         if (item == null) throw new CustomException("Your cart doesn't contain item with id: " + productID);
         if (item.getCount() <= 1) itemService.deleteItem(item.getCartID(), item.getProductID());
         else {
@@ -294,7 +294,7 @@ public class DataBase {
         }
     }
 
-    public List<Item> getCartItems(long cartID) {
+    public List<CartItem> getCartItems(long cartID) {
         return itemService.getCartItems(cartID);
     }
 

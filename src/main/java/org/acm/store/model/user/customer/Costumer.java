@@ -2,6 +2,7 @@ package org.acm.store.model.user.customer;
 
 import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.user.User;
+
 import javax.persistence.*;
 
 /**
@@ -10,7 +11,11 @@ import javax.persistence.*;
  */
 
 @Entity(name = "costumer")
-@Table(name = "customer")
+@Table(name = "customer", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID"),
+        @UniqueConstraint(columnNames = "Email"),
+        @UniqueConstraint(columnNames = "PhoneNumber"),
+})
 @NamedQueries({
         @NamedQuery(name = Costumer.GET_CUSTOMER_BY_EMAIL_PASSWORD,
                 query = Costumer.GET_CUSTOMER_BY_EMAIL_PASSWORD_Q),
@@ -27,7 +32,7 @@ public class Costumer extends User {
     public static final String GET_CUSTOMER_BY_EMAIL_PHONENUMBER_Q
             = "FROM costumer c WHERE c.email = :email AND c.phoneNumber = :phonenumber";
 
-    @Column(name = "Credit")
+    @Column(name = "Credit", nullable = false)
     private long credit;
 
     public Costumer() {}

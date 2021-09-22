@@ -44,7 +44,7 @@ public class CartDAOImpl implements CartDAO {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
         List<Cart> list = session.createNamedQuery(Cart.GET_USER_CARTS_STATUS, Cart.class)
-                .setParameter("id", userID).setParameter("status", status).list();
+                .setParameter("id", userID).setParameter("status", status.toString()).list();
         session.close();
         return list;
     }

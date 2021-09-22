@@ -20,21 +20,21 @@ public class Cart {
     public static final String GET_USER_CARTS_STATUS_Q = "FROM cart c WHERE c.userID = :id AND c.status = :status";
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID", nullable = false)
     private long ID;
-    @Column(name = "Status",columnDefinition = "enum('OPEN', 'CLOSE')")
-    @Enumerated(EnumType.STRING)
-    private Status status;
-    @Column(name = "UserID")
+    @Column(name = "state",nullable = false)
+    private String status;
+    @Column(name = "UserID", nullable = false)
     private long userID;
     @Column(name = "PurchaseDate")
     private Date purchaseDate;
 
-    public Cart() {}
+    public Cart() {
+    }
 
     public Cart(long userID) {
-        this.status = Status.OPEN;
+        this.status = Status.OPEN.toString();
         this.userID = userID;
     }
 
@@ -47,7 +47,7 @@ public class Cart {
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        this.status = status.toString();
     }
 
     public void setUserID(int userID) {
@@ -55,7 +55,7 @@ public class Cart {
     }
 
     public Status getStatus() {
-        return status;
+        return Status.valueOf(status);
     }
 
     public long getUserID() {

@@ -8,28 +8,27 @@ public class User {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "ID")
+    @Column(name = "ID",unique = true,nullable = false)
     protected long ID;
-    @Column(name = "FirstName")
+    @Column(name = "FirstName",nullable = false)
     protected String firstName;
-    @Column(name = "LastName")
+    @Column(name = "LastName",nullable = false)
     protected String lastName;
-    @Column(name = "Password")
+    @Column(name = "pass",nullable = false)
     protected String password;
-    @Column(name = "Email")
+    @Column(name = "Email",nullable = false)
     protected String email;
-    @Column(name = "PhoneNumber")
+    @Column(name = "PhoneNumber",nullable = false,length = 11)
     protected String phoneNumber;
-    @Column(name = "Address")
+    @Column(name = "Address",nullable = false)
     protected String address;
-    @Column(name = "RegisterDate")
+    @Column(name = "RegisterDate",nullable = false)
     protected Date registerDate;
 
     public User() {}
 
     public User(String firstName, String lastName, String password, String email,
                 String phoneNumber, String address) {
-        this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;

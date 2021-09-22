@@ -16,21 +16,20 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     private long ID;
-    @Column(name = "UserId")
+    @Column(name = "UserId", nullable = false)
     private long userID;
-    @Column(name = "ProductID")
+    @Column(name = "ProductID", nullable = false)
     private long productID;
-    @Column(name = "Content")
+    @Column(name = "Content", nullable = false)
     private String text;
-    @Column(name = "Likes")
+    @Column(name = "Likes", nullable = false)
     private int likes;
-    @Column(name = "Dislikes")
+    @Column(name = "Dislikes", nullable = false)
     private int dislikes;
 
-    public Comment() {
-    }
+    public Comment() {}
 
     public Comment(long userID, long productID, String text) {
         this.userID = userID;
