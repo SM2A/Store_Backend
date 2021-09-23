@@ -1,6 +1,5 @@
 package org.acm.store.controller;
 
-import org.acm.store.controller.util.Authentication;
 import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.DataBase;
 import org.acm.store.model.category.Category;
@@ -20,9 +19,6 @@ public class ProductController {
 
     @Autowired
     DataBase dataBase;
-
-    @Autowired
-    Authentication authentication;
 
     @GetMapping
     public List<Product> getProducts() {
