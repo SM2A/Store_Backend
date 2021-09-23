@@ -17,6 +17,8 @@ public interface CustomerDAO {
 
     Costumer getCustomerEmailPhoneNumber(String email, String phoneNumber);
 
+    Costumer getCustomerEmailPhoneNumber(long id, String email, String phoneNumber);
+
     long addCustomer(Costumer costumer);
 
     void updateCustomer(Costumer costumer);

@@ -36,6 +36,10 @@ public class CustomerService {
         return customerDAO.getCustomerEmailPhoneNumber(email, phoneNumber);
     }
 
+    public Costumer getCustomerEmailPhoneNumber(long id, String email, String phoneNumber) {
+        return customerDAO.getCustomerEmailPhoneNumber(id, email, phoneNumber);
+    }
+
     @Transactional
     public long addCustomer(Costumer customer) {
         return customerDAO.addCustomer(customer);

@@ -17,6 +17,8 @@ public interface AdminDAO {
 
     Admin getAdminEmailPhoneNumber(String email, String phoneNumber);
 
+    Admin getAdminEmailPhoneNumber(long id, String email, String phoneNumber);
+
     long addAdmin(Admin admin);
 
     void updateAdmin(Admin admin);

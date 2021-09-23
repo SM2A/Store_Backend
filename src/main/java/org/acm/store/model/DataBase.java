@@ -1,7 +1,6 @@
 package org.acm.store.model;
 
 import java.util.*;
-
 import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.cart.*;
 import org.acm.store.model.cartitem.CartItem;
@@ -58,6 +57,12 @@ public class DataBase {
         return costumer != null || admin != null;
     }
 
+    private boolean isTaken(long id, String email, String phoneNumber) {
+        Costumer costumer = customerService.getCustomerEmailPhoneNumber(id, email, phoneNumber);
+        Admin admin = adminService.getAdminEmailPhoneNumber(id, email, phoneNumber);
+        return costumer != null || admin != null;
+    }
+
     public long addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
         if (isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
@@ -77,6 +82,7 @@ public class DataBase {
         Costumer customer = customerService.getCustomer(id);
         if (customer == null) {
             Admin admin = adminService.getAdmin(id);
+            if (isTaken(id, email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
             admin.setFirstName(firstName);
             admin.setLastName(lastName);
             admin.setEmail(email);
@@ -84,6 +90,7 @@ public class DataBase {
             admin.setAddress(address);
             adminService.updateAdmin(admin);
         }
+        if (isTaken(id, email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         customer.setFirstName(firstName);
         customer.setLastName(lastName);
         customer.setEmail(email);

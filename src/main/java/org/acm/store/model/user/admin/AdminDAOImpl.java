@@ -60,6 +60,16 @@ public class AdminDAOImpl implements AdminDAO {
     }
 
     @Override
+    public Admin getAdminEmailPhoneNumber(long id, String email, String phoneNumber) {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        Admin admin = session.createNamedQuery(Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER, Admin.class).setParameter("id", id)
+                .setParameter("email", email).setParameter("phonenumber", phoneNumber).uniqueResult();
+        session.close();
+        return admin;
+    }
+
+    @Override
     public long addAdmin(Admin admin) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();

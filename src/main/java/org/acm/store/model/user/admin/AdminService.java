@@ -36,6 +36,10 @@ public class AdminService {
         return adminDAO.getAdminEmailPhoneNumber(email, phoneNumber);
     }
 
+    public Admin getAdminEmailPhoneNumber(long id, String email, String phoneNumber) {
+        return adminDAO.getAdminEmailPhoneNumber(id, email, phoneNumber);
+    }
+
     @Transactional
     public long addAdmin(Admin admin) {
         return adminDAO.addAdmin(admin);

@@ -17,8 +17,8 @@ import javax.persistence.*;
 })
 @NamedQueries({
         @NamedQuery(name = Admin.GET_ADMIN_BY_EMAIL_PASSWORD, query = Admin.GET_ADMIN_BY_EMAIL_PASSWORD_Q),
-        @NamedQuery(name = Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER, query = Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER_Q)
-
+        @NamedQuery(name = Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER, query = Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER_Q),
+        @NamedQuery(name = Admin.GET_ADMIN_EDIT, query = Admin.GET_ADMIN_EDIT_Q),
 })
 public class Admin extends User {
 
@@ -29,6 +29,10 @@ public class Admin extends User {
     public static final String GET_ADMIN_BY_EMAIL_PHONENUMBER = "GET_ADMIN_BY_EMAIL_PHONENUMBER";
     public static final String GET_ADMIN_BY_EMAIL_PHONENUMBER_Q
             = "FROM admin a WHERE a.email = :email AND a.phoneNumber = :phonenumber";
+
+    public static final String GET_ADMIN_EDIT = "GET_ADMIN_BY_EMAIL_PHONENUMBER";
+    public static final String GET_ADMIN_EDIT_Q
+            = "FROM admin a WHERE a.id != :id AND (a.email = :email OR a.phoneNumber = :phonenumber)";
 
     public Admin() {}
 

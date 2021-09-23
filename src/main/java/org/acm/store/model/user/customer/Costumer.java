@@ -20,7 +20,9 @@ import javax.persistence.*;
         @NamedQuery(name = Costumer.GET_CUSTOMER_BY_EMAIL_PASSWORD,
                 query = Costumer.GET_CUSTOMER_BY_EMAIL_PASSWORD_Q),
         @NamedQuery(name = Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER,
-                query = Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER_Q)
+                query = Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER_Q),
+        @NamedQuery(name = Costumer.GET_CUSTOMER_EDIT,
+                query = Costumer.GET_CUSTOMER_BY_EDIT_Q)
 })
 public class Costumer extends User {
 
@@ -31,6 +33,10 @@ public class Costumer extends User {
     public static final String GET_CUSTOMER_BY_EMAIL_PHONENUMBER = "GET_CUSTOMER_BY_EMAIL_PHONENUMBER";
     public static final String GET_CUSTOMER_BY_EMAIL_PHONENUMBER_Q
             = "FROM costumer c WHERE c.email = :email AND c.phoneNumber = :phonenumber";
+
+    public static final String GET_CUSTOMER_EDIT = "GET_CUSTOMER_BY_EMAIL_PHONENUMBER";
+    public static final String GET_CUSTOMER_BY_EDIT_Q
+            = "FROM costumer c WHERE c.id != :id AND (c.email = :email OR c.phoneNumber = :phonenumber)";
 
     @Column(name = "Credit", nullable = false)
     private long credit;
