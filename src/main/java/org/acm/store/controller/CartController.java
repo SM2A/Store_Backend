@@ -1,14 +1,18 @@
 package org.acm.store.controller;
 
+import org.acm.store.controller.util.Authentication;
 import org.acm.store.model.DataBase;
-import org.acm.store.model.product.Product;
-
-import java.util.*;
+import org.acm.store.model.cart.Cart;
+import org.acm.store.model.cartitem.CartItem;
+import org.acm.store.model.user.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 
 @Validated
@@ -17,16 +21,19 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
 
-    /*@PostMapping
+    @Autowired
+    DataBase dataBase;
+
+    @Autowired
+    Authentication authentication;
+
+    @PostMapping
     public String showUserCarts(@RequestParam(required = false) @NotBlank @Valid String password,
                                 @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
-//        if (!Authentication.isLogin(request))
-//            throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email,password);
+
+        User user = authentication.loggedInUser(email, password);
         JSONArray jsonArray = new JSONArray();
-        for (Cart cart : dataBase.showUserCarts(user.getID())) {
+        for (Cart cart : dataBase.getUserCarts(user.getID())) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", cart.getID());
             jsonObject.put("userID", cart.getUserID());
@@ -37,10 +44,9 @@ public class CartController {
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
-//        return dataBase.showUserCarts(user.getID());
-    }*/
+    }
 
-    /*@GetMapping("/all")
+    @GetMapping("/all")
     public String getCarts() throws JSONException {
         JSONArray jsonArray = new JSONArray();
         for (Cart cart : dataBase.getCarts()) {
@@ -54,23 +60,23 @@ public class CartController {
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
-    }*/
+    }
 
-    /*@GetMapping("/{id}")
+    @GetMapping("/{id}")
     public String getCartItems(@PathVariable("id") long id) throws JSONException {
         JSONArray jsonArray = new JSONArray();
-        for (Map.Entry<Product, Integer> entry : dataBase.getCartItems(id).entrySet()) {
+        for (CartItem item : dataBase.getCartItems(id)) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id", entry.getKey().getID());
-            jsonObject.put("title", entry.getKey().getTitle());
-            jsonObject.put("category", entry.getKey().getCategory());
-            jsonObject.put("price", entry.getKey().getPrice());
-            jsonObject.put("quantity", entry.getValue());
-            jsonObject.put("total", entry.getKey().getPrice() * entry.getValue());
+            jsonObject.put("id", item.getProductID());
+            jsonObject.put("title", dataBase.findProduct(item.getCartID()).getTitle());
+            jsonObject.put("category", dataBase.findProduct(item.getCartID()).getCategory());
+            jsonObject.put("price", dataBase.findProduct(item.getCartID()).getPrice());
+            jsonObject.put("quantity", item.getCount());
+            jsonObject.put("total", dataBase.findProduct(item.getCartID()).getPrice() * item.getCount());
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
-    }*/
+    }
 
     /*@GetMapping("/items")
     public HashMap<Long, Integer> showItemsInCurrentCart(HttpServletRequest request) {
@@ -82,51 +88,38 @@ public class CartController {
         return dataBase.getItemsInOpenCart(user.getID());
     }*/
 
-
-    /*@PostMapping("/items/add")
+    @PostMapping("/items/add")
     public String addItemToCart(@RequestParam(required = false) @NotBlank @Valid String password,
                                 @RequestParam(required = false) @NotBlank @Valid String email,
                                 @RequestParam(required = false) @NotBlank @Valid String productId) {
-//        if (!Authentication.isLogin(request))
-//            throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email, password);
+
+        User user = authentication.loggedInUser(email, password);
         Cart cart = dataBase.findOpenCartByUser(user.getID());
         dataBase.addItem(cart.getID(), Long.parseLong(productId));
-        return "Your item has been successfully added to cart.";
-    }*/
+        return "Your item has been successfully added to cart";
+    }
 
-
-    /*@PostMapping("/items/subtract")
+    @PostMapping("/items/subtract")
     public String omitItemFromCart(@RequestParam(required = false) @NotBlank @Valid String password,
                                    @RequestParam(required = false) @NotBlank @Valid String email,
                                    @RequestParam(required = false) @NotBlank @Valid String productId) {
-//        if (!Authentication.isLogin(request))
-//            throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email, password);
+
+        User user = authentication.loggedInUser(email, password);
         Cart cart = dataBase.findOpenCartByUser(user.getID());
         dataBase.decreaseItem(Long.parseLong(productId), cart.getID());
-        return "Your item has been successfully subtracted from cart.";
-    }*/
+        return "Your item has been successfully subtracted from cart";
+    }
 
-
-    /*@PostMapping("/items/delete")
+    @PostMapping("/items/delete")
     public String deleteItemFromCart(@RequestParam(required = false) @NotBlank @Valid String password,
                                      @RequestParam(required = false) @NotBlank @Valid String email,
                                      @RequestParam(required = false) @NotBlank @Valid String productId) {
-//        if (!Authentication.isLogin(request))
-//            throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email, password);
+
+        User user = authentication.loggedInUser(email, password);
         Cart cart = dataBase.findOpenCartByUser(user.getID());
         dataBase.deleteItem(Long.parseLong(productId), cart.getID());
-        return "Your item has been successfully deleted from cart.";
-    }*/
-
+        return "Your item has been successfully deleted from cart";
+    }
 
     /*@PostMapping("/items/setq")
     public String setItemQuantityInCart(@RequestParam(required = false) @NotBlank @Valid String productId,
