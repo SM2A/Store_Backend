@@ -29,6 +29,9 @@ public class Store {
     @Autowired
     DataBase dataBase;
 
+    @Autowired
+    Authentication authentication;
+
     @GetMapping("/")
     public List<ArrayList<Product>> homePage() {
         dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
@@ -153,7 +156,6 @@ public class Store {
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                          @RequestParam(required = false) @NotBlank @Valid String address) throws JSONException {
 
-//        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
         dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
         return userInfo(password, email);
     }
@@ -200,7 +202,7 @@ public class Store {
     public String validAdmin(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email) {
         User user = dataBase.validateUser(email, password);
-        if (Authentication.isAdmin(user)) return "1";
+        if (authentication.isAdmin(user)) return "1";
         else return "0";
     }
 
@@ -212,42 +214,33 @@ public class Store {
         return "add admin page";
     }*/
 
-    /*@PostMapping("/admin/add")
+    @PostMapping("/admin/add")
     public String addAdmin(@RequestParam(required = false) @NotBlank @Valid String firstName,
                            @RequestParam(required = false) @NotBlank @Valid String lastName,
                            @RequestParam(required = false) @NotBlank @Valid String password,
                            @RequestParam(required = false) @NotBlank @Valid String email,
                            @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                            @RequestParam(required = false) @NotBlank @Valid String address) {
-//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-//        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("You dont have permission");
-        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        DataBase.getInstance() DataBase.getInstance() = DataBase.getInstance();
-        DataBase.getInstance().addAdmin(firstName, lastName, password, email, phoneNumber, address);
-        return String.valueOf(DataBase.getInstance().validateUserByID(email, password));
-    }*/
 
-    /*@PostMapping("/purchase")
+        dataBase.addAdmin(firstName, lastName, password, email, phoneNumber, address);
+        return String.valueOf(dataBase.validateUser(email, password).getID());
+    }
+
+    @PostMapping("/purchase")
     public String purchase(@RequestParam(required = false) @NotBlank @Valid String password,
                            @RequestParam(required = false) @NotBlank @Valid String email) {
-//        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email,password);
-        DataBase.getInstance().purchase(user.getID());
+        User user = authentication.loggedInUser(email,password);
+        dataBase.purchase(user.getID());
         return "Thank you for your order";
-    }*/
+    }
 
-    /*@PostMapping("/credit/add")
+    @PostMapping("/credit/add")
     public String addCredit(@RequestParam(required = false) @NotBlank @Valid String password,
                             @RequestParam(required = false) @NotBlank @Valid String email,
                             @RequestParam(required = false) @NotBlank @Valid String amount) {
-//        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email, password);
-        DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
+
+        User user = authentication.loggedInUser(email, password);
+        dataBase.addCredit(user.getID(), Long.parseLong(amount));
         return "Successful payment";
-    }*/
+    }
 }
