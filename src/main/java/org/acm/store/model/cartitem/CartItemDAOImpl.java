@@ -62,12 +62,12 @@ public class CartItemDAOImpl implements CartItemDAO{
 
     @Override
     public long getCartPrice(long cartID) {
-        /*Session session = this.sessionFactory.getCurrentSession();
+        Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
         long price = (long) session.createNamedQuery(CartItem.GET_CART_PRICE)
                 .setParameter("cid", cartID).uniqueResult();
-        session.close();*/
-        return 10;
+        session.close();
+        return price;
     }
 
     @Override
