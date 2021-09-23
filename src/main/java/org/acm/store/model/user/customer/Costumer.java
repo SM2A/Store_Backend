@@ -34,7 +34,7 @@ public class Costumer extends User {
     public static final String GET_CUSTOMER_BY_EMAIL_PHONENUMBER_Q
             = "FROM costumer c WHERE c.email = :email AND c.phoneNumber = :phonenumber";
 
-    public static final String GET_CUSTOMER_EDIT = "GET_CUSTOMER_BY_EMAIL_PHONENUMBER";
+    public static final String GET_CUSTOMER_EDIT = "GET_CUSTOMER_EDIT";
     public static final String GET_CUSTOMER_BY_EDIT_Q
             = "FROM costumer c WHERE c.id != :id AND (c.email = :email OR c.phoneNumber = :phonenumber)";
 

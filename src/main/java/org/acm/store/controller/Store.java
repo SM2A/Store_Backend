@@ -32,7 +32,7 @@ public class Store {
     @Autowired
     Authentication authentication;
 
-    @GetMapping("/")
+    @GetMapping(value = "/")
     public List<ArrayList<Product>> homePage() {
         dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
         return dataBase.getMainProducts();
