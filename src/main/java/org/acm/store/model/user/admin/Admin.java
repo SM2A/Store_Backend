@@ -28,7 +28,7 @@ public class Admin extends User {
 
     public static final String GET_ADMIN_BY_EMAIL_PHONENUMBER = "GET_ADMIN_BY_EMAIL_PHONENUMBER";
     public static final String GET_ADMIN_BY_EMAIL_PHONENUMBER_Q
-            = "FROM admin a WHERE a.email = :email AND a.phoneNumber = :phonenumber";
+            = "FROM admin a WHERE a.email = :email OR a.phoneNumber = :phonenumber";
 
     public static final String GET_ADMIN_EDIT = "GET_ADMIN_EDIT";
     public static final String GET_ADMIN_EDIT_Q

@@ -63,7 +63,7 @@ public class AdminDAOImpl implements AdminDAO {
     public Admin getAdminEmailPhoneNumber(long id, String email, String phoneNumber) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        Admin admin = session.createNamedQuery(Admin.GET_ADMIN_BY_EMAIL_PHONENUMBER, Admin.class).setParameter("id", id)
+        Admin admin = session.createNamedQuery(Admin.GET_ADMIN_EDIT, Admin.class).setParameter("id", id)
                 .setParameter("email", email).setParameter("phonenumber", phoneNumber).uniqueResult();
         session.close();
         return admin;

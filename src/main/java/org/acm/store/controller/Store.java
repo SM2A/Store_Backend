@@ -34,12 +34,13 @@ public class Store {
 
     @GetMapping(value = "/")
     public List<ArrayList<Product>> homePage() {
-//        dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
         return dataBase.getMainProducts();
     }
 
     @GetMapping("/test")
     public List<ArrayList<Product>> test() {
+
+        dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
 
         dataBase.addCategory("KEYBOARDTWO");
         dataBase.addCategory("KEYBOARDTHREE");

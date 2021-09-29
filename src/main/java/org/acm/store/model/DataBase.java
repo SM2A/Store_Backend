@@ -340,8 +340,9 @@ public class DataBase {
             ArrayList<Product> mainProductsInACategory = new ArrayList<>();
             List<Product> list = productService.getProduct(categoryService.getAllCategories().get(j));
             Collections.shuffle(list);
-            if (list.size() < 4) throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");
-            for (int i = 0; i < 4; i++) {
+            /*if (list.size() < 4)
+                throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");*/
+            for (int i = 0; (i < list.size()) && i < 4 ; i++) {
                 mainProductsInACategory.add(list.get(i));
             }
             allMainProducts.add(mainProductsInACategory);

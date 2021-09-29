@@ -63,7 +63,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     public Costumer getCustomerEmailPhoneNumber(long id, String email, String phoneNumber) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_BY_EMAIL_PHONENUMBER, Costumer.class)
+        Costumer costumer = session.createNamedQuery(Costumer.GET_CUSTOMER_EDIT, Costumer.class)
                 .setParameter("email", email).setParameter("phonenumber", phoneNumber)
                 .setParameter("id", id).uniqueResult();
         session.close();
