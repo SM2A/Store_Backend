@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Repository
-public class CartItemDAOImpl implements CartItemDAO{
+public class CartItemDAOImpl implements CartItemDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -64,9 +64,10 @@ public class CartItemDAOImpl implements CartItemDAO{
     public long getCartPrice(long cartID) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        long price = (long) session.createNamedQuery(CartItem.GET_CART_PRICE)
+        Long price = (Long) session.createNamedQuery(CartItem.GET_CART_PRICE)
                 .setParameter("cid", cartID).uniqueResult();
         session.close();
+        if (price == null) price = 0L;
         return price;
     }
 

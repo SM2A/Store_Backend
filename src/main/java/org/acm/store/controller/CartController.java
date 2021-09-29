@@ -68,11 +68,11 @@ public class CartController {
         for (CartItem item : dataBase.getCartItems(id)) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", item.getProductID());
-            jsonObject.put("title", dataBase.findProduct(item.getCartID()).getTitle());
-            jsonObject.put("category", dataBase.findProduct(item.getCartID()).getCategory());
-            jsonObject.put("price", dataBase.findProduct(item.getCartID()).getPrice());
+            jsonObject.put("title", dataBase.findProduct(item.getProductID()).getTitle());
+            jsonObject.put("category", dataBase.findProduct(item.getProductID()).getCategory());
+            jsonObject.put("price", dataBase.findProduct(item.getProductID()).getPrice());
             jsonObject.put("quantity", item.getCount());
-            jsonObject.put("total", dataBase.findProduct(item.getCartID()).getPrice() * item.getCount());
+            jsonObject.put("total", dataBase.findProduct(item.getProductID()).getPrice() * item.getCount());
             jsonArray.put(jsonObject);
         }
         return jsonArray.toString();
