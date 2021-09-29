@@ -1,21 +1,58 @@
-package org.acm.store.model;
+package org.acm.store.model.product;
 
-import org.acm.store.controller.validation.CustomException;
+import org.acm.store.controller.util.CustomException;
 
+import javax.persistence.*;
+
+@Table(name = "product", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID"),
+        @UniqueConstraint(columnNames = "Title")
+})
+@Entity(name = "product")
+@NamedQueries({
+        @NamedQuery(name = Product.GET_PRODUCT_BY_TITLE_CATEGORY, query = Product.GET_PRODUCT_BY_TITLE_CATEGORY_Q),
+        @NamedQuery(name = Product.GET_PRODUCT_BY_TITLE, query = Product.GET_PRODUCT_BY_TITLE_Q),
+        @NamedQuery(name = Product.GET_PRODUCT_BY_CATEGORY, query = Product.GET_PRODUCT_BY_CATEGORY_Q)
+})
 public class Product {
 
-    private final long ID;
+    public static final String GET_PRODUCT_BY_TITLE_CATEGORY = "GET_PRODUCT_BY_TITLE_CATEGORY";
+    public static final String GET_PRODUCT_BY_TITLE_CATEGORY_Q
+            = "FROM product p WHERE p.title = :title AND p.category = :category";
+
+    public static final String GET_PRODUCT_BY_TITLE = "GET_PRODUCT_BY_TITLE";
+    public static final String GET_PRODUCT_BY_TITLE_Q
+            = "FROM product p WHERE p.title = :title";
+
+    public static final String GET_PRODUCT_BY_CATEGORY = "GET_PRODUCT_BY_CATEGORY";
+    public static final String GET_PRODUCT_BY_CATEGORY_Q
+            = "FROM product p WHERE p.category = :category";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID", nullable = false)
+    private long ID;
+    @Column(name = "Title", nullable = false)
     private String title;
+    @Column(name = "info", nullable = false)
     private String description;
+    @Column(name = "Quantity", nullable = false)
     private int quantityAvailable;
+    @Column(name = "Rating", nullable = false)
     private float rating;
+    @Column(name = "Price", nullable = false)
     private long price;
+    @Column(name = "Category", nullable = false)
     private String category;
+    @Column(name = "ImageAddress", nullable = false)
     private String imgAddress;
+    @Column(name = "RateCount", nullable = false)
     private int rateCount;
 
-    public Product(long id, String title, String description, int quantityAvailable, long price, String category, String imgAddress) {
-        this.ID = id;
+    public Product() {}
+
+    public Product(String title,
+                   String description, int quantityAvailable, long price, String category, String imgAddress) {
         this.title = title;
         this.description = description;
         this.quantityAvailable = quantityAvailable;
@@ -24,32 +61,15 @@ public class Product {
         this.category = category;
         this.imgAddress = imgAddress;
         this.rateCount = 0;
-        //imgAddress = "https://images.unsplash.com/photo-1508423134147-addf71308178?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=751&q=80";
-    }
-
-    private String getCategoryByString(String category) {
-        //if(category == "X")
-        return this.category;
-        //for all categories...
-    }
-
-    public void takeFromStock(int quantity) {
-        if (quantityAvailable - quantity >= 0) {
-            quantityAvailable -= quantity;
-        } else {
-            System.out.println("ERROR! Out Of Stock.");
-            throw new CustomException("ERROR! Out Of Stock.");
-        }
     }
 
     public void addRating(int newRating) {
         if (rating == 0) {
             rating = newRating;
             rateCount++;
-        }
-        else {
+        } else {
             float sum = (float) rateCount * rating;
-            sum += (float)newRating;
+            sum += (float) newRating;
             rateCount++;
             rating = sum / (float) rateCount;
         }

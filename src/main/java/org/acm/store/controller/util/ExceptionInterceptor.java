@@ -1,4 +1,4 @@
-package org.acm.store.controller.validation;
+package org.acm.store.controller.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,13 @@
-package org.acm.store.controller.validation;
+package org.acm.store.controller.util;
 
 import org.acm.store.model.DataBase;
-import org.acm.store.model.User;
-import org.acm.store.model.Admin;
+import org.acm.store.model.user.User;
+import org.acm.store.model.user.admin.Admin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -15,9 +16,13 @@ import java.util.Optional;
  * Seyed Mohammad Amin Atyabi
  */
 
+@Component
 public class Authentication {
 
-    public static boolean isAdmin(User user) {
+    @Autowired
+    DataBase dataBase;
+
+    public boolean isAdmin(User user) {
         return user instanceof Admin;
     }
 
@@ -45,7 +50,7 @@ public class Authentication {
         response.addCookie(passwordCookie);
     }*/
 
-    public static boolean isLogin(HttpServletRequest request) {
+    /*public boolean isLogin(HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();
         if (cookie != null) {
             Cookie email = null, password = null;
@@ -60,9 +65,9 @@ public class Authentication {
             return (email != null) && (password != null);
         }
         return false;
-    }
+    }*/
 
-    public static User loggedInUser(HttpServletRequest request) {
+    /*public static User loggedInUser(HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();
         String email, password;
         if (cookie[0].getName().equals("email")) {
@@ -74,13 +79,12 @@ public class Authentication {
         }
         DataBase dataBase = DataBase.getInstance();
         return dataBase.findUser(dataBase.validateUserByID(email, password));
-    }
+    }*/
 
-    public static User loggedInUser(String email, String password) {
+    public User loggedInUser(String email, String password) {
         User user;
-        DataBase dataBase = DataBase.getInstance();
         try {
-            user = dataBase.findUser(dataBase.validateUserByID(email, password));
+            user = dataBase.findUser(dataBase.validateUser(email, password).getID());
         }catch (CustomException exception){
             user = null;
         }

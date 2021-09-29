@@ -1,79 +1,80 @@
 package org.acm.store.controller;
 
-import org.acm.store.controller.validation.Authentication;
-import org.acm.store.controller.validation.CustomException;
-import org.acm.store.controller.validation.Validation;
-import org.acm.store.model.Cart;
+import org.acm.store.controller.util.Authentication;
+import org.acm.store.controller.util.CustomException;
 import org.acm.store.model.DataBase;
-import org.acm.store.model.Product;
-import org.acm.store.model.User;
+import org.acm.store.model.cart.Cart;
+import org.acm.store.model.product.Product;
+import org.acm.store.model.user.User;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Created by SM2A
  * Seyed Mohammad Amin Atyabi
  */
 
-
 @Validated
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class Store {
 
-    @GetMapping("/")
-    public /*String*/List<ArrayList<Product>> homePage() {
-        if (!Validation.isTaken("admin@admin.com", "007"))
-            DataBase.getInstance().addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
-        return DataBase.getInstance().getMainProducts();
-        //return "Home page";
+    @Autowired
+    DataBase dataBase;
+
+    @Autowired
+    Authentication authentication;
+
+    @GetMapping(value = "/")
+    public List<ArrayList<Product>> homePage() {
+        return dataBase.getMainProducts();
     }
 
     @GetMapping("/test")
     public List<ArrayList<Product>> test() {
 
-        DataBase.getInstance().addCategory("KEYBOARDTWO");
-        DataBase.getInstance().addCategory("KEYBOARDTHREE");
-        DataBase.getInstance().addCategory("KEYBOARDFOUR");
+        dataBase.addAdmin("admin", "admin", "admin", "admin@admin.com", "007", "admin");
 
-        DataBase.getInstance().addProduct("MX KKKeys 001", "Logitech", 5, 100, "KEYBOARDTWO",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MX KKKeys 67", "Logitech", 5, 100, "KEYBOARDTWO",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MX KKKeys 42", "Logitech", 5, 100, "KEYBOARDTWO",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MX KKKeys 56", "Logitech", 5, 100, "KEYBOARDTWO",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        dataBase.addCategory("KEYBOARDTWO");
+        dataBase.addCategory("KEYBOARDTHREE");
+        dataBase.addCategory("KEYBOARDFOUR");
 
-
-        DataBase.getInstance().addProduct("MX Keyss88", "Logitech", 5, 100, "KEYBOARDTHREE",
+        dataBase.addProduct("MX KKKeys 001", "Logitech", 5, 100, "KEYBOARDTWO",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MX Keysss 0987", "Logitech", 5, 100, "KEYBOARDTHREE",
+        dataBase.addProduct("MX KKKeys 67", "Logitech", 5, 100, "KEYBOARDTWO",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MX Keyss 45", "Logitech", 5, 100, "KEYBOARDTHREE",
+        dataBase.addProduct("MX KKKeys 42", "Logitech", 5, 100, "KEYBOARDTWO",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MX Keysss 2345 iui", "Logitech", 5, 100, "KEYBOARDTHREE",
+        dataBase.addProduct("MX KKKeys 56", "Logitech", 5, 100, "KEYBOARDTWO",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
 
-        DataBase.getInstance().addProduct("MMX Keys ytf", "Logitech", 5, 100, "KEYBOARDFOUR",
+
+        dataBase.addProduct("MX Keyss88", "Logitech", 5, 100, "KEYBOARDTHREE",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MXXX Keys tyf", "Logitech", 5, 100, "KEYBOARDFOUR",
+        dataBase.addProduct("MX Keysss 0987", "Logitech", 5, 100, "KEYBOARDTHREE",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MXX Keys 56 err", "Logitech", 5, 100, "KEYBOARDFOUR",
+        dataBase.addProduct("MX Keyss 45", "Logitech", 5, 100, "KEYBOARDTHREE",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
-        DataBase.getInstance().addProduct("MMX Keys fdzdx", "Logitech", 5, 100, "KEYBOARDFOUR",
+        dataBase.addProduct("MX Keysss 2345 iui", "Logitech", 5, 100, "KEYBOARDTHREE",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
 
-        return DataBase.getInstance().getMainProducts();
+        dataBase.addProduct("MMX Keys ytf", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        dataBase.addProduct("MXXX Keys tyf", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        dataBase.addProduct("MXX Keys 56 err", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+        dataBase.addProduct("MMX Keys fdzdx", "Logitech", 5, 100, "KEYBOARDFOUR",
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQglsve8y_nPAIkhWk6s9M1aywnIUevqxjEw&usqp=CAU");
+
+        return dataBase.getMainProducts();
     }
 
     /*@GetMapping("/signup")
@@ -85,65 +86,65 @@ public class Store {
     @GetMapping("/test1")
     public String test1(){
 
-        DataBase.getInstance().addCostumer("Amin","Atyabi","123","amin@amin.net","123654789","Tehran");
-        DataBase.getInstance().addCostumer("Paria","Khoshtab","123","test@test.net","987456321","Tehran");
-        DataBase.getInstance().addCostumer("Parnian","Fazel","123","salam@test.net","147852369","Tehran");
+        long c1 = dataBase.addCostumer("Amin","Atyabi","123","amin@amin.net","123654789","Tehran");
+        long c2 = dataBase.addCostumer("Paria","Khoshtab","123","test@test.net","987456321","Tehran");
+        long c3 = dataBase.addCostumer("Parnian","Fazel","123","salam@test.net","147852369","Tehran");
 
-        DataBase.getInstance().addCategory("game");
-        DataBase.getInstance().addCategory("mouse");
-        DataBase.getInstance().addCategory("keyboard");
+        dataBase.addCategory("game");
+        dataBase.addCategory("mouse");
+        dataBase.addCategory("keyboard");
 
-        DataBase.getInstance().addProduct("MFSX", "Microsoft", 5, 60, "GAME",
+        long p1 = dataBase.addProduct("MFSX", "Microsoft", 5, 60, "GAME",
                 "https://i1.sndcdn.com/artworks-000538033689-8y3q0k-t500x500.jpg");
-        DataBase.getInstance().addProduct("Death Adder", "Razer", 5, 30, "MOUSE",
+        long p2 = dataBase.addProduct("Death Adder", "Razer", 5, 30, "MOUSE",
                 "https://hardwaremarket.net/wp-content/uploads/2021/03/razer-deathadder-essential-optical-gaming-mouse-white-1571981760387.jpg");
-        DataBase.getInstance().addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD",
+        long p3 = dataBase.addProduct("MX Keys", "Logitech", 5, 100, "KEYBOARD",
                 "https://www.logitech.com/content/dam/logitech/en/products/keyboards/mx-keys/gallery/us-mx-keys-gallery-graphite-front.png");
 
-        Cart cart = DataBase.getInstance().findOpenCartByUser(2);
+        Cart cart = dataBase.findOpenCartByUser(c1);
 
-        DataBase.getInstance().addItem(cart.getID(), 13);
-        DataBase.getInstance().addItem(cart.getID(), 13);
-        DataBase.getInstance().addItem(cart.getID(), 13);
-        DataBase.getInstance().addItem(cart.getID(), 14);
-        DataBase.getInstance().addItem(cart.getID(), 14);
-        DataBase.getInstance().addItem(cart.getID(), 15);
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p2);
+        dataBase.addItem(cart.getID(), p2);
+        dataBase.addItem(cart.getID(), p3);
 
-        DataBase.getInstance().addComment(3,13,"wowwww");
-        DataBase.getInstance().addComment(4,13,"greattttt!!!!");
+        dataBase.addComment(c2,p1,"wowwww");
+        dataBase.addComment(c3,p1,"greattttt!!!!");
 
-        DataBase.getInstance().addComment(5,14,"wowwww");
-        DataBase.getInstance().addComment(2,15,"greattttt!!!!");
+        dataBase.addComment(c1,p2,"wowwww");
+        dataBase.addComment(c2,p3,"greattttt!!!!");
 
-        DataBase.getInstance().addCredit(3, 10000);
-        DataBase.getInstance().addCredit(4, 10000);
-        DataBase.getInstance().addCredit(5, 10000);
+        dataBase.addCredit(c1, 10000);
+        dataBase.addCredit(c2, 10000);
+        dataBase.addCredit(c3, 10000);
 
-        DataBase.getInstance().addCredit(2, 10000);
-        DataBase.getInstance().purchase(2);
+        dataBase.addCredit(c1, 10000);
+        dataBase.purchase(c1);
 
-        cart = DataBase.getInstance().findOpenCartByUser(2);
+        cart = dataBase.findOpenCartByUser(c1);
 
-        DataBase.getInstance().addItem(cart.getID(), 1);
-        DataBase.getInstance().addItem(cart.getID(), 2);
-        
-        DataBase.getInstance().addRatingToProduct(13,5);
-        DataBase.getInstance().addRatingToProduct(13,5);
-        DataBase.getInstance().addRatingToProduct(13,2);
-        DataBase.getInstance().addRatingToProduct(13,1);
-        DataBase.getInstance().addRatingToProduct(13,3);
+        dataBase.addItem(cart.getID(), p1);
+        dataBase.addItem(cart.getID(), p2);
 
-        DataBase.getInstance().addRatingToProduct(14,4);
-        DataBase.getInstance().addRatingToProduct(14,5);
-        DataBase.getInstance().addRatingToProduct(14,2);
-        DataBase.getInstance().addRatingToProduct(14,1);
-        DataBase.getInstance().addRatingToProduct(14,3);
+        dataBase.addRatingToProduct(p1,5);
+        dataBase.addRatingToProduct(p1,5);
+        dataBase.addRatingToProduct(p1,2);
+        dataBase.addRatingToProduct(p1,1);
+        dataBase.addRatingToProduct(p1,3);
 
-        DataBase.getInstance().addRatingToProduct(15,1);
-        DataBase.getInstance().addRatingToProduct(15,5);
-        DataBase.getInstance().addRatingToProduct(15,2);
-        DataBase.getInstance().addRatingToProduct(15,1);
-        DataBase.getInstance().addRatingToProduct(15,3);
+        dataBase.addRatingToProduct(p2,4);
+        dataBase.addRatingToProduct(p2,5);
+        dataBase.addRatingToProduct(p2,2);
+        dataBase.addRatingToProduct(p2,1);
+        dataBase.addRatingToProduct(p2,3);
+
+        dataBase.addRatingToProduct(p3,1);
+        dataBase.addRatingToProduct(p3,5);
+        dataBase.addRatingToProduct(p3,2);
+        dataBase.addRatingToProduct(p3,1);
+        dataBase.addRatingToProduct(p3,3);
 
         return "Test 1";
     }
@@ -155,16 +156,9 @@ public class Store {
                          @RequestParam(required = false) @NotBlank @Valid String email,
                          @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                          @RequestParam(required = false) @NotBlank @Valid String address) throws JSONException {
-        DataBase dataBase = DataBase.getInstance();
-        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", 1);
-        jsonObject.put("ID", dataBase.validateUserByID(email, password));
-        jsonObject.put("email", email);
-        jsonObject.put("password", password);
 
-        return jsonObject.toString();
+        dataBase.addCostumer(firstName, lastName, password, email, phoneNumber, address);
+        return userInfo(password, email);
     }
 
     /*@GetMapping("/login")
@@ -176,16 +170,18 @@ public class Store {
     @PostMapping("/login")
     public String login(@RequestParam(required = false) @NotBlank @Valid String password,
                         @RequestParam(required = false) @NotBlank @Valid String email) throws JSONException {
-        DataBase dataBase = DataBase.getInstance();
-        long ID = dataBase.validateUserByID(email, password);
-        if (ID != -1) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("code", 1);
-            jsonObject.put("ID", dataBase.validateUserByID(email, password));
-            jsonObject.put("email", email);
-            jsonObject.put("password", password);
-            return jsonObject.toString();
+        if (dataBase.validateUser(email, password) != null) {
+            return userInfo(password, email);
         } else throw new CustomException("email or password in correct");
+    }
+
+    private String userInfo(String password, String email) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", 1);
+        jsonObject.put("ID", dataBase.validateUser(email, password).getID());
+        jsonObject.put("email", email);
+        jsonObject.put("password", password);
+        return jsonObject.toString();
     }
 
     /*@GetMapping("/logout")
@@ -199,15 +195,15 @@ public class Store {
     @PostMapping("/valid_login")
     public String validLogin(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email) {
-        if (Authentication.loggedInUser(email, password) != null) return "1";
+        if (dataBase.validateUser(email, password) != null) return "1";
         else return "0";
     }
 
     @PostMapping("/valid_admin")
     public String validAdmin(@RequestParam(required = false) @NotBlank @Valid String password,
                              @RequestParam(required = false) @NotBlank @Valid String email) {
-        User user = Authentication.loggedInUser(email, password);
-        if (Authentication.isAdmin(user)) return "1";
+        User user = dataBase.validateUser(email, password);
+        if (authentication.isAdmin(user)) return "1";
         else return "0";
     }
 
@@ -226,23 +222,16 @@ public class Store {
                            @RequestParam(required = false) @NotBlank @Valid String email,
                            @RequestParam(required = false) @NotBlank @Valid String phoneNumber,
                            @RequestParam(required = false) @NotBlank @Valid String address) {
-//        if (!Authentication.isLogin(request)) throw new CustomException("please login first");
-//        if (!Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("You dont have permission");
-        if (Validation.isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
-        DataBase dataBase = DataBase.getInstance();
+
         dataBase.addAdmin(firstName, lastName, password, email, phoneNumber, address);
-        return String.valueOf(dataBase.validateUserByID(email, password));
+        return String.valueOf(dataBase.validateUser(email, password).getID());
     }
 
     @PostMapping("/purchase")
     public String purchase(@RequestParam(required = false) @NotBlank @Valid String password,
                            @RequestParam(required = false) @NotBlank @Valid String email) {
-//        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email,password);
-        DataBase.getInstance().purchase(user.getID());
+        User user = authentication.loggedInUser(email,password);
+        dataBase.purchase(user.getID());
         return "Thank you for your order";
     }
 
@@ -250,11 +239,9 @@ public class Store {
     public String addCredit(@RequestParam(required = false) @NotBlank @Valid String password,
                             @RequestParam(required = false) @NotBlank @Valid String email,
                             @RequestParam(required = false) @NotBlank @Valid String amount) {
-//        if (!Authentication.isLogin(request)) throw new CustomException("Please login first");
-//        if (Authentication.isAdmin(Authentication.loggedInUser(request)))
-//            throw new CustomException("Make sure you are a costumer");
-        User user = Authentication.loggedInUser(email, password);
-        DataBase.getInstance().addCredit(user.getID(), Long.parseLong(amount));
+
+        User user = authentication.loggedInUser(email, password);
+        dataBase.addCredit(user.getID(), Long.parseLong(amount));
         return "Successful payment";
     }
 }

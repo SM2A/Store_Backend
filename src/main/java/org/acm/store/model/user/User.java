@@ -1,21 +1,34 @@
-package org.acm.store.model;
+package org.acm.store.model.user;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@MappedSuperclass
 public class User {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name = "ID",unique = true,nullable = false)
     protected long ID;
+    @Column(name = "FirstName",nullable = false)
     protected String firstName;
+    @Column(name = "LastName",nullable = false)
     protected String lastName;
+    @Column(name = "pass",nullable = false)
     protected String password;
+    @Column(name = "Email",nullable = false)
     protected String email;
+    @Column(name = "PhoneNumber",nullable = false,length = 11)
     protected String phoneNumber;
+    @Column(name = "Address",nullable = false)
     protected String address;
+    @Column(name = "RegisterDate",nullable = false)
     protected Date registerDate;
 
-    public User(long ID, String firstName, String lastName, String password, String email,
+    public User() {}
+
+    public User(String firstName, String lastName, String password, String email,
                 String phoneNumber, String address) {
-        this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;

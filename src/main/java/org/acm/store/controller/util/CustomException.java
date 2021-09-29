@@ -1,4 +1,4 @@
-package org.acm.store.controller.validation;
+package org.acm.store.controller.util;
 
 /**
  * Created by SM2A
@@ -6,6 +6,7 @@ package org.acm.store.controller.validation;
  */
 
 public class CustomException extends RuntimeException {
+
     public CustomException() {
         super();
     }

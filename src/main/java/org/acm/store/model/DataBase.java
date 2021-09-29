@@ -1,383 +1,352 @@
 package org.acm.store.model;
 
 import java.util.*;
-import java.util.regex.Pattern;
-
-import org.acm.store.controller.validation.CustomException;
+import org.acm.store.controller.util.CustomException;
+import org.acm.store.model.cart.*;
+import org.acm.store.model.cartitem.CartItem;
+import org.acm.store.model.cartitem.CartItemService;
+import org.acm.store.model.category.Category;
+import org.acm.store.model.category.CategoryService;
+import org.acm.store.model.comment.Comment;
+import org.acm.store.model.comment.CommentService;
+import org.acm.store.model.product.Product;
+import org.acm.store.model.product.ProductService;
+import org.acm.store.model.user.User;
+import org.acm.store.model.user.admin.Admin;
+import org.acm.store.model.user.admin.AdminService;
+import org.acm.store.model.user.customer.Costumer;
+import org.acm.store.model.user.customer.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by SM2A
  * Seyed Mohammad Amin Atyabi
  */
 
+@Component
 public class DataBase {
 
-    private static DataBase instance;
-    private long lastUserID, lastProductID, lastCommentID, lastCartID;
-    private final HashMap<Long, User> users;
-    private final HashMap<Long, Product> products;
-    private final HashMap<Long, Comment> comments;
-    private final HashMap<Long, Cart> carts;
-    private final HashMap<Long, HashMap<Long, Integer>> items;
-    private final ArrayList<String> categories;
+    @Autowired
+    AdminService adminService;
 
-    private DataBase() {
-        users = new HashMap<>();
-        comments = new HashMap<>();
-        products = new HashMap<>();
-        carts = new HashMap<>();
-        items = new HashMap<>();
-        categories = new ArrayList<>();
-        lastCartID = 0;
-        lastCommentID = 0;
-        lastProductID = 0;
-        lastUserID = 0;
+    @Autowired
+    CustomerService customerService;
+
+    @Autowired
+    ProductService productService;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    CartService cartService;
+
+    @Autowired
+    CartItemService itemService;
+
+    public DataBase() {
     }
 
-    public static DataBase getInstance() {
-        if (instance == null) {
-            instance = new DataBase();
-        }
-        return instance;
+    private boolean isTaken(String email, String phoneNumber) {
+        Costumer costumer = customerService.getCustomerEmailPhoneNumber(email, phoneNumber);
+        Admin admin = adminService.getAdminEmailPhoneNumber(email, phoneNumber);
+        return costumer != null || admin != null;
     }
 
-    public boolean isTaken(String email, String phoneNumber) {
-        for (Map.Entry<Long, User> user : users.entrySet()) {
-            if ((user.getValue().getEmail().equals(email)) || (user.getValue().getPhoneNumber().equals(phoneNumber))) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isTaken(long id, String email, String phoneNumber) {
+        Costumer costumer = customerService.getCustomerEmailPhoneNumber(id, email, phoneNumber);
+        Admin admin = adminService.getAdminEmailPhoneNumber(id, email, phoneNumber);
+        return costumer != null || admin != null;
     }
 
-    public void addCostumer(String firstName, String lastName, String password,
+    public long addCostumer(String firstName, String lastName, String password,
                             String email, String phoneNumber, String address) {
-        long ID = ++lastUserID;
-        users.put(ID, new Costumer(ID, firstName, lastName, password, email, phoneNumber, address));
-        createCart(ID);
+        if (isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+        long id = customerService.addCustomer(new Costumer(firstName, lastName, password, email, phoneNumber, address));
+        createCart(id);
+        return id;
     }
 
-    public void addAdmin(String firstName, String lastName, String password,
+    public long addAdmin(String firstName, String lastName, String password,
                          String email, String phoneNumber, String address) {
-        long ID = ++lastUserID;
-        users.put(ID, new Admin(ID, firstName, lastName, password, email, phoneNumber, address));
+        if (isTaken(email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+        return adminService.addAdmin(new Admin(firstName, lastName, password, email, phoneNumber, address));
     }
 
     public void editUser(long id, String firstName, String lastName, String email,
                          String phoneNumber, String address) {
-        User user = users.get(id);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPhoneNumber(phoneNumber);
-        user.setAddress(address);
+        Costumer customer = customerService.getCustomer(id);
+        if (customer == null) {
+            Admin admin = adminService.getAdmin(id);
+            if (isTaken(id, email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+            admin.setFirstName(firstName);
+            admin.setLastName(lastName);
+            admin.setEmail(email);
+            admin.setPhoneNumber(phoneNumber);
+            admin.setAddress(address);
+            adminService.updateAdmin(admin);
+        }
+        if (isTaken(id, email, phoneNumber)) throw new CustomException("This email or phone-number is taken");
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        customer.setEmail(email);
+        customer.setPhoneNumber(phoneNumber);
+        customer.setAddress(address);
+        customerService.updateCustomer(customer);
     }
 
     public void changePassword(long id, String password) {
-        users.get(id).setPassword(password);
+        Costumer customer = customerService.getCustomer(id);
+        if (customer == null) {
+            Admin admin = adminService.getAdmin(id);
+            admin.setPassword(password);
+            adminService.updateAdmin(admin);
+        }
+        customer.setPassword(password);
+        customerService.updateCustomer(customer);
     }
 
     public Comment findCommentByID(long id) {
-        return comments.get(id);
+        return commentService.getComment(id);
     }
 
-    public ArrayList<Comment> getAllComments() {
-        return new ArrayList<>(comments.values());
-    }
-
-    public long validateUserByID(String email, String password) {
-        for (Map.Entry<Long, User> user : users.entrySet()) {
-            if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
-                return user.getKey();
-            }
-        }
-        return -1;
+    public List<Comment> getAllComments() {
+        return commentService.getAllComments();
     }
 
     public User validateUser(String email, String password) {
-        for (Map.Entry<Long, User> user : users.entrySet()) {
-            if ((user.getValue().getEmail().equals(email)) && (user.getValue().getPassword().equals(password))) {
-                return user.getValue();
-            }
-        }
-        return null;
+        Costumer costumer = customerService.getCustomerEmailPassword(email, password);
+        if (costumer == null) return adminService.getAdminEmailPassword(email, password);
+        return costumer;
     }
 
     public User findUser(long ID) {
-        if (!users.containsKey(ID))
-            throw new CustomException("User not found.");
-        return users.get(ID);
+        Costumer costumer = customerService.getCustomer(ID);
+        if (costumer == null) return adminService.getAdmin(ID);
+        return costumer;
     }
 
-    public HashMap<Long, Cart> getUserCarts(long userID) {
-        HashMap<Long, Cart> cartHashMap = new HashMap<>();
-        for (Map.Entry<Long, Cart> entry : carts.entrySet()) {
-            if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return cartHashMap;
+    public List<User> getUsers() {
+        List<User> userList = new ArrayList<>();
+        userList.addAll(adminService.getAllAdmins());
+        userList.addAll(customerService.getAllCustomers());
+        return userList;
     }
 
-    public ArrayList<User> getUsers() {
-        return new ArrayList<>(users.values());
+    public List<Cart> getUserCarts(long userID) {
+        List<Cart> list = new ArrayList<>();
+        list.addAll(cartService.getCart(userID, Status.OPEN));
+        list.addAll(cartService.getCart(userID, Status.CLOSED));
+        return list;
     }
 
-    public ArrayList<Cart> showUserCarts(long userID) {
-        HashMap<Long, Cart> cartHashMap = new HashMap<>();
-        for (Map.Entry<Long, Cart> entry : carts.entrySet()) {
-            if (entry.getValue().getUserID() == userID) cartHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return new ArrayList<>(cartHashMap.values());
+    public List<Product> getProducts() {
+        return productService.getAllProduct();
     }
 
-    public ArrayList<Product> getProducts() {
-        return new ArrayList<>(products.values());
-    }
-
-    public HashMap<Long, Comment> getUserComments(long userID) {
-        HashMap<Long, Comment> commentHashMap = new HashMap<>();
-        for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
-            if (entry.getValue().getUserID() == userID) commentHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return commentHashMap;
-    }
-
-    public void editProduct(long id,String title, String description, int quantityAvailable,
-                            int price, String category, String imgAddress){
-        Product product = products.get(id);
+    public void editProduct(long id, String title, String description, int quantityAvailable,
+                            int price, String category, String imgAddress) {
+        Product product = productService.getProduct(id);
         product.setTitle(title);
         product.setDescription(description);
         product.setQuantityAvailable(quantityAvailable);
         product.setPrice(price);
         product.setCategory(category);
         product.setImgAddress(imgAddress);
+        productService.updateProduct(product);
     }
 
-    public ArrayList<Comment> getProductComments(long productId) {
-        ArrayList<Comment> userComments = new ArrayList<>();
-        for (Map.Entry<Long, Comment> entry : comments.entrySet()) {
-            if (entry.getValue().getProductID() == productId) userComments.add(entry.getValue());
-        }
-        return userComments;
+    public List<Comment> getProductComments(long productId) {
+        return commentService.getProductComments(productId);
     }
 
     public void addRatingToProduct(long productID, int rating) {
         if ((rating > 5) || (rating < 0)) throw new CustomException("Enter correct number");
-        products.get(productID).addRating(rating);
+        Product product = productService.getProduct(productID);
+        product.addRating(rating);
+        productService.updateProduct(product);
     }
 
     public void addCredit(long ID, long amount) {
         if (amount <= 0) throw new CustomException("Enter correct amount");
-        Costumer user = (Costumer) users.get(ID);
-        user.addCredit(amount);
+        Costumer costumer = customerService.getCustomer(ID);
+        costumer.addCredit(amount);
+        customerService.updateCustomer(costumer);
     }
 
     public void purchase(long userId) {
-        Costumer user = (Costumer) users.get(userId);
-        Cart cart = null;
-        for (Map.Entry<Long, Cart> entry : getUserCarts(userId).entrySet()) {
-            if (entry.getValue().getStatus() == Status.OPEN) cart = entry.getValue();
-        }
+        Costumer user = customerService.getCustomer(userId);
+        Cart cart = cartService.getCart(userId, Status.OPEN).get(0);
         if (!user.hasEnoughCredit(cartPrice(cart.getID()))) {
             throw new CustomException("Not enough credit");
         }
-        for (Map.Entry<Product, Integer> entry : getCartItems(cart.getID()).entrySet()) {
+        for (CartItem item : itemService.getCartItems(cart.getID())) {
             //todo maybe quantities changed
-            entry.getKey().setQuantityAvailable(entry.getKey().getQuantityAvailable() - entry.getValue());
+            Product product = productService.getProduct(item.getProductID());
+            product.setQuantityAvailable(product.getQuantityAvailable() - item.getCount());
+            productService.updateProduct(product);
         }
         user.purchase(cartPrice(cart.getID()));
         cart.purchase();
         cart.setStatus(Status.CLOSED);
         createCart(user.getID());
+        customerService.updateCustomer(user);
+        cartService.updateCart(cart);
     }
 
-    public void addProduct(String title, String description, int quantityAvailable,
+    public long addProduct(String title, String description, int quantityAvailable,
                            int price, String category, String imgAddress) {
+
         if (getExistedProduct(title, category) != null) {
             Product product = getExistedProduct(title, category);
             product.addToStock(quantityAvailable);
+            productService.updateProduct(product);
+            return product.getID();
         } else {
-            long ID = ++lastProductID;
-            if (!categories.contains(category)) throw new CustomException("Category not available");
-            products.put(ID, new Product(ID, title, description, quantityAvailable, price, category, imgAddress));
+            if (!isCategoryAvailable(category)) throw new CustomException("Category not available");
+            return productService
+                    .addProduct(new Product(title, description, quantityAvailable, price, category, imgAddress));
         }
     }
 
     public Product findProduct(long ID) {
-        return products.get(ID);
+        return productService.getProduct(ID);
     }
 
     public void addComment(long userID, long productID, String text) {
-        long ID = ++lastCommentID;
-        comments.put(ID, new Comment(ID, userID, productID, text));
+        commentService.addComment(new Comment(userID, productID, text));
     }
 
     public Comment findComment(long ID) {
-        return comments.get(ID);
+        return commentService.getComment(ID);
     }
 
     public void likeComment(long ID) {
-        comments.get(ID).like();
+        Comment comment = commentService.getComment(ID);
+        comment.like();
+        commentService.updateComment(comment);
     }
 
     public void dislikeComment(long ID) {
-        comments.get(ID).dislike();
+        Comment comment = commentService.getComment(ID);
+        comment.dislike();
+        commentService.updateComment(comment);
     }
 
     public void deleteComment(long ID) {
-        comments.remove(ID);
+        commentService.deleteComment(ID);
     }
 
     public void createCart(long userID) {
-        long ID = ++lastCartID;
-        carts.put(ID, new Cart(ID, userID));
-        items.put(ID, new HashMap<>());
+        cartService.addCart(new Cart(userID));
     }
 
-    public ArrayList<Cart> getCarts() {
-        return new ArrayList<>(carts.values());
+    public List<Cart> getCarts() {
+        return cartService.getAllCart();
     }
 
     public Cart findOpenCartByUser(long userId) {
-        for (Map.Entry<Long, Cart> cart : carts.entrySet()) {
-            if ((cart.getValue().getUserID() == userId) && (cart.getValue().getStatus() == Status.OPEN)) {
-                return cart.getValue();
-            }
-        }
-        return null;
+        return cartService.getCart(userId, Status.OPEN).get(0);
     }
 
-    public HashMap<Long, Integer> getItemsInOpenCart(long userId) {
+    public List<CartItem> getItemsInOpenCart(long userId) {
         Cart cart = findOpenCartByUser(userId);
-        if (items.get(cart.getID()) != null) {
-            return items.get(cart.getID());
-        }
-        return null;
+        return itemService.getCartItems(cart.getID());
     }
-
 
     public Cart findCart(long ID) {
-        return carts.get(ID);
+        return cartService.getCart(ID);
     }
 
     public long cartPrice(long cartID) {
-        long price = 0;
-        for (Map.Entry<Product, Integer> entry : getCartItems(cartID).entrySet()) {
-            price += entry.getKey().getPrice() * entry.getValue();
-        }
-        return price;
+        return itemService.getCartPrice(cartID);
     }
 
-
     public void addItem(long cartID, long productID) {
-
         if (findProduct(productID).getQuantityAvailable() <= 0)
             throw new CustomException("Not enough quantity");
-        if (getCartItems(cartID).containsKey(findProduct(productID))) {
+        if (getCartItems(cartID).stream().filter(item -> item.getProductID() == productID)
+                .findAny().orElse(null) != null) {
             increaseItem(productID, cartID);
         } else {
-            items.get(cartID).put(productID, 1);
+            itemService.addItem(new CartItem(cartID, productID, 1));
         }
     }
 
     public void deleteItem(long productID, long cartID) {
-        if (!items.get(cartID).containsKey(productID))
+        if (itemService.getItem(cartID, productID) == null)
             throw new CustomException("Your cart doesn't contain item with id: " + productID);
-        items.get(cartID).remove(productID);
+        itemService.deleteItem(cartID, productID);
     }
 
     public void increaseItem(long productID, long cartID) {
-        if (findProduct(productID).getQuantityAvailable() == items.get(cartID).get(productID))
+        CartItem item = itemService.getItem(cartID, productID);
+        if (findProduct(productID).getQuantityAvailable() == item.getCount())
             throw new CustomException("Not enough quantity");
-        items.get(cartID).replace(productID, items.get(cartID).get(productID) + 1);
+        item.setCount(item.getCount() + 1);
+        itemService.updateItem(item);
     }
 
     public void decreaseItem(long productID, long cartID) {
-        if (!items.get(cartID).containsKey(productID))
-            throw new CustomException("Your cart doesn't contain item with id: " + productID);
-        if (items.get(cartID).get(productID) == 1) deleteItem(productID, cartID);
-        else items.get(cartID).replace(productID, items.get(cartID).get(productID) - 1);
-    }
-
-    public void setQuantityToAnItem(long productID, long cartID, int quantity) {
-        if (findProduct(productID).getQuantityAvailable() < quantity)
-            throw new CustomException("Not enough quantity");
-        if (getCartItems(cartID).containsKey(findProduct(productID)))
-            items.get(cartID).replace(productID, quantity);
-        else
-            items.get(cartID).put(productID, quantity);
-    }
-
-    public HashMap<Product, Integer> getCartItems(long cartID) {
-        HashMap<Product, Integer> itemsHashMap = new HashMap<>();
-        for (Map.Entry<Long, Integer> entry : items.get(cartID).entrySet()) {
-            itemsHashMap.put(findProduct(entry.getKey()), entry.getValue());
+        CartItem item = itemService.getItem(cartID, productID);
+        if (item == null) throw new CustomException("Your cart doesn't contain item with id: " + productID);
+        if (item.getCount() <= 1) itemService.deleteItem(item.getCartID(), item.getProductID());
+        else {
+            item.setCount(item.getCount() - 1);
+            itemService.updateItem(item);
         }
-        return itemsHashMap;
+    }
+
+    public List<CartItem> getCartItems(long cartID) {
+        return itemService.getCartItems(cartID);
     }
 
     public Product getExistedProduct(String title, String category) {
-        for (Map.Entry<Long, Product> entry : products.entrySet()) {
-            if (entry.getValue().getTitle().equals(title) &&
-                    entry.getValue().getCategory().equals(category)) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        return productService.getProduct(title, new Category(category));
+    }
+
+    private boolean isCategoryAvailable(String name) {
+        return categoryService.getCategory(name.toUpperCase()) != null;
     }
 
     public void addCategory(String name) {
-        if (categories.contains(name.toUpperCase())) throw new CustomException("This category was added");
-        else categories.add(name.toUpperCase());
-    }
-
-    public ArrayList<String> getCategories() {
-        return categories;
-    }
-
-    public ArrayList<Product> getProductsByCategory(String category) {
-        ArrayList<Product> selectedProducts = new ArrayList<>();
-        for (Product product : products.values()) {
-            if (product.getCategory().equals(category)) {
-                selectedProducts.add(product);
-            }
+        if (isCategoryAvailable(name)) throw new CustomException("This category was added");
+        else {
+            categoryService.addCategory(new Category(name.toUpperCase()));
         }
-        return selectedProducts;
     }
 
-    public ArrayList<Product> searchProductsByName(String name) {
-        ArrayList<Product> searchedProducts = new ArrayList<>();
-        for (Product product : products.values()) {
-            if (product.getTitle().equalsIgnoreCase(name)) searchedProducts.add(product);
-            else if (product.getTitle().contains(name)) searchedProducts.add(product);
-            else if (Pattern.compile(Pattern.quote(name), Pattern.CASE_INSENSITIVE).matcher(product.getTitle())
-                    .find()) searchedProducts.add(product);
-            else if (product.getTitle().matches("(?i).*" + name + ".*")) searchedProducts.add(product);
-        }
-        return searchedProducts;
+    public List<Category> getCategories() {
+        return categoryService.getAllCategories();
     }
 
-    public ArrayList<Product> searchProductsByCategory(String category) {
-        ArrayList<Product> searchedProducts = new ArrayList<>();
-        for (Product product : products.values()) {
-            if (product.getCategory().equalsIgnoreCase(category)) searchedProducts.add(product);
-        }
-        return searchedProducts;
+    public List<Product> searchProductsByName(String name) {
+        return productService.getProduct(name);
+    }
+
+    public List<Product> searchProductsByCategory(String category) {
+        return productService.getProduct(new Category(category));
     }
 
     public List<ArrayList<Product>> getMainProducts() {//Randomly get 4 products for 3 categories to show in  home page
         List<ArrayList<Product>> allMainProducts = new ArrayList<>();
-        if (categories.size() < 3) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
+        if (categoryService.getAllCategories().size() < 3)
+            throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");
         for (int j = 0; j < 3; j++) {
             ArrayList<Product> mainProductsInACategory = new ArrayList<>();
-            ArrayList<Product> list = getProductsByCategory(categories.get(j));
+            List<Product> list = productService.getProduct(categoryService.getAllCategories().get(j));
             Collections.shuffle(list);
-            if (list.size() < 4) throw new CustomException("Not Enough Categories!\ntry localhost:8080/test.");
-            for (int i = 0; i < 4; i++) {
+            /*if (list.size() < 4)
+                throw new CustomException("Not Enough Categories!\r\ntry localhost:8080/test.");*/
+            for (int i = 0; (i < list.size()) && i < 4 ; i++) {
                 mainProductsInACategory.add(list.get(i));
             }
             allMainProducts.add(mainProductsInACategory);
         }
         return allMainProducts;
     }
-
 }
